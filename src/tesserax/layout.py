@@ -6,11 +6,7 @@ from .base import Group
 
 class Layout(Group):
     def __init__(self, shapes: list[Shape] | None = None) -> None:
-        super().__init__()
-        self._is_dirty = True
-
-        if shapes:
-            self.add(*shapes)
+        super().__init__(shapes)
 
     @abstractmethod
     def do_layout(self) -> None:
@@ -26,18 +22,18 @@ class Layout(Group):
         return self
 
 
-type Baseline = Literal["start", "middle", "end"]
+type Align = Literal["start", "middle", "end"]
 
 
 class Row(Layout):
     def __init__(
         self,
         shapes: list[Shape] | None = None,
-        baseline: Baseline = "middle",
+        align: Align = "middle",
         gap: float = 0,
     ) -> None:
         super().__init__(shapes)
-        self.baseline = baseline
+        self.align = align
         self.gap = gap
 
     def do_layout(self) -> None:
@@ -56,7 +52,7 @@ class Row(Layout):
             b = shape.local()
 
             # Calculate Y based on baseline
-            match self.baseline:
+            match self.align:
                 case "start":
                     dy = -b.y
                 case "middle":
@@ -73,16 +69,14 @@ class Row(Layout):
             current_x += b.width + self.gap
 
 
-class Column(Layout):
+class Column(Row):
     def __init__(
         self,
         shapes: list[Shape] | None = None,
-        align: Baseline = "middle",  # Changed name to align for clarity
-        padding: float = 0,
+        align: Align = "middle",  # Changed name to align for clarity
+        gap: float = 0,
     ) -> None:
-        super().__init__(shapes)
-        self.align = align
-        self.padding = padding
+        super().__init__(shapes, align, gap)
 
     def do_layout(self) -> None:
         if not self.shapes:
@@ -110,4 +104,4 @@ class Column(Layout):
             shape.transform.tx = dx
             shape.transform.ty = current_y - b.y
 
-            current_y += b.height + self.padding
+            current_y += b.height + self.gap
