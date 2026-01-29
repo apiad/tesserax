@@ -34,7 +34,7 @@ class Canvas(Group):
         return self
 
     def _build_svg(self) -> str:
-        content = "\n  ".join(s.render() for s in self.shapes)
+        content = "\n  ".join(s._render() for s in self.shapes)
         defs_content = "\n    ".join(self._defs)
 
         vx, vy, vw, vh = self._viewbox

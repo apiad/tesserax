@@ -5,8 +5,8 @@ from tesserax.layout import Row
 canvas = Canvas(width=400, height=200)
 
 # Create two 'cells'
-cell1 = Circle(50, 80, 20)
-cell2 = Rect(150, 80, 40, 40)
+cell1 = Circle(20)
+cell2 = Rect(40, 40)
 
 layout = Row().add(cell1, cell2)
 

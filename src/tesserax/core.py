@@ -149,11 +149,11 @@ class Shape(ABC):
             gp.append(self)
 
     @abstractmethod
-    def local_bounds(self) -> Bounds:
+    def local(self) -> Bounds:
         pass
 
     def bounds(self) -> Bounds:
-        base = self.local_bounds()
+        base = self.local()
 
         corners = [base.topleft, base.topright, base.bottomleft, base.bottomright]
         transformed = [self.transform.map(p) for p in corners]
@@ -163,8 +163,14 @@ class Shape(ABC):
         return Bounds(min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys))
 
     @abstractmethod
-    def render(self) -> str:
+    def _render(self) -> str:
         pass
+
+    def render(self) -> str:
+        """Wraps the inner content in a transform group."""
+        t = self.transform
+        ts = f' transform="translate({t.tx} {t.ty}) rotate({t.rotation}) scale({t.scale})"'
+        return f'<g{ts}>\n{self._render()}\n</g>'
 
     def resolve(self, p: Point) -> Point:
         world_p = self.transform.map(p)
@@ -173,7 +179,7 @@ class Shape(ABC):
         return world_p
 
     def anchor(self, name: Anchor) -> Point:
-        return self.resolve(self.local_bounds().anchor(name))
+        return self.resolve(self.local().anchor(name))
 
     def translated(self, dx: float, dy: float) -> Self:
         self.transform.tx += dx

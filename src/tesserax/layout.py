@@ -49,11 +49,11 @@ class Row(Layout):
             s.transform.reset()
 
         # 2. Calculate offsets based on the 'clean' shapes
-        max_h = max(s.local_bounds().height for s in self.shapes)
+        max_h = max(s.local().height for s in self.shapes)
         current_x = 0.0
 
         for shape in self.shapes:
-            b = shape.local_bounds()
+            b = shape.local()
 
             # Calculate Y based on baseline
             match self.baseline:
@@ -91,11 +91,11 @@ class Column(Layout):
         for s in self.shapes:
             s.transform.reset()
 
-        max_w = max(s.local_bounds().width for s in self.shapes)
+        max_w = max(s.local().width for s in self.shapes)
         current_y = 0.0
 
         for shape in self.shapes:
-            b = shape.local_bounds()
+            b = shape.local()
 
             match self.align:
                 case "start":
