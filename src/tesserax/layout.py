@@ -32,9 +32,9 @@ class Row(Layout):
         align: Align = "middle",
         gap: float = 0,
     ) -> None:
-        super().__init__(shapes)
         self.align = align
         self.gap = gap
+        super().__init__(shapes)
 
     def do_layout(self) -> None:
         if not self.shapes:
@@ -73,7 +73,7 @@ class Column(Row):
     def __init__(
         self,
         shapes: list[Shape] | None = None,
-        align: Align = "middle",  # Changed name to align for clarity
+        align: Align = "middle",
         gap: float = 0,
     ) -> None:
         super().__init__(shapes, align, gap)
