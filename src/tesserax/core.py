@@ -39,6 +39,17 @@ class Point:
     def __sub__(self, other: Point) -> Point:
         return Point(self.x - other.x, self.y - other.y)
 
+    def magnitude(self) -> float:
+        return math.sqrt(self.x**2 + self.y**2)
+
+    def normalize(self) -> Point:
+        m = self.magnitude()
+
+        if m == 0:
+            return Point(0, 0)
+
+        return Point(self.x / m, self.y / m)
+
     def __mul__(self, scalar: float) -> Point:
         return Point(self.x * scalar, self.y * scalar)
 

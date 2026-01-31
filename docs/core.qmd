@@ -141,3 +141,77 @@ When you call `shape.anchor(name)`, Tesserax performs the following behind the s
 This means you never have to manually calculate `sin()` or `cos()` to find where a rotated object's edge is located—you just ask for the anchor.
 
 For explicit anchoring, you can use `Shape.resolve(p: Point)` to map a point in local space to the global space, this way you can, e.g., get the point at 2/3rds of the way inside a rectangle and map it to global space.
+
+## Drawing Paths and Lines
+
+While shapes like `Rect` and `Circle` cover many use cases, sometimes you need to draw arbitrary lines, custom shapes, or connectors. Tesserax offers two ways to do this: the low-level `Path` for precise control and the high-level `Polyline` for rapid sequences.
+
+### The Low-Level `Path` Object
+
+The `Path` class roughly corresponds to the SVG `<path>` element. It operates like a pen: you move it to a location, then draw lines or curves to subsequent points.
+
+This is ideal for creating custom glyphs or specific geometric curves.
+
+```{python}
+from tesserax import Canvas, Path
+
+with Canvas() as canvas:
+    # 1. A simple custom shape (a triangle)
+    p = Path()
+    p.move_to(0, 0).line_to(50, 50).line_to(0, 50).close()
+    p.translated(20, 20)
+
+    # 2. A curved path using Bezier curves
+    curve = Path()
+    curve.move_to(100, 20)
+    # Cubic Bezier: 2 control points, 1 end point
+    curve.cubic_to(
+        150, 20,   # Control Point 1
+        150, 80,   # Control Point 2
+        200, 80    # End Point
+    )
+
+    # Quadratic Bezier: 1 control point, 1 end point
+    curve.quadratic_to(
+        250, 80,   # Control Point
+        300, 20    # End Point
+    )
+
+canvas.fit(padding=10).display()
+```
+
+### The High-Level `Polyline`
+
+For many diagrams, you simply want to connect a sequence of points. The `Polyline` shape automates this.
+
+Its most powerful feature is the `smoothness` parameter. Instead of manually calculating Bezier control points to round a corner, you can simply tell `Polyline` to blend the corners for you.
+
+* `smoothness=0`: Sharp corners (standard polygon).
+* `smoothness=1`: Maximum rounding (spline-like).
+* `smoothness=0.2`: Subtle rounded corners (like a modern UI box).
+
+```{python}
+from tesserax import Canvas, Polyline, Point
+
+# Helper to generate a zigzag pattern
+points = [
+    Point(0, 50), Point(50, 0), Point(100, 50),
+    Point(150, 0), Point(200, 50)
+]
+
+with Canvas() as canvas:
+    # 1. Sharp Polyline (Default)
+    Polyline(points, smoothness=0).translated(0, 0)
+
+    # 2. Slightly Rounded (20% smoothing)
+    # Note how it preserves most of the straight line but rounds the tip.
+    Polyline(points, smoothness=0.2, stroke="blue").translated(0, 60)
+
+    # 3. Fully Smooth (100% smoothing)
+    # This creates a flowing wave-like appearance.
+    Polyline(points, smoothness=1.0, stroke="red").translated(0, 120)
+
+canvas.fit(10).display()
+```
+
+This makes `Polyline` an excellent tool for drawing graph edges, wiring diagrams, or "hand-drawn" style annotations where sharp vertices look unnatural.

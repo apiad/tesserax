@@ -172,8 +172,13 @@ class Path(Shape):
     layout bounding box calculations.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, stroke: str = "black", width: float = 1) -> None:
         super().__init__()
+        self.stroke = stroke
+        self.width = width
+        self._reset()
+
+    def _reset(self):
         self._commands: list[str] = []
         self._cursor: tuple[float, float] = (0.0, 0.0)
 
@@ -237,6 +242,15 @@ class Path(Shape):
         self._update_cursor(end_x, end_y)
         return self
 
+    def quadratic_to(self, cx: float, cy: float, ex: float, ey: float) -> Self:
+        """
+        Draws a quadratic Bezier curve to (ex, ey) with control point (cx, cy).
+        """
+        self._commands.append(f"Q {cx} {cy}, {ex} {ey}")
+        self._expand_bounds(cx, cy)  # Approximate bounds including control point
+        self._update_cursor(ex, ey)
+        return self
+
     def close(self) -> Self:
         """Closes the path by drawing a line back to the start."""
         self._commands.append("Z")
@@ -261,4 +275,110 @@ class Path(Shape):
         # You might want to offset commands by self.x/self.y if
         # this shape is moved by a Layout.
         d_attr = " ".join(self._commands)
-        return f'<path d="{d_attr}" fill="none" stroke="black" stroke-width="2" />'
+        return f'<path d="{d_attr}" fill="none" stroke="{self.stroke}" stroke-width="{self.width}" />'
+
+
+class Polyline(Path):
+    """
+    A sequence of connected lines with optional corner rounding.
+
+    Args:
+        points: List of vertices.
+        smoothness: 0.0 (sharp) to 1.0 (fully rounded/spline-like).
+        closed: If True, connects the last point back to the first.
+    """
+
+    def __init__(
+        self,
+        points: list[Point],
+        smoothness: float = 0.0,
+        closed: bool = False,
+        stroke: str = "black",
+        width: float = 1.0,
+    ) -> None:
+        super().__init__(stroke=stroke, width=width)
+
+        self.points = points or []
+        self.smoothness = smoothness
+        self.closed = closed
+        self._build()
+
+    def add(self, p: Point) -> Self:
+        self.points.append(p)
+        return self
+
+    def _build(self):
+        self._reset()
+
+        if not self.points:
+            return
+
+        # Clamp smoothness to 0-1 range
+        s = max(0.0, min(1.0, self.smoothness))
+
+        # Determine effective loop of points
+        # If closed, we wrap around; if not, we handle start/end differently
+        verts = self.points + ([self.points[0], self.points[1]] if self.closed else [])
+
+        # 1. Move to the geometric start
+        # If smoothing is on and not self.closed, we start exactly at P0
+        # If closed, we start at the midpoint of the last segment (handled by loop)
+        self.move_to(verts[0].x, verts[0].y)
+
+        # We iterate through triplets: (Prev, Curr, Next)
+        # But for an open polyline, we only round the *internal* corners.
+
+        if len(verts) < 3:
+            # Fallback for simple line
+            for p in verts[1:]:
+                self.line_to(p.x, p.y)
+
+            return
+
+        # Logic for Open Polyline
+        # P0 -> ... -> Pn
+        # We start at P0.
+        # For every corner P_i, we draw a line to "Start of Curve", then curve to "End of Curve".
+
+        # Start
+        curr_p = verts[0]
+        self.move_to(curr_p.x, curr_p.y)
+
+        for i in range(1, len(verts) - 1):
+            prev_p = verts[i - 1]
+            curr_p = verts[i]
+            next_p = verts[i + 1]
+
+            # Vectors
+            vec_in = curr_p - prev_p
+            vec_out = next_p - curr_p
+
+            len_in = vec_in.magnitude()
+            len_out = vec_out.magnitude()
+
+            # Corner Radius determination
+            # We can't exceed 50% of the shortest leg, or curves will overlap
+            max_r = min(len_in, len_out) / 2.0
+            radius = max_r * s
+
+            # Calculate geometric points
+            # "Start of Curve" is back along the incoming vector
+            p_start = curr_p - vec_in.normalize() * radius
+
+            # "End of Curve" is forward along the outgoing vector
+            p_end = curr_p + vec_out.normalize() * radius
+
+            # Draw
+            self.line_to(p_start.x, p_start.y)
+            self.quadratic_to(curr_p.x, curr_p.y, p_end.x, p_end.y)
+
+        # Finish at the last point
+        last = verts[-1]
+        self.line_to(last.x, last.y)
+
+        if self.closed:
+            self.close()
+
+    def _render(self) -> str:
+        self._build()
+        return super()._render()
