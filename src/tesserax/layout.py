@@ -206,24 +206,28 @@ class ForceLayout(Layout):
 class HierarchicalLayout(Layout):
     """
     Arranges nodes in distinct layers based on directed connections.
-    Ideal for trees, flowcharts, and dependency graphs.
+    Supports both Vertical (Top-Bottom) and Horizontal (Left-Right) flows.
     """
 
     def __init__(
         self,
         shapes: list[Shape] | None = None,
+        roots: list[Shape] | None = None,
         rank_sep: float = 50.0,
         node_sep: float = 20.0,
-        orientation: str = "vertical",  # vertical or horizontal
+        orientation: Literal["vertical", "horizontal"] = "vertical",
     ) -> None:
         super().__init__(shapes)
         self.rank_sep = rank_sep
         self.node_sep = node_sep
         self.orientation = orientation
-        # Adjacency: u -> [v, ...] (parents -> children)
+        self.roots = set(roots or [])
         self.adj: dict[Shape, list[Shape]] = defaultdict(list)
-        # Reverse Adjacency: v -> [u, ...] (children -> parents)
         self.rev_adj: dict[Shape, list[Shape]] = defaultdict(list)
+
+    def root(self, n: Shape) -> Self:
+        self.roots.add(n)
+        return self
 
     def connect(self, u: Shape, v: Shape) -> Self:
         """Defines a directed dependency u -> v."""
@@ -235,51 +239,73 @@ class HierarchicalLayout(Layout):
         if not self.shapes:
             return
 
-        # 1. Ranking Phase: Assign layers
+        # 1. Ranking Phase: Assign layers (ignoring back-edges)
         ranks = self._assign_ranks()
 
-        # Group shapes by rank: {0: [s1, s2], 1: [s3], ...}
         layers: dict[int, list[Shape]] = defaultdict(list)
         for s, r in ranks.items():
             layers[r].append(s)
 
-        max_rank = max(layers.keys())
+        max_rank = max(layers.keys()) if layers else 0
 
         # 2. Ordering Phase: Minimize crossings (Barycenter Method)
-        # We sweep down from layer 1 to max_rank
         for r in range(1, max_rank + 1):
-            layer = layers[r]
-            # Sort nodes in this layer based on average position of parents
-            layer.sort(key=lambda node: self._barycenter(node, layers[r - 1]))
+            layers[r].sort(key=lambda node: self._barycenter(node, layers[r - 1]))
 
         # 3. Positioning Phase: Assign physical coordinates
-        current_y = 0.0
+        # 'current_flow' tracks the position along the main axis (Y for vert, X for horz)
+        current_flow = 0.0
 
         for r in sorted(layers.keys()):
             layer = layers[r]
 
-            # Reset transforms first
+            # Reset transforms to get clean local bounds
             for s in layer:
                 s.transform.reset()
 
-            # Calculate total width of this layer
-            widths = [s.local().width for s in layer]
-            total_w = sum(widths) + self.node_sep * (len(layer) - 1)
+            # Calculate metrics for centering this layer
+            if self.orientation == "horizontal":
+                # In horizontal, 'breadth' is the height of the nodes
+                breadths = [s.local().height for s in layer]
+                # 'depth' is the width of the nodes (rank thickness)
+                depths = [s.local().width for s in layer]
+            else:
+                # In vertical, 'breadth' is the width of the nodes
+                breadths = [s.local().width for s in layer]
+                # 'depth' is the height of the nodes (rank thickness)
+                depths = [s.local().height for s in layer]
 
-            # Start X position (centered)
-            current_x = -total_w / 2
+            # Center the layer along the cross-axis
+            total_breadth = sum(breadths) + self.node_sep * (len(layer) - 1)
+            current_cross = -total_breadth / 2
 
-            max_h = 0.0
+            # The thickness of this rank is determined by the tallest/widest node
+            max_depth_in_rank = 0.0
 
-            for s in layer:
+            for i, s in enumerate(layer):
                 b = s.local()
-                s.transform.tx = current_x - b.x # Align left edge to current_x
-                s.transform.ty = current_y - b.y
 
-                current_x += b.width + self.node_sep
-                max_h = max(max_h, b.height)
+                if self.orientation == "horizontal":
+                    # Flow is X, Cross is Y
+                    # Align Left edge to current_flow
+                    s.transform.tx = current_flow - b.x
+                    # Align Top edge to current_cross
+                    s.transform.ty = current_cross - b.y
 
-            current_y += max_h + self.rank_sep
+                    max_depth_in_rank = max(max_depth_in_rank, b.width)
+                    current_cross += b.height + self.node_sep
+                else:
+                    # Flow is Y, Cross is X
+                    # Align Left edge to current_cross
+                    s.transform.tx = current_cross - b.x
+                    # Align Top edge to current_flow
+                    s.transform.ty = current_flow - b.y
+
+                    max_depth_in_rank = max(max_depth_in_rank, b.height)
+                    current_cross += b.width + self.node_sep
+
+            # Advance the main flow axis
+            current_flow += max_depth_in_rank + self.rank_sep
 
     def _assign_ranks(self) -> dict[Shape, int]:
         """
@@ -287,56 +313,43 @@ class HierarchicalLayout(Layout):
         Detects back-edges (cycles) and ignores them for rank calculation.
         """
         ranks: dict[Shape, int] = {}
-        # Set of nodes currently in the recursion stack
         visiting = set()
 
         def get_rank(node: Shape) -> int:
-            # Return memoized result if available
             if node in ranks:
                 return ranks[node]
 
-            # Cycle detection: if we see a node that is currently visiting,
-            # this is a back-edge. We return -1 to signal "ignore this parent".
+            # Cycle detection: We are currently visiting this node's descendant
             if node in visiting:
-                return -1
+                return -1  # Signal to ignore this parent
 
             visiting.add(node)
 
             parents = self.rev_adj[node]
             if not parents:
-                # No parents -> Root node (Rank 0)
                 r = 0
             else:
-                # Recursively get ranks of all parents
                 parent_ranks = [get_rank(p) for p in parents]
-
-                # Filter out back-edges (which returned -1)
+                # Filter out back-edges (-1s)
                 valid_ranks = [pr for pr in parent_ranks if pr != -1]
-
-                # Rank is 1 + max(parents).
-                # If valid_ranks is empty (all parents were back-edges),
-                # default to -1 so 1 + -1 = 0.
+                # If all parents were back-edges, treat as root (0)
                 r = 1 + max(valid_ranks, default=-1)
 
             visiting.remove(node)
             ranks[node] = r
             return r
 
-        # Ensure all shapes are ranked, even disconnected components
+        for r in self.roots:
+            get_rank(r)
+
         for s in self.shapes:
             get_rank(s)
 
         return ranks
 
     def _barycenter(self, node: Shape, prev_layer: list[Shape]) -> float:
-        """
-        Returns the average index of this node's parents in the previous layer.
-        """
         parents = [p for p in self.rev_adj[node] if p in prev_layer]
         if not parents:
-            # Keep original relative order if no parents
             return 0.0
-
-        # Calculate average index of parents in the *previous layer's list*
         indices = [prev_layer.index(p) for p in parents]
         return sum(indices) / len(indices)

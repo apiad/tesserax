@@ -76,7 +76,7 @@ def get_boundary_point(center: Point, target: Point, radius: float) -> Point:
 
 with Canvas() as canvas:
     states: list[Shape] = []
-    radius = 25
+    radius = 20
 
     # 1. Define the Graph Structure
     with HierarchicalLayout(orientation="horizontal") as graph:
@@ -92,6 +92,9 @@ with Canvas() as canvas:
         graph.connect(states[2], states[0])
         # q2 -> q3 -> q4
         graph.connect(states[2], states[3])
+
+        # Set the root
+        graph.root(states[0])
 
     # 2. Draw Transitions (Visuals)
     # We define edges manually to ensure directionality (ForceLayout is undirected)
