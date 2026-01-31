@@ -28,7 +28,7 @@ class Square(Rect):
     """A specialized Rect where width equals height."""
 
     def __init__(
-        self, float, size: float, stroke: str = "black", fill: str = "none"
+        self, size: float, stroke: str = "black", fill: str = "none"
     ) -> None:
         super().__init__(size, size, stroke, fill)
 

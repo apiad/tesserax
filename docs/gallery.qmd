@@ -1,0 +1,142 @@
+# Gallery
+
+The following examples are a bit more involved and showcase the kind of drawings that can be done with Tesserax in the academic domain.
+
+## Sorting
+
+```{python}
+from tesserax import Canvas, Square, Arrow, Group, Shape
+from tesserax.layout import Row
+
+def create_pointer(target_shape: Shape, label_offset=40):
+    """Helper to create a pointer arrow below a shape."""
+    # We use the bottom anchor of the target shape
+    base = target_shape.anchor("bottom")
+    # Start the arrow lower down (dy) and point up to the shape
+    tail = base.dy(label_offset)
+    head = base.dy(5) # Stop 5px short of the shape
+    return Arrow(tail, head)
+
+with Canvas() as canvas:
+    elements: list[Shape] = []
+
+    # 1. The Array (Memory Strip)
+    # We use a Row layout to pack squares automatically
+    with Row(gap=0) as array:
+        for i in range(8):
+            # Highlight the pivot (last element) with a different style
+            is_pivot = (i == 7)
+            s = Square(
+                size=40,
+                stroke="red" if is_pivot else "black",
+                fill="#ffebeb" if is_pivot else "white"
+            )
+            elements.append(s)
+
+    # 2. The Pointers (i and j)
+    # We access the specific elements after the layout has settled
+    ptr_i = create_pointer(elements[2]) # Pointing to index 2
+    ptr_j = create_pointer(elements[5]) # Pointing to index 5
+
+    # 3. Pivot Label (Curved arrow from top)
+    pivot_shape = elements[-1]
+    pivot_top = pivot_shape.anchor("top")
+
+    # Create a visual indicator for the pivot
+    pivot_arrow = Arrow(
+        pivot_top.d(20, -30), # Top-right offset
+        pivot_top.dy(-5)
+    )
+
+canvas.fit(padding=20).display()
+```
+
+## Automaton
+
+This example uses a force layout to draw a simple graph that represents an automaton.
+
+```{python}
+import math
+from tesserax import Canvas, Circle, Arrow
+from tesserax.force import ForceLayout
+from tesserax.core import Point
+
+def get_boundary_point(center: Point, target: Point, radius: float) -> Point:
+    """Calculates a point on the circle's boundary facing the target."""
+    dx = target.x - center.x
+    dy = target.y - center.y
+    dist = math.sqrt(dx*dx + dy*dy)
+    if dist == 0: return center
+
+    # Normalize and scale by radius
+    return Point(
+        center.x + (dx / dist) * radius,
+        center.y + (dy / dist) * radius
+    )
+
+with Canvas() as canvas:
+    states: list[Shape] = []
+    radius = 25
+
+    # 1. Define the Graph Structure
+    with ForceLayout(k=75, iterations=300) as graph:
+        # Create 5 states
+        for i in range(4):
+            states.append(Circle(r=radius))
+
+        # Connect them (Topology)
+        # q0 -> q1 -> q2
+        graph.connect(states[0], states[1])
+        graph.connect(states[1], states[2])
+        # q2 -> q0 (cycle)
+        graph.connect(states[2], states[0])
+        # q2 -> q3 -> q4
+        graph.connect(states[2], states[3])
+
+    # 2. Draw Transitions (Visuals)
+    # We define edges manually to ensure directionality (ForceLayout is undirected)
+    transitions = [(0, 1), (1, 2), (2, 0), (2, 3)]
+
+    for i, j in transitions:
+        src = states[i].anchor("center")
+        dst = states[j].anchor("center")
+
+        # Calculate points on the boundary of the circles
+        p1 = get_boundary_point(src, dst, radius)
+        p2 = get_boundary_point(dst, src, radius)
+        Arrow(p1, p2)
+
+    # 3. Add a "Start" arrow pointing to q0
+    start_node = states[0].anchor("center")
+    start_entry = get_boundary_point(start_node, start_node.dx(-100), radius)
+    Arrow(start_entry.dx(-40), start_entry)
+
+canvas.fit(padding=10).display()
+```
+
+## Stack
+
+A simple illustration of a call stack.
+
+```{python}
+# examples/stack.py
+from tesserax import Canvas, Rect, Arrow, Group
+from tesserax.layout import Column
+
+with Canvas() as canvas:
+    with Column(align="middle", gap=2) as stack:
+        # Stack frames
+        for i in range(4):
+            # Top frame is active (different color)
+            stroke = "blue" if i == 0 else "black"
+            Rect(100, 30, stroke=stroke)
+
+    # Add a "Stack Pointer"
+    top_frame = stack.shapes[0]
+    sp_arrow = Arrow(
+        top_frame.anchor("left").dx(-40),
+        top_frame.anchor("left").dx(-5)
+    )
+
+canvas.fit(padding=20).display()
+```

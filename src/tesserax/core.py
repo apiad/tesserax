@@ -42,8 +42,8 @@ class Point:
     def dx(self, dx: float) -> Point:
         return self + Point(dx, 0)
 
-    def dy(self, dx: float) -> Point:
-        return self + Point(dx, 0)
+    def dy(self, dy: float) -> Point:
+        return self + Point(0, dy)
 
     def d(self, dx: float, dy: float) -> Point:
         return self + Point(dx, dy)
