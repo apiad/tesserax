@@ -58,7 +58,7 @@ This example uses a force layout to draw a simple graph that represents an autom
 ```{python}
 import math
 from tesserax import Canvas, Circle, Arrow
-from tesserax.force import ForceLayout
+from tesserax.layout import HierarchicalLayout
 from tesserax.core import Point
 
 def get_boundary_point(center: Point, target: Point, radius: float) -> Point:
@@ -79,7 +79,7 @@ with Canvas() as canvas:
     radius = 25
 
     # 1. Define the Graph Structure
-    with ForceLayout(k=75, iterations=300) as graph:
+    with HierarchicalLayout(orientation="horizontal") as graph:
         # Create 5 states
         for i in range(4):
             states.append(Circle(r=radius))
