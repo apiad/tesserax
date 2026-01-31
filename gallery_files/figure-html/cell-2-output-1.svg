@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360.0" height="150.0" viewBox="-20.0 -50.0 360.0 150.0">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+            </marker>
+  </defs>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="40" height="40" stroke="black" fill="white"/>
+</g>
+<g transform="translate(40.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="40" height="40" stroke="black" fill="white"/>
+</g>
+<g transform="translate(80.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="40" height="40" stroke="black" fill="white"/>
+</g>
+<g transform="translate(120.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="40" height="40" stroke="black" fill="white"/>
+</g>
+<g transform="translate(160.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="40" height="40" stroke="black" fill="white"/>
+</g>
+<g transform="translate(200.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="40" height="40" stroke="black" fill="white"/>
+</g>
+<g transform="translate(240.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="40" height="40" stroke="black" fill="white"/>
+</g>
+<g transform="translate(280.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="40" height="40" stroke="red" fill="#ffebeb"/>
+</g>
+</g>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<line x1="100.0" y1="80.0" x2="100.0" y2="45.0" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
+</g>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<line x1="220.0" y1="80.0" x2="220.0" y2="45.0" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
+</g>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<line x1="320.0" y1="-30.0" x2="300.0" y2="-5.0" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
+</g>
+</svg>
