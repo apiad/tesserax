@@ -39,6 +39,12 @@ class Point:
     def __sub__(self, other: Point) -> Point:
         return Point(self.x - other.x, self.y - other.y)
 
+    def __mul__(self, scalar: float) -> Point:
+        return Point(self.x * scalar, self.y * scalar)
+
+    def __truediv__(self, scalar: float) -> Point:
+        return Point(self.x / scalar, self.y / scalar)
+
     def dx(self, dx: float) -> Point:
         return self + Point(dx, 0)
 
