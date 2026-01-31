@@ -1,6 +1,6 @@
 This "Core Concepts" guide will walk you through building a scene from scratch, demonstrating how **Tesserax** handles shapes, positioning, and composition.
 
-## 1. The Canvas and the First Shape
+## The Canvas and the First Shape
 
 Every drawing starts with a `Canvas`. In Tesserax, the `Canvas` acts as the root container and provides a context manager to automatically add shapes created within its block.
 
@@ -21,7 +21,7 @@ canvas.fit(padding=10).display()
 
 ```
 
-## 2. Adding and Transforming Shapes
+## Adding and Transforming Shapes
 
 While you can add shapes and manually set their coordinates, Tesserax provides a fluent API for transformations. Here, we add a `Circle` and use `translated()` to move it into position.
 
@@ -39,7 +39,7 @@ canvas.fit(padding=10).display()
 
 ```
 
-## 3. Simplifying with Layouts
+## Simplifying with Layouts
 
 Manually calculating offsets (like the `150, 25` above) becomes tedious in complex diagrams. **Layouts** automate this positioning. The `Row` layout arranges its children horizontally with an optional `gap`.
 
@@ -57,7 +57,7 @@ canvas.fit(padding=10).display()
 
 ```
 
-## 4. Composing Transforms and Groups
+## Composing Transforms and Groups
 
 Because Layouts are themselves a type of `Group`, you can apply transformations to the entire layout at once. In this step, we will:
 
@@ -88,9 +88,7 @@ canvas.fit(padding=10).display()
 
 By nesting Layouts and Groups, you can build extremely complex diagrams without ever having to manually compute a single SVG coordinate string.
 
-## Using anchors
-
-## 5. Bridging Contexts with Anchors
+## Bridging Contexts with Anchors
 
 One of the most powerful features of Tesserax is the **Anchor System**. When you place a shape inside a `Layout` or a `Group`, its local coordinates change to reflect its position within that container. However, Tesserax allows you to retrieve the "global" position of a shape's anchors, making it trivial to connect objects across different coordinate systems.
 
