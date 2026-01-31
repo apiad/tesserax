@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="310.0" height="211.96152422706632" viewBox="10.000000000000004 -10.0 310.0 211.96152422706632">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+            </marker>
+  </defs>
+  <g transform="translate(50.0 50.0) rotate(30.0) scale(1.0)">
+<g transform="translate(0.0 10.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="80" height="40" stroke="black" fill="aliceblue"/>
+</g>
+<g transform="translate(150.0 30.0) rotate(0.0) scale(1.0)">
+<circle cx="0" cy="0" r="30" stroke="black" fill="mistyrose"/>
+</g>
+</g>
+  <g transform="translate(250.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="60" height="60" stroke="black" fill="honeydew"/>
+</g>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<line x1="184.9038105676658" y1="124.99999999999999" x2="245.0" y2="30.0" stroke="grey" stroke-width="2" marker-end="url(#arrowhead)"/>
+</g>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<line x1="109.2820323027551" y1="115.98076211353316" x2="133.92304845413264" y2="135.98076211353316" stroke="grey" stroke-width="2" marker-end="url(#arrowhead)"/>
+</g>
+</svg>
