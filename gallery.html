@@ -183,7 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The following examples are a bit more involved and showcase the kind of drawings that can be done with Tesserax in the academic domain.</p>
 <section id="sorting" class="level2">
 <h2 class="anchored" data-anchor-id="sorting">Sorting</h2>
-<div id="4e8c81d1" class="cell" data-execution_count="1">
+<div id="a2a004dd" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Square, Arrow, Group, Shape</span>
@@ -243,12 +243,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="automaton" class="level2">
 <h2 class="anchored" data-anchor-id="automaton">Automaton</h2>
 <p>This example uses a force layout to draw a simple graph that represents an automaton.</p>
-<div id="27ec8700" class="cell" data-execution_count="2">
+<div id="064a2d81" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Circle, Arrow</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.force <span class="im">import</span> ForceLayout</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> HierarchicalLayout</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.core <span class="im">import</span> Point</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_boundary_point(center: Point, target: Point, radius: <span class="bu">float</span>) <span class="op">-&gt;</span> Point:</span>
@@ -266,10 +266,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    states: <span class="bu">list</span>[Shape] <span class="op">=</span> []</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    radius <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    radius <span class="op">=</span> <span class="dv">20</span></span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Define the Graph Structure</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> ForceLayout(k<span class="op">=</span><span class="dv">75</span>, iterations<span class="op">=</span><span class="dv">300</span>) <span class="im">as</span> graph:</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> HierarchicalLayout(orientation<span class="op">=</span><span class="st">"horizontal"</span>) <span class="im">as</span> graph:</span>
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create 5 states</span></span>
 <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">4</span>):</span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>            states.append(Circle(r<span class="op">=</span>radius))</span>
@@ -277,31 +277,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Connect them (Topology)</span></span>
 <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># q0 -&gt; q1 -&gt; q2</span></span>
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        graph.<span class="ex">connect</span>(states[<span class="dv">0</span>], states[<span class="dv">1</span>])</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        graph.<span class="ex">connect</span>(states[<span class="dv">1</span>], states[<span class="dv">2</span>])</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        graph.<span class="ex">connect</span>(states[<span class="dv">0</span>], states[<span class="dv">2</span>])</span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># q2 -&gt; q0 (cycle)</span></span>
 <span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        graph.<span class="ex">connect</span>(states[<span class="dv">2</span>], states[<span class="dv">0</span>])</span>
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># q2 -&gt; q3 -&gt; q4</span></span>
 <span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        graph.<span class="ex">connect</span>(states[<span class="dv">2</span>], states[<span class="dv">3</span>])</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Draw Transitions (Visuals)</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We define edges manually to ensure directionality (ForceLayout is undirected)</span></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    transitions <span class="op">=</span> [(<span class="dv">0</span>, <span class="dv">1</span>), (<span class="dv">1</span>, <span class="dv">2</span>), (<span class="dv">2</span>, <span class="dv">0</span>), (<span class="dv">2</span>, <span class="dv">3</span>)]</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, j <span class="kw">in</span> transitions:</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        src <span class="op">=</span> states[i].anchor(<span class="st">"center"</span>)</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>        dst <span class="op">=</span> states[j].anchor(<span class="st">"center"</span>)</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate points on the boundary of the circles</span></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>        p1 <span class="op">=</span> get_boundary_point(src, dst, radius)</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>        p2 <span class="op">=</span> get_boundary_point(dst, src, radius)</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        Arrow(p1, p2)</span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Add a "Start" arrow pointing to q0</span></span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    start_node <span class="op">=</span> states[<span class="dv">0</span>].anchor(<span class="st">"center"</span>)</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    start_entry <span class="op">=</span> get_boundary_point(start_node, start_node.dx(<span class="op">-</span><span class="dv">100</span>), radius)</span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    Arrow(start_entry.dx(<span class="op">-</span><span class="dv">40</span>), start_entry)</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Set the root</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        graph.root(states[<span class="dv">0</span>])</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Draw Transitions (Visuals)</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We define edges manually to ensure directionality (ForceLayout is undirected)</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    transitions <span class="op">=</span> [(<span class="dv">0</span>, <span class="dv">1</span>), (<span class="dv">1</span>, <span class="dv">2</span>), (<span class="dv">2</span>, <span class="dv">0</span>), (<span class="dv">2</span>, <span class="dv">3</span>)]</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, j <span class="kw">in</span> transitions:</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        src <span class="op">=</span> states[i].anchor(<span class="st">"center"</span>)</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>        dst <span class="op">=</span> states[j].anchor(<span class="st">"center"</span>)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate points on the boundary of the circles</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        p1 <span class="op">=</span> get_boundary_point(src, dst, radius)</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>        p2 <span class="op">=</span> get_boundary_point(dst, src, radius)</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>        Arrow(p1, p2)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Add a "Start" arrow pointing to q0</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    start_node <span class="op">=</span> states[<span class="dv">0</span>].anchor(<span class="st">"center"</span>)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    start_entry <span class="op">=</span> get_boundary_point(start_node, start_node.dx(<span class="op">-</span><span class="dv">100</span>), radius)</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    Arrow(start_entry.dx(<span class="op">-</span><span class="dv">40</span>), start_entry)</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -315,7 +317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="stack" class="level2">
 <h2 class="anchored" data-anchor-id="stack">Stack</h2>
 <p>A simple illustration of a call stack.</p>
-<div id="52f3ac1c" class="cell" data-execution_count="3">
+<div id="487b0f85" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># examples/stack.py</span></span>

@@ -1,36 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="283.7999625600919" height="171.26598468776115" viewBox="-94.5745723463885 -63.82698382024674 283.7999625600919 171.26598468776115">
+<svg xmlns="http://www.w3.org/2000/svg" width="280.0" height="120.0" viewBox="-50.0 -60.0 280.0 120.0">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
                 <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
             </marker>
   </defs>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<g transform="translate(-19.574572346388507 5.910535042221461) rotate(0.0) scale(1.0)">
-<circle cx="0" cy="0" r="25" stroke="black" fill="none"/>
+<g transform="translate(20.0 0.0) rotate(0.0) scale(1.0)">
+<circle cx="0" cy="0" r="20" stroke="black" fill="none"/>
 </g>
-<g transform="translate(8.766383796679516 72.4390008675144) rotate(0.0) scale(1.0)">
-<circle cx="0" cy="0" r="25" stroke="black" fill="none"/>
+<g transform="translate(110.0 -30.0) rotate(0.0) scale(1.0)">
+<circle cx="0" cy="0" r="20" stroke="black" fill="none"/>
 </g>
-<g transform="translate(66.6099337875632 8.49697634063962) rotate(0.0) scale(1.0)">
-<circle cx="0" cy="0" r="25" stroke="black" fill="none"/>
+<g transform="translate(110.0 30.0) rotate(0.0) scale(1.0)">
+<circle cx="0" cy="0" r="20" stroke="black" fill="none"/>
 </g>
-<g transform="translate(154.22539021370338 -28.82698382024674) rotate(0.0) scale(1.0)">
-<circle cx="0" cy="0" r="25" stroke="black" fill="none"/>
+<g transform="translate(200.0 0.0) rotate(0.0) scale(1.0)">
+<circle cx="0" cy="0" r="20" stroke="black" fill="none"/>
 </g>
-</g>
-  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<line x1="-9.776628480257234" y1="28.91054147691927" x2="-1.031560069451757" y2="49.438994432816585" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
 </g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<line x1="25.53782054348183" y1="53.8993431185696" x2="49.838497040760885" y2="27.036634089584417" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
+<line x1="38.973665961010276" y1="-6.324555320336759" x2="91.02633403898972" y2="-23.67544467966324" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
 </g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<line x1="41.62118407549033" y1="7.7470511261157196" x2="5.414177365684349" y2="6.6604602567453615" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
+<line x1="110.0" y1="-10.0" x2="110.0" y2="10.0" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
 </g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<line x1="89.609940222261" y1="-1.3009675254916413" x2="131.22538377900557" y2="-19.029039954115476" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
+<line x1="91.02633403898972" y1="23.67544467966324" x2="38.973665961010276" y2="6.324555320336759" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
 </g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<line x1="-84.5745723463885" y1="5.910535042221461" x2="-44.57457234638851" y2="5.910535042221461" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
+<line x1="128.97366596101028" y1="23.67544467966324" x2="181.02633403898972" y2="6.324555320336759" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
+</g>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<line x1="-40.0" y1="0.0" x2="0.0" y2="0.0" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
 </g>
 </svg>

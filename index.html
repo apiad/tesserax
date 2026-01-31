@@ -212,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="quick-start" class="level2">
 <h2 class="anchored" data-anchor-id="quick-start">Quick Start</h2>
 <p>The following example demonstrates how to create two shapes in a row and connect them with an arrow using the anchor system.</p>
-<div id="e03d4b43" class="cell" data-execution_count="1">
+<div id="707ba253" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Arrow, Circle</span>
@@ -261,7 +261,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><strong>Row</strong>: Aligns shapes horizontally. Baselines can be set to <code>start</code>, <code>middle</code>, or <code>end</code>.</li>
 <li><strong>Column</strong>: Aligns shapes vertically with <code>start</code>, <code>middle</code>, or <code>end</code> alignment.</li>
-<li><strong>ForceLayout</strong>: Typically used to draw graphs.</li>
+<li><strong>HierarchicalLayout</strong>: Useful for drawing trees, DAGs, automata, etc.</li>
+<li><strong>ForceLayout</strong>: Typically used to draw arbitrary graphs with a force-directed algorithm.</li>
 </ul>
 </section>
 <section id="transforms" class="level3">
