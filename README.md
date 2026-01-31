@@ -2,6 +2,8 @@
 
 Tesserax is a modern Python 3.12 library designed for programmatic SVG generation with a focus on ease of use, layout management, and flexible geometric primitives. It is particularly well-suited for visualizing data structures, algorithms, and technical diagrams.
 
+> [**Read the full documentation**](https://apiad.github.io/tesserax).
+
 ## Key Features
 
 * **Declarative Layouts**: Effortlessly arrange shapes in `Row` or `Column` containers with automatic alignment and spacing.
