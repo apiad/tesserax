@@ -16,7 +16,7 @@
 <rect x="0" y="0" width="60" height="60" stroke="black" fill="honeydew"/>
 </g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<line x1="184.9038105676658" y1="124.99999999999999" x2="245.0" y2="30.0" stroke="grey" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="179.9038105676658" y1="130.0" x2="245.0" y2="30.0" stroke="grey" stroke-width="2" marker-end="url(#arrowhead)"/>
 </g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
 <line x1="109.2820323027551" y1="115.98076211353316" x2="133.92304845413264" y2="135.98076211353316" stroke="grey" stroke-width="2" marker-end="url(#arrowhead)"/>
