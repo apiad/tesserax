@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="230.0" height="80.0" viewBox="-10.0 -10.0 230.0 80.0">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+            </marker>
+  </defs>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<g transform="translate(30.0 30.0) rotate(0.0) scale(1.0)">
+<circle cx="0" cy="0" r="30" stroke="black" fill="#fee"/>
+</g>
+<g transform="translate(110.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="100" height="60" stroke="black" fill="#eef"/>
+</g>
+</g>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<line x1="65.0" y1="30.0" x2="105.0" y2="30.0" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
+</g>
+</svg>
