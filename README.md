@@ -26,6 +26,12 @@ Or if you're one of the cool kids, using `uv`:
 uv add tesserax
 ```
 
+If you want support for saving PNG files, install with the `export` extra:
+
+```bash
+pip install tesserax[export]
+```
+
 ## Quick Start
 
 The following example demonstrates how to create two shapes in a row and connect them with an arrow using the anchor system.
