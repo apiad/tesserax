@@ -155,6 +155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sorting" id="toc-sorting" class="nav-link active" data-scroll-target="#sorting">Sorting</a></li>
   <li><a href="#automaton" id="toc-automaton" class="nav-link" data-scroll-target="#automaton">Automaton</a></li>
   <li><a href="#stack" id="toc-stack" class="nav-link" data-scroll-target="#stack">Stack</a></li>
+  <li><a href="#neural-networks" id="toc-neural-networks" class="nav-link" data-scroll-target="#neural-networks">Neural Networks</a></li>
   </ul>
 </nav>
     </div>
@@ -183,7 +184,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The following examples are a bit more involved and showcase the kind of drawings that can be done with Tesserax in the academic domain.</p>
 <section id="sorting" class="level2">
 <h2 class="anchored" data-anchor-id="sorting">Sorting</h2>
-<div id="a2a004dd" class="cell" data-execution_count="1">
+<div id="33a29ecd" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Square, Arrow, Group, Shape</span>
@@ -243,7 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="automaton" class="level2">
 <h2 class="anchored" data-anchor-id="automaton">Automaton</h2>
 <p>This example uses a force layout to draw a simple graph that represents an automaton.</p>
-<div id="064a2d81" class="cell" data-execution_count="2">
+<div id="fbe328da" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
@@ -317,7 +318,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="stack" class="level2">
 <h2 class="anchored" data-anchor-id="stack">Stack</h2>
 <p>A simple illustration of a call stack.</p>
-<div id="487b0f85" class="cell" data-execution_count="3">
+<div id="333b2f76" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># examples/stack.py</span></span>
@@ -345,6 +346,81 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <figure class="figure">
 <p><img src="gallery_files/figure-html/cell-4-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="neural-networks" class="level2">
+<h2 class="anchored" data-anchor-id="neural-networks">Neural Networks</h2>
+<p>The following is a more complicated example showing how to visualize typical neural network operations like a convolution.</p>
+<div id="e24ca7a3" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Square, Text, Arrow, Group, Shape</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> Grid, Row</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_matrix(rows, cols, text, data<span class="op">=</span><span class="va">None</span>, highlight_region<span class="op">=</span><span class="va">None</span>, cell_size<span class="op">=</span><span class="dv">40</span>):</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Creates a grid of squares with optional text and highlighting.</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> Grid(cols<span class="op">=</span>cols, gap<span class="op">=</span><span class="dv">2</span>) <span class="im">as</span> grid:</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> r <span class="kw">in</span> <span class="bu">range</span>(rows):</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> c <span class="kw">in</span> <span class="bu">range</span>(cols):</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                val <span class="op">=</span> data[r][c] <span class="cf">if</span> data <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Determine styling based on the highlighted region</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                is_active <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> highlight_region:</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                    r_start, c_start, r_end, c_end <span class="op">=</span> highlight_region</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> r_start <span class="op">&lt;=</span> r <span class="op">&lt;=</span> r_end <span class="kw">and</span> c_start <span class="op">&lt;=</span> c <span class="op">&lt;=</span> c_end:</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                        is_active <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Visuals</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>                color <span class="op">=</span> <span class="st">"#e3f2fd"</span> <span class="cf">if</span> is_active <span class="cf">else</span> <span class="st">"white"</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                stroke <span class="op">=</span> <span class="st">"#1565c0"</span> <span class="cf">if</span> is_active <span class="cf">else</span> <span class="st">"black"</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                <span class="co"># A Group holding the box and the number</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                <span class="cf">with</span> Group() <span class="im">as</span> cell:</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                    box <span class="op">=</span> Square(cell_size, fill<span class="op">=</span>color, stroke<span class="op">=</span>stroke)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>                    label <span class="op">=</span> Text(<span class="bu">str</span>(val), size<span class="op">=</span><span class="dv">14</span>, font<span class="op">=</span><span class="st">"monospace"</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>                cell.align()</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> Text(text, size<span class="op">=</span><span class="dv">16</span>, anchor<span class="op">=</span><span class="st">"middle"</span>)</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    t.align_to(grid, anchor<span class="op">=</span><span class="st">"bottom"</span>, other_anchor<span class="op">=</span><span class="st">"top"</span>).translated(<span class="dv">0</span>, <span class="op">-</span><span class="dv">10</span>)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Return the group with these two elements</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grid <span class="op">+</span> t</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Data Setup (Dummy Values)</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    input_data <span class="op">=</span> [[<span class="dv">1</span> <span class="cf">if</span> i <span class="op">==</span> j <span class="cf">else</span> <span class="dv">0</span> <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>)] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>)]</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    kernel_data <span class="op">=</span> [[<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>]]</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    output_data <span class="op">=</span> [[<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>], [<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>]]</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We put three matrices in a row with the corresponding texts in between</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> Row(gap<span class="op">=</span><span class="dv">20</span>):</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>        input_grid <span class="op">=</span> create_matrix(</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>            <span class="dv">5</span>, <span class="dv">5</span>, <span class="st">"Input (5x5)"</span>, input_data, highlight_region<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>        math_op <span class="op">=</span> Text(<span class="st">"∗"</span>, size<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>        kernel_grid <span class="op">=</span> create_matrix(</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>            <span class="dv">3</span>, <span class="dv">3</span>, <span class="st">"Kernel (3x3)"</span>, kernel_data, highlight_region<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>        math_eq <span class="op">=</span> Text(<span class="st">"="</span>, size<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>        output_grid <span class="op">=</span> create_matrix(</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>            <span class="dv">3</span>, <span class="dv">3</span>, <span class="st">"Result (3x3)"</span>, output_data, highlight_region<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">40</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-5-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
