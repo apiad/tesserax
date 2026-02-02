@@ -1,6 +1,6 @@
 from __future__ import annotations
-from typing import Callable, Self
-from .core import Point, Shape, Bounds
+from typing import Callable, Literal, Self
+from .core import Anchor, Point, Shape, Bounds
 
 
 class Rect(Shape):
@@ -163,6 +163,36 @@ class Group(Shape):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.add(*self.stack.pop())
+
+    def align(
+        self,
+        axis: Literal["horizontal", "vertical", "both"] = "both",
+        anchor: Anchor = "center",
+    ) -> Self:
+        """
+        Aligns all children in the group relative to the anchor of the first child.
+
+        The alignment is performed in the group's local coordinate system by
+        adjusting the translation (tx, ty) of each shape.
+        """
+        if not self.shapes:
+            return self
+
+        # The first shape acts as the reference datum for the alignment
+        first = self.shapes[0]
+        ref_p = first.transform.map(first.local().anchor(anchor))
+
+        for shape in self.shapes[1:]:
+            # Calculate the child's anchor point in the group's coordinate system
+            curr_p = shape.transform.map(shape.local().anchor(anchor))
+
+            if axis in ("horizontal", "both"):
+                shape.transform.tx += ref_p.x - curr_p.x
+
+            if axis in ("vertical", "both"):
+                shape.transform.ty += ref_p.y - curr_p.y
+
+        return self
 
 
 class Path(Shape):
@@ -382,3 +412,48 @@ class Polyline(Path):
     def _render(self) -> str:
         self._build()
         return super()._render()
+
+
+class Text(Shape):
+    """
+    A text primitive with heuristic-based bounding box calculation.
+    """
+
+    def __init__(
+        self,
+        content: str,
+        size: float = 12,
+        font: str = "sans-serif",
+        fill: str = "black",
+        anchor: Literal["start", "middle", "end"] = "middle",
+    ) -> None:
+        super().__init__()
+        self.content = content
+        self.size = size
+        self.font = font
+        self.fill = fill
+        self._anchor = anchor
+
+    def local(self) -> Bounds:
+        # Heuristic: average character width is ~60% of font size
+        width = len(self.content) * self.size * 0.6
+        height = self.size
+
+        match self._anchor:
+            case "start":
+                return Bounds(0, -height + 2, width, height)
+            case "middle":
+                return Bounds(-width / 2, -height + 2, width, height)
+            case "end":
+                return Bounds(-width, -height + 2, width, height)
+            case _:
+                raise ValueError(f"Invalid anchor: {self._anchor}")
+
+    def _render(self) -> str:
+        # dominant-baseline="middle" or "alphabetic" helps vertical alignment
+        # but "central" is often more predictable for layout centers.
+        return (
+            f'<text x="0" y="0" font-family="{self.font}" font-size="{self.size}" '
+            f'fill="{self.fill}" text-anchor="{self._anchor}" dominant-baseline="middle">'
+            f"{self.content}</text>"
+        )

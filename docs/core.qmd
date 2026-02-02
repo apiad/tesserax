@@ -21,6 +21,20 @@ canvas.fit(padding=10).display()
 
 ```
 
+## Drawing Text
+
+Text behaves exactly like any other shape in Tesserax.
+
+```{python}
+from tesserax import Canvas, Text
+
+with Canvas() as canvas:
+    Rect(150, 40, fill="lightblue")
+    Text("Hello World", size=24, font="serif").translated(0, 22)
+
+canvas.align("horizontal").fit(10).display()
+```
+
 ## Adding and Transforming Shapes
 
 While you can add shapes and manually set their coordinates, Tesserax provides a fluent API for transformations. Here, we add a `Circle` and use `translated()` to move it into position.
