@@ -18,7 +18,7 @@
     "href": "index.html#installation",
     "title": "Tesserax: A Lightweight SVG Rendering Library",
     "section": "Installation",
-    "text": "Installation\nTesserax has zero dependencies (literally). It’s 100% pure Python, and can be easily installed with pip:\npip install tesserax\nOr if you’re one of the cool kids, using uv:\nuv add tesserax"
+    "text": "Installation\nTesserax has zero dependencies (literally). It’s 100% pure Python, and can be easily installed with pip:\npip install tesserax\nOr if you’re one of the cool kids, using uv:\nuv add tesserax\nIf you want support for saving PNG files, install with the export extra:\npip install tesserax[export]"
   },
   {
     "objectID": "index.html#quick-start",
