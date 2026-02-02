@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220.0" height="190.0" viewBox="-10.0 -10.0 220.0 190.0">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+            </marker>
+  </defs>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<path d="M 0 50 M 0 50 L 50.0 0.0 Q 50 0, 50.0 0.0 L 100.0 50.0 Q 100 50, 100.0 50.0 L 150.0 0.0 Q 150 0, 150.0 0.0 L 200 50" fill="none" stroke="black" stroke-width="1.0"/>
+</g>
+  <g transform="translate(0.0 60.0) rotate(0.0) scale(1.0)">
+<path d="M 0 50 M 0 50 L 45.0 5.0 Q 50 0, 55.0 5.0 L 95.0 45.0 Q 100 50, 105.0 45.0 L 145.0 5.0 Q 150 0, 155.0 5.0 L 200 50" fill="none" stroke="blue" stroke-width="1.0"/>
+</g>
+  <g transform="translate(0.0 120.0) rotate(0.0) scale(1.0)">
+<path d="M 0 50 M 0 50 L 25.0 25.0 Q 50 0, 75.0 25.0 L 75.0 25.0 Q 100 50, 125.0 25.0 L 125.0 25.0 Q 150 0, 175.0 25.0 L 200 50" fill="none" stroke="red" stroke-width="1.0"/>
+</g>
+</svg>

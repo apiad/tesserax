@@ -1,16 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="220.0" height="190.0" viewBox="-10.0 -10.0 220.0 190.0">
+<svg xmlns="http://www.w3.org/2000/svg" width="305.0" height="203.30127018922192" viewBox="15.000000000000004 -10.0 305.0 203.30127018922192">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
                 <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
             </marker>
   </defs>
+  <g transform="translate(50.0 50.0) rotate(30.0) scale(1.0)">
+<g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="80" height="40" stroke="black" fill="aliceblue"/>
+</g>
+<g transform="translate(150.0 20.0) rotate(0.0) scale(1.0)">
+<circle cx="0" cy="0" r="30" stroke="black" fill="mistyrose"/>
+</g>
+</g>
+  <g transform="translate(250.0 0.0) rotate(0.0) scale(1.0)">
+<rect x="0" y="0" width="60" height="60" stroke="black" fill="honeydew"/>
+</g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<path d="M 0 50 M 0 50 L 50.0 0.0 Q 50 0, 50.0 0.0 L 100.0 50.0 Q 100 50, 100.0 50.0 L 150.0 0.0 Q 150 0, 150.0 0.0 L 200 50" fill="none" stroke="black" stroke-width="1.0"/>
+<line x1="184.9038105676658" y1="111.3397459621556" x2="245.0" y2="30.0" stroke="grey" stroke-width="2" marker-end="url(#arrowhead)"/>
 </g>
-  <g transform="translate(0.0 60.0) rotate(0.0) scale(1.0)">
-<path d="M 0 50 M 0 50 L 45.0 5.0 Q 50 0, 55.0 5.0 L 95.0 45.0 Q 100 50, 105.0 45.0 L 145.0 5.0 Q 150 0, 155.0 5.0 L 200 50" fill="none" stroke="blue" stroke-width="1.0"/>
-</g>
-  <g transform="translate(0.0 120.0) rotate(0.0) scale(1.0)">
-<path d="M 0 50 M 0 50 L 25.0 25.0 Q 50 0, 75.0 25.0 L 75.0 25.0 Q 100 50, 125.0 25.0 L 125.0 25.0 Q 150 0, 175.0 25.0 L 200 50" fill="none" stroke="red" stroke-width="1.0"/>
+  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<line x1="114.2820323027551" y1="107.32050807568876" x2="138.92304845413264" y2="127.32050807568876" stroke="grey" stroke-width="2" marker-end="url(#arrowhead)"/>
 </g>
 </svg>
