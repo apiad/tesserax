@@ -182,6 +182,7 @@ def create_matrix(rows, cols, text, data=None, highlight_region=None, cell_size=
     t = Text(text, size=16, anchor="middle")
     t.align_to(grid, anchor="bottom", other_anchor="top").translated(0, -10)
 
+    # Return the group with these two elements
     return grid + t
 
 
