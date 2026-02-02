@@ -54,7 +54,7 @@ release:
 	@echo Remove backup files
 	@rm pyproject.toml.bak src/tesserax/__init__.py.bak
 
-	@uv sync --all-groups
+	@uv sync --all-extras
 
 	@echo "Committing version bump..."
 	@git add pyproject.toml src/tesserax/__init__.py uv.lock

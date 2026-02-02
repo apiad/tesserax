@@ -1793,6 +1793,11 @@ name = "tesserax"
 version = "0.5.4"
 source = { editable = "." }
 
+[package.optional-dependencies]
+export = [
+    { name = "cairosvg" },
+]
+
 [package.dev-dependencies]
 dev = [
     { name = "black" },
@@ -1802,11 +1807,9 @@ dev = [
     { name = "pytest-coverage" },
     { name = "ruff" },
 ]
-export = [
-    { name = "cairosvg" },
-]
 
 [package.metadata]
+requires-dist = [{ name = "cairosvg", marker = "extra == 'export'", specifier = ">=2.8.2" }]
 
 [package.metadata.requires-dev]
 dev = [
@@ -1817,7 +1820,6 @@ dev = [
     { name = "pytest-coverage", specifier = ">=0.0" },
     { name = "ruff", specifier = ">=0.14.14" },
 ]
-export = [{ name = "cairosvg", specifier = ">=2.8.2" }]
 
 [[package]]
 name = "tinycss2"
