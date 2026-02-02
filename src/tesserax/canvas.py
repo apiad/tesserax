@@ -69,10 +69,41 @@ class Canvas(Group):
             "</svg>"
         )
 
-    def save(self, path: str | Path) -> None:
-        """Writes the canvas content to an SVG file."""
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(self._build_svg())
+    def save(self, path: str | Path, dpi: int = 300) -> None:
+        """
+        Exports the canvas to a raster or vector format with a transparent background.
+
+        Supported formats: .png, .pdf, .svg, .ps.
+        Requires the 'export' extra (cairosvg).
+        """
+
+        svg_data = self._build_svg().encode("utf-8")
+        target = str(path)
+        extension = Path(path).suffix.lower()
+
+        if extension == ".svg":
+            with open(path, "wb") as fp:
+                fp.write(svg_data)
+
+            return
+
+        try:
+            import cairosvg
+        except ImportError:
+            raise ImportError(
+                "Export requires 'cairosvg'. Install with: pip install tesserax[export]"
+            )
+
+        match extension:
+            case ".png":
+                # CairoSVG handles transparency by default if the SVG has no background rect
+                cairosvg.svg2png(bytestring=svg_data, write_to=target, dpi=dpi)
+            case ".pdf":
+                cairosvg.svg2pdf(bytestring=svg_data, write_to=target, dpi=dpi)
+            case ".ps":
+                cairosvg.svg2ps(bytestring=svg_data, write_to=target, dpi=dpi)
+            case _:
+                raise ValueError(f"Unsupported export format: {extension}")
 
     def __str__(self) -> str:
         return self._build_svg()

@@ -7,7 +7,6 @@ authors = [
     { name = "Alejandro Piad", email = "apiad@apiad.net" }
 ]
 requires-python = ">=3.12"
-dependencies = []
 
 [build-system]
 requires = ["hatchling"]
@@ -21,4 +20,7 @@ dev = [
     "pytest>=9.0.2",
     "pytest-coverage>=0.0",
     "ruff>=0.14.14",
+]
+export = [
+    "cairosvg>=2.8.2",
 ]
