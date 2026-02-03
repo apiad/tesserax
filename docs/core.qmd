@@ -262,10 +262,10 @@ from tesserax.path import Grid
 with Canvas() as canvas:
     with RowLayout(gap=30) as row:
         c1 = Circle(20, fill="lightblue")
-        c2 = Circle(40, fill="lightpink")
-        c3 = Circle(30, fill="lightgreen")
+        c2 = Circle(30, fill="lightpink")
+        c3 = Circle(40, fill="lightgreen")
 
-    g = Grid(row, 30)
+    g = Grid(row, 20)
 
     Polyline(
         g.trace(c1.anchor("left").dx(-5), c3.anchor("right").dx(5)),

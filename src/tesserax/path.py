@@ -133,7 +133,7 @@ class Grid:
             # Elbow should have same X as p_grid, same Y as p_user
             return Point(p_grid.x, p_user.y)
 
-    def trace(self, start: Point, end: Point) -> list[Point]:
+    def trace(self, start: Point, end: Point, *, turn_penalty=1.0) -> list[Point]:
         """A* Pathfinding with safety limits."""
         raw_start = self._to_grid(start.x, start.y)
         raw_end = self._to_grid(end.x, end.y)
@@ -142,47 +142,78 @@ class Grid:
         start_node = self._snap_to_free(*raw_start, *raw_end)
         end_node = self._snap_to_free(*raw_end, *raw_start)
 
+        # State: (x, y, dx, dy)
+        # dx, dy represent the direction we ARRIVED from.
+        # For start node, we infer a "virtual" arrival direction based on the User->Grid vector
+        # This helps the path align immediately with the user's anchor.
+        start_dx = 0
+        start_dy = 0
+
+        if start_node != raw_start:
+            # If we snapped, the direction is from Raw to Snapped
+            start_dx = start_node[0] - raw_start[0]
+            start_dy = start_node[1] - raw_start[1]
+            # Normalize to -1, 0, 1
+            if start_dx != 0: start_dx //= abs(start_dx)
+            if start_dy != 0: start_dy //= abs(start_dy)
+
+        initial_state = (start_node[0], start_node[1], start_dx, start_dy)
+
         open_set = []
-        heapq.heappush(open_set, (0, start_node))
+        heapq.heappush(open_set, (0, initial_state))
 
         came_from = {}
-        g_score = {start_node: 0}
+        g_score = {initial_state: 0.0}
 
-        final_node = None
+        final_state = None
         iterations = 0
 
         while open_set:
-            # Safety Brake
             iterations += 1
             if iterations > self.limit:
-                print("Warning: A* search limit reached. Returning straight line.")
                 return [start, end]
 
             _, current = heapq.heappop(open_set)
+            cx, cy, cdx, cdy = current
 
-            if current == end_node:
-                final_node = current
+            if (cx, cy) == end_node:
+                final_state = current
                 break
 
-            for next_node in self._neighbors(*current):
-                new_g = g_score[current] + 1
+            for nx, ny in self._neighbors(cx, cy):
+                # Calculate new direction
+                ndx = nx - cx
+                ndy = ny - cy
 
-                if next_node not in g_score or new_g < g_score[next_node]:
-                    g_score[next_node] = new_g
-                    h = abs(end_node[0] - next_node[0]) + abs(
-                        end_node[1] - next_node[1]
-                    )
-                    heapq.heappush(open_set, (new_g + h, next_node))
-                    came_from[next_node] = current
+                # Calculate Cost
+                # Base movement cost = 1
+                move_cost = 1
 
-        if not final_node:
+                # Turn Penalty
+                # If we had a previous direction (cdx!=0 or cdy!=0) and it changed...
+                if (cdx != 0 or cdy != 0) and (ndx != cdx or ndy != cdy):
+                    move_cost += turn_penalty
+
+                new_g = g_score[current] + move_cost
+                next_state = (nx, ny, ndx, ndy)
+
+                if next_state not in g_score or new_g < g_score[next_state]:
+                    g_score[next_state] = new_g
+
+                    # Heuristic (Manhattan)
+                    h = abs(end_node[0] - nx) + abs(end_node[1] - ny)
+
+                    heapq.heappush(open_set, (new_g + h, next_state))
+                    came_from[next_state] = current
+
+        if not final_state:
             return [start, end]
 
         # Reconstruct path
         path = []
-        curr = final_node
+        curr = final_state
         while curr in came_from:
-            path.append(curr)
+            path.append((curr[0], curr[1]))
             curr = came_from[curr]
         path.append(start_node)
         path.reverse()
