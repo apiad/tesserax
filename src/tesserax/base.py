@@ -437,7 +437,7 @@ class Polyline(Path):
 
             self.points = new_pts
 
-        self._build() # Reconstruct SVG commands
+        self._build()  # Reconstruct SVG commands
         return self
 
     def apply(self, func: Callable[[Point], Point]) -> Self:
