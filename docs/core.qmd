@@ -269,12 +269,12 @@ with Canvas() as canvas:
 
     Polyline(
         g.trace(c1.anchor("left").dx(-5), c3.anchor("right").dx(5)),
-        smoothness=0.5,
+        smoothness=1,
     )
 
     Polyline(
         g.trace(c2.anchor("bottom").dy(5), c3.anchor("bottom").dy(5)),
-        smoothness=0.5,
+        smoothness=0,
     )
 
 canvas.fit(10).display()
