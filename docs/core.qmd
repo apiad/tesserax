@@ -126,7 +126,7 @@ By nesting Layouts and Groups, you can build extremely complex diagrams without 
 
 One of the most powerful features of Tesserax is the **Anchor System**. When you place a shape inside a `Layout` or a `Group`, its local coordinates change to reflect its position within that container. However, Tesserax allows you to retrieve the "global" position of a shape's anchors, making it trivial to connect objects across different coordinate systems.
 
-In this example, we will connect the `Circle` (which is inside a rotated `Row`) to the `Rect` (which is outside) using an `Arrow`, and the two shapes inside the row.
+In this example, we will connect the `Circle` (which is inside a rotated `Row`) to the `Rect` (which is outside) using an `Arrow`, and the two shapes inside the row. Notice the `curvature` parameter which controls the direction (sign) and radius of curvature, from $0$ (flat) to $1$ (full semicirle).
 
 ```{python}
 from tesserax import Canvas, Rect, Circle, Arrow
