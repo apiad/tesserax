@@ -4,21 +4,19 @@ from typing import Iterator
 from tesserax.core import Point, Bounds, Shape
 from tesserax.base import Group
 
+
 class Grid:
     def __init__(self, group: Group, size: float = 10.0, limit: int = 10000):
         self.group = group
         self.size = size
-        self.limit = limit # Prevent infinite loops
+        self.limit = limit  # Prevent infinite loops
         self.occupied: set[tuple[int, int]] = set()
         self.bounds_idx: tuple[int, int, int, int] = (0, 0, 0, 0)
 
         self._rasterize()
 
     def _to_grid(self, x: float, y: float) -> tuple[int, int]:
-        return (
-            math.floor(x / self.size + 0.5),
-            math.floor(y / self.size + 0.5)
-        )
+        return (math.floor(x / self.size + 0.5), math.floor(y / self.size + 0.5))
 
     def _to_world(self, gx: int, gy: int) -> Point:
         return Point(gx * self.size, gy * self.size)
@@ -27,8 +25,8 @@ class Grid:
         self.occupied.clear()
 
         # Track min/max to define a search bounding box
-        min_gx, min_gy = float('inf'), float('inf')
-        max_gx, max_gy = float('-inf'), float('-inf')
+        min_gx, min_gy = float("inf"), float("inf")
+        max_gx, max_gy = float("-inf"), float("-inf")
 
         for shape in self.group.shapes:
             b = shape.bounds()
@@ -45,9 +43,16 @@ class Grid:
 
         # Save bounds with generous padding (e.g., 10 cells)
         pad = 10
-        self.bounds_idx = (int(min_gx - pad), int(min_gy - pad), int(max_gx + pad), int(max_gy + pad))
+        self.bounds_idx = (
+            int(min_gx - pad),
+            int(min_gy - pad),
+            int(max_gx + pad),
+            int(max_gy + pad),
+        )
 
-    def _snap_to_free(self, gx: int, gy: int, target_gx: int, target_gy: int) -> tuple[int, int]:
+    def _snap_to_free(
+        self, gx: int, gy: int, target_gx: int, target_gy: int
+    ) -> tuple[int, int]:
         """
         Finds the nearest free cell to (gx, gy).
         Tie-breaker: Pick the cell closest to (target_gx, target_gy).
@@ -57,7 +62,7 @@ class Grid:
 
         # Search in expanding rings to ensure we find the strictly nearest cells first
         r = 1
-        max_r = 20 # Search radius limit
+        max_r = 20  # Search radius limit
 
         while r < max_r:
             candidates = []
@@ -79,11 +84,14 @@ class Grid:
             if valid_candidates:
                 # HEURISTIC: Choose the candidate with minimum Euclidean distance to the target
                 # This biases the snap to move "towards" the destination.
-                return min(valid_candidates, key=lambda c: (c[0] - target_gx)**2 + (c[1] - target_gy)**2)
+                return min(
+                    valid_candidates,
+                    key=lambda c: (c[0] - target_gx) ** 2 + (c[1] - target_gy) ** 2,
+                )
 
             r += 1
 
-        return (gx, gy) # Fail-safe
+        return (gx, gy)  # Fail-safe
 
     def _neighbors(self, gx: int, gy: int) -> Iterator[tuple[int, int]]:
         min_x, min_y, max_x, max_y = self.bounds_idx
@@ -98,6 +106,32 @@ class Grid:
             # 2. Check Collision
             if (nx, ny) not in self.occupied:
                 yield (nx, ny)
+
+    def _resolve_elbow(
+        self, p_user: Point, p_grid: Point, p_next: Point
+    ) -> Point | None:
+        """
+        Calculates an intermediate point (elbow) to ensure orthogonal connection.
+        Strategy: Align the elbow segment with the dominant direction of the path.
+        """
+        # If already aligned, no elbow needed
+        if abs(p_user.x - p_grid.x) < 1e-6 or abs(p_user.y - p_grid.y) < 1e-6:
+            return p_grid
+
+        # Determine flow direction of the grid path
+        dx = p_next.x - p_grid.x
+        dy = p_next.y - p_grid.y
+
+        # If path is moving Horizontally, we want to enter/exit horizontally
+        # to avoid Z-shapes.
+        if abs(dx) > abs(dy):
+            # Elbow should have same Y as p_grid, same X as p_user
+            return Point(p_user.x, p_grid.y)
+
+        # If path is moving Vertically (or stationary), enter/exit vertically
+        else:
+            # Elbow should have same X as p_grid, same Y as p_user
+            return Point(p_grid.x, p_user.y)
 
     def trace(self, start: Point, end: Point) -> list[Point]:
         """A* Pathfinding with safety limits."""
@@ -135,7 +169,9 @@ class Grid:
 
                 if next_node not in g_score or new_g < g_score[next_node]:
                     g_score[next_node] = new_g
-                    h = abs(end_node[0] - next_node[0]) + abs(end_node[1] - next_node[1])
+                    h = abs(end_node[0] - next_node[0]) + abs(
+                        end_node[1] - next_node[1]
+                    )
                     heapq.heappush(open_set, (new_g + h, next_node))
                     came_from[next_node] = current
 
@@ -155,15 +191,22 @@ class Grid:
         if len(path) < 3:
             return [start, end]
 
-        simplified = [self._to_world(*path[0])] # Use exact start point
+        simplified = [self._to_world(*path[0])]  # Use exact start point
         last_dir = (path[1][0] - path[0][0], path[1][1] - path[0][1])
 
         for i in range(2, len(path)):
-            curr_dir = (path[i][0] - path[i-1][0], path[i][1] - path[i-1][1])
+            curr_dir = (path[i][0] - path[i - 1][0], path[i][1] - path[i - 1][1])
             if curr_dir != last_dir:
-                simplified.append(self._to_world(*path[i-1]))
+                simplified.append(self._to_world(*path[i - 1]))
                 last_dir = curr_dir
 
-        simplified.append(self._to_world(*path[-1])) # Use exact end point
+        simplified.append(self._to_world(*path[-1]))  # Use exact end point
 
-        return [start] + simplified + [end]
+        if len(simplified) == 1:
+            simplified = simplified * 2
+
+        return (
+            [start, self._resolve_elbow(start, simplified[0], simplified[1])]
+            + simplified[1:-1]
+            + [self._resolve_elbow(end, simplified[-1], simplified[-2]), end]
+        )
