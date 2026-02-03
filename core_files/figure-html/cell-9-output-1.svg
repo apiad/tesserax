@@ -1,13 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="300.0" height="80.0" viewBox="10.0 10.0 300.0 80.0">
-  <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
-            </marker>
-  </defs>
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/>
+</g></marker></defs>
   <g transform="translate(20.0 20.0) rotate(0.0) scale(1.0)">
-<path d="M 0 0 L 50 50 L 0 50 Z" fill="none" stroke="black" stroke-width="1"/>
+<path d="M 0 0 L 50 50 L 0 50 Z" fill="transparent" stroke="black" stroke-width="1"/>
 </g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<path d="M 100 20 C 150 20, 150 80, 200 80 Q 250 80, 300 20" fill="none" stroke="black" stroke-width="1"/>
+<path d="M 100 20 C 150 20, 150 80, 200 80 Q 250 80, 300 20" fill="transparent" stroke="black" stroke-width="1"/>
 </g>
 </svg>

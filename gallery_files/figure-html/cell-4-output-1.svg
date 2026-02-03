@@ -1,9 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="180.0" height="166.0" viewBox="-60.0 -20.0 180.0 166.0">
-  <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
-            </marker>
-  </defs>
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/>
+</g></marker></defs>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
 <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
 <rect x="0" y="0" width="100" height="30" stroke="blue" fill="none"/>
@@ -19,6 +17,6 @@
 </g>
 </g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<line x1="-40.0" y1="15.0" x2="-5.0" y2="15.0" stroke="black" stroke-width="1.0" marker-end="url(#arrowhead)"/>
+<path d="M -40.0 15.0 L -5.0 15.0" fill="transparent" stroke="black" stroke-width="1.0" marker-end="url(#arrow)"/>
 </g>
 </svg>

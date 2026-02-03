@@ -214,16 +214,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="quick-start" class="level2">
 <h2 class="anchored" data-anchor-id="quick-start">Quick Start</h2>
 <p>The following example demonstrates how to create two shapes in a row and connect them with an arrow using the anchor system.</p>
-<div id="c9fe6991" class="cell" data-execution_count="1">
+<div id="8f28a037" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Arrow, Circle</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> Row</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize a canvas</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Arrange a circle and a rectangle in a row with a 50px gap</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> Row(gap<span class="op">=</span><span class="dv">50</span>):</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> RowLayout(gap<span class="op">=</span><span class="dv">50</span>):</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        circle <span class="op">=</span> Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"#fee"</span>)</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        rect <span class="op">=</span> Rect(<span class="dv">100</span>, <span class="dv">60</span>, fill<span class="op">=</span><span class="st">"#eef"</span>)</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>

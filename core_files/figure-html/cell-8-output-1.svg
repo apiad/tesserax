@@ -1,9 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="305.0" height="203.30127018922192" viewBox="15.000000000000004 -10.0 305.0 203.30127018922192">
-  <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
-            </marker>
-  </defs>
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
+<path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/>
+</g></marker></defs>
   <g transform="translate(50.0 50.0) rotate(30.0) scale(1.0)">
 <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
 <rect x="0" y="0" width="80" height="40" stroke="black" fill="aliceblue"/>
@@ -16,9 +14,9 @@
 <rect x="0" y="0" width="60" height="60" stroke="black" fill="honeydew"/>
 </g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<line x1="184.9038105676658" y1="111.3397459621556" x2="245.0" y2="30.0" stroke="grey" stroke-width="2" marker-end="url(#arrowhead)"/>
+<path d="M 109.2820323027551 107.32050807568876 A 42.5 42.5 0 0 0 143.92304845413264 127.32050807568876" fill="transparent" stroke="black" stroke-width="1.0" marker-end="url(#arrow)"/>
 </g>
   <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<line x1="114.2820323027551" y1="107.32050807568876" x2="138.92304845413264" y2="127.32050807568876" stroke="grey" stroke-width="2" marker-end="url(#arrowhead)"/>
+<path d="M 184.9038105676658 116.3397459621556 A 67.58115957469879 67.58115957469879 0 0 1 250.0 30.0" fill="transparent" stroke="black" stroke-width="1.0" marker-end="url(#arrow)"/>
 </g>
 </svg>
