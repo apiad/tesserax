@@ -249,3 +249,26 @@ canvas.fit(10).display()
 ```
 
 This makes `Polyline` an excellent tool for drawing graph edges, wiring diagrams, or "hand-drawn" style annotations where sharp vertices look unnatural.
+
+## Using smart connections
+
+When drawing complex diagrams, it is often hard to wire connections in a way that respects shapes, especially if you keep changing the code. The `Grid` object in `tesserax.path` provides a way to keep track of where shapes are placed inside a group, to automatically find optimal routes for connections that do not collide with shapes.
+
+```{python}
+from tesserax import Canvas, Circle, Line, Polyline
+from tesserax.layout import RowLayout
+from tesserax.path import Grid
+
+with Canvas() as canvas:
+    with RowLayout(gap=30) as row:
+        c1 = Circle(20, fill="lightblue")
+        c2 = Circle(40, fill="lightpink")
+        c3 = Circle(30, fill="lightgreen")
+
+    g = Grid(row, 10)
+    points = g.trace(c1.anchor("top").dy(-5), c3.anchor("bottom").dy(5))
+
+    Polyline(points, smoothness=0.1)
+
+canvas.fit(10).display()
+```
