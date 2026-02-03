@@ -265,10 +265,10 @@ with Canvas() as canvas:
         c2 = Circle(40, fill="lightpink")
         c3 = Circle(30, fill="lightgreen")
 
-    g = Grid(row, 10)
-    points = g.trace(c1.anchor("top").dy(-5), c3.anchor("bottom").dy(5))
+    g = Grid(row, 30)
+    points = g.trace(c1.anchor("left").dx(-5), c3.anchor("right").dx(5))
 
-    Polyline(points, smoothness=0.1)
+    Polyline(points, smoothness=1)
 
 canvas.fit(10).display()
 ```
