@@ -1,11 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="178.39999999999998" height="60.0" viewBox="-14.200000000000003 -10.0 178.39999999999998 60.0">
-  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/>
-</g></marker></defs>
-  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<rect x="0" y="0" width="150" height="40" stroke="black" fill="lightblue"/>
-</g>
-  <g transform="translate(75.0 22.0) rotate(0.0) scale(1.0)">
-<text x="0" y="0" font-family="serif" font-size="24" fill="black" text-anchor="middle" dominant-baseline="middle">Hello World</text>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" width="178.4" height="60.0" viewBox="-89.2 -30.0 178.4 60.0">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/></marker></defs>
+  <rect x="-75.0" y="-20.0" width="150" height="40" stroke="black" fill="lightblue"/>
+  <text x="0" y="0" font-family="serif" font-size="24" fill="black" text-anchor="middle" dominant-baseline="middle">Hello World</text>
 </svg>

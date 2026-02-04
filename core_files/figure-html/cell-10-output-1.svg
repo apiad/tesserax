@@ -1,14 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="220.0" height="190.0" viewBox="-10.0 -10.0 220.0 190.0">
-  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/>
-</g></marker></defs>
-  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<path d="M 0 50 L 50 0 L 100 50 L 150 0 L 200 50" fill="transparent" stroke="black" stroke-width="1.0"/>
-</g>
-  <g transform="translate(0.0 60.0) rotate(0.0) scale(1.0)">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/></marker></defs>
+  <path d="M 0 50 L 50 0 L 100 50 L 150 0 L 200 50" fill="transparent" stroke="black" stroke-width="1.0"/>
+  <g transform="translate(0.0 60.0) rotate(0.0) scale(1.0 1.0)">
 <path d="M 0 50 L 42.5 7.5 Q 50 0, 57.5 7.5 L 92.5 42.5 Q 100 50, 107.5 42.5 L 142.5 7.5 Q 150 0, 157.5 7.5 L 200 50" fill="transparent" stroke="blue" stroke-width="1.0"/>
 </g>
-  <g transform="translate(0.0 120.0) rotate(0.0) scale(1.0)">
+  <g transform="translate(0.0 120.0) rotate(0.0) scale(1.0 1.0)">
 <path d="M 100.0 50.0 L 35.35533905932738 50.0 Q 0 50, 25.0 25.0 L 25.0 25.0 Q 50 0, 75.0 25.0 L 75.0 25.0 Q 100 50, 125.0 25.0 L 125.0 25.0 Q 150 0, 175.0 25.0 L 175.0 25.0 Q 200 50, 164.64466094067262 50.0 Z" fill="transparent" stroke="red" stroke-width="1.0"/>
 </g>
 </svg>

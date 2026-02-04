@@ -1,22 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="300.0" height="140.0" viewBox="-30.0 -70.0 300.0 140.0">
-  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/>
-</g></marker></defs>
-  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<g transform="translate(20.0 0.0) rotate(0.0) scale(1.0)">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/></marker></defs>
+  <g transform="translate(20.0 0.0) rotate(0.0) scale(1.0 1.0)">
 <circle cx="0" cy="0" r="20" stroke="black" fill="lightblue"/>
 </g>
-<g transform="translate(100.0 0.0) rotate(0.0) scale(1.0)">
+<g transform="translate(100.0 0.0) rotate(0.0) scale(1.0 1.0)">
 <circle cx="0" cy="0" r="30" stroke="black" fill="lightpink"/>
 </g>
-<g transform="translate(200.0 0.0) rotate(0.0) scale(1.0)">
+<g transform="translate(200.0 0.0) rotate(0.0) scale(1.0 1.0)">
 <circle cx="0" cy="0" r="40" stroke="black" fill="lightgreen"/>
 </g>
-</g>
-  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<path d="M -5.0 0.0 L -12.5 0.0 Q -20.0 0.0, -20.0 -7.5 L -20.0 -30.0 Q -20.0 -60.0, 10.0 -60.0 L 230.0 -60.0 Q 260.0 -60.0, 260.0 -30.0 L 260.0 -7.5 Q 260.0 0.0, 252.5 0.0 L 245.0 0.0" fill="transparent" stroke="black" stroke-width="1.0" marker-end="url(#arrow)"/>
-</g>
-  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0)">
-<path d="M 100.0 35.0 L 100.0 47.5 Q 100.0 60.0, 112.5 60.0 L 192.5 60.0 Q 200.0 60.0, 200.0 52.5 L 200.0 45.0" fill="transparent" stroke="black" stroke-width="1.0" marker-end="url(#arrow)"/>
-</g>
+  <path d="M -5.0 0.0 L -12.5 0.0 Q -20.0 0.0, -20.0 -7.5 L -20.0 -30.0 Q -20.0 -60.0, 10.0 -60.0 L 230.0 -60.0 Q 260.0 -60.0, 260.0 -30.0 L 260.0 -7.5 Q 260.0 0.0, 252.5 0.0 L 245.0 0.0" fill="transparent" stroke="black" stroke-width="1.0" marker-end="url(#arrow)"/>
+  <path d="M 100.0 35.0 L 100.0 47.5 Q 100.0 60.0, 112.5 60.0 L 192.5 60.0 Q 200.0 60.0, 200.0 52.5 L 200.0 45.0" fill="transparent" stroke="black" stroke-width="1.0" marker-end="url(#arrow)"/>
 </svg>

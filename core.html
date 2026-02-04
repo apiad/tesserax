@@ -162,6 +162,10 @@ window.Quarto = {
 <span class="menu-text">User Guide</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./animations.html"> 
+<span class="menu-text">Animations</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./gallery.html"> 
 <span class="menu-text">Gallery</span></a>
   </li>  
@@ -211,7 +215,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="the-canvas-and-the-first-shape">The Canvas and the First Shape</h2>
 <p>Every drawing starts with a <code>Canvas</code>. In Tesserax, the <code>Canvas</code> acts as the root container and provides a context manager to automatically add shapes created within its block.</p>
 <p>We will start by creating a simple 100x50 rectangle.</p>
-<div id="2e15e9e2" class="cell" data-execution_count="1">
+<div id="8c9c0522" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect</span>
@@ -238,16 +242,16 @@ window.Quarto = {
 <section id="drawing-text" class="level2">
 <h2 class="anchored" data-anchor-id="drawing-text">Drawing Text</h2>
 <p>Text behaves exactly like any other shape in Tesserax.</p>
-<div id="1c93e21e" class="cell" data-execution_count="2">
+<div id="065603c7" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Text</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    Rect(<span class="dv">150</span>, <span class="dv">40</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    Text(<span class="st">"Hello World"</span>, size<span class="op">=</span><span class="dv">24</span>, font<span class="op">=</span><span class="st">"serif"</span>).translated(<span class="dv">0</span>, <span class="dv">22</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    Text(<span class="st">"Hello World"</span>, size<span class="op">=</span><span class="dv">24</span>, font<span class="op">=</span><span class="st">"serif"</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>canvas.align(<span class="st">"horizontal"</span>).fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>canvas.align().fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -261,7 +265,7 @@ window.Quarto = {
 <section id="adding-and-transforming-shapes" class="level2">
 <h2 class="anchored" data-anchor-id="adding-and-transforming-shapes">Adding and Transforming Shapes</h2>
 <p>While you can add shapes and manually set their coordinates, Tesserax provides a fluent API for transformations. Here, we add a <code>Circle</code> and use <code>translated()</code> to move it into position.</p>
-<div id="d0ab6218" class="cell" data-execution_count="3">
+<div id="5f0d29e8" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle</span>
@@ -271,7 +275,7 @@ window.Quarto = {
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Adding a second shape and moving it manually</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Circle is defined by its radius</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"salmon"</span>).translated(<span class="dv">150</span>, <span class="dv">25</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"salmon"</span>).translated(<span class="dv">100</span>, <span class="dv">0</span>)</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -287,7 +291,7 @@ window.Quarto = {
 <section id="grouping-and-aligning-shapes" class="level2">
 <h2 class="anchored" data-anchor-id="grouping-and-aligning-shapes">Grouping and Aligning Shapes</h2>
 <p>The <code>Group</code> class acts a container that has control over its children positions, so you can align and layout shapes easily with a procedural API.</p>
-<div id="ebf6ee76" class="cell" data-execution_count="4">
+<div id="3f0fc846" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle, Square, Group</span>
@@ -314,7 +318,7 @@ window.Quarto = {
 <section id="simplifying-with-layouts" class="level2">
 <h2 class="anchored" data-anchor-id="simplifying-with-layouts">Simplifying with Layouts</h2>
 <p>Manually calculating offsets or calling procedural alignment becomes tedious in complex diagrams. <strong>Layouts</strong> automate this positioning. The <code>Row</code> layout arranges its children horizontally with an optional <code>gap</code>. The <code>Column</code> does so vertically.</p>
-<div id="0f7dbdd7" class="cell" data-execution_count="5">
+<div id="669fa459" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle</span>
@@ -347,15 +351,15 @@ window.Quarto = {
 <li>Add a new shape outside of that row.</li>
 <li>Wrap everything in another <code>Group</code> to demonstrate hierarchical composition.</li>
 </ol>
-<div id="c01ba786" class="cell" data-execution_count="6">
+<div id="abb96c8a" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle, Group</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle, Group, deg</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create and rotate a layout</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> RowLayout(gap<span class="op">=</span><span class="dv">20</span>).rotated(<span class="dv">45</span>):</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> RowLayout(gap<span class="op">=</span><span class="dv">20</span>).rotated(deg(<span class="op">-</span><span class="dv">45</span>)):</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">100</span>, <span class="dv">50</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>)</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"salmon"</span>)</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
@@ -380,10 +384,10 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="bridging-contexts-with-anchors">Bridging Contexts with Anchors</h2>
 <p>One of the most powerful features of Tesserax is the <strong>Anchor System</strong>. When you place a shape inside a <code>Layout</code> or a <code>Group</code>, its local coordinates change to reflect its position within that container. However, Tesserax allows you to retrieve the “global” position of a shape’s anchors, making it trivial to connect objects across different coordinate systems.</p>
 <p>In this example, we will connect the <code>Circle</code> (which is inside a rotated <code>Row</code>) to the <code>Rect</code> (which is outside) using an <code>Arrow</code>, and the two shapes inside the row. Notice the <code>curvature</code> parameter which controls the direction (sign) and radius of curvature, from <span class="math inline">\(0\)</span> (flat) to <span class="math inline">\(1\)</span> (full semicirle).</p>
-<div id="92890ac7" class="cell" data-execution_count="7">
+<div id="ba9929c8" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle, Arrow</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle, Arrow, deg</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
@@ -392,7 +396,7 @@ window.Quarto = {
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        r1 <span class="op">=</span> Rect(<span class="dv">80</span>, <span class="dv">40</span>, fill<span class="op">=</span><span class="st">"aliceblue"</span>)</span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        c1 <span class="op">=</span> Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"mistyrose"</span>)</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    row.rotated(<span class="dv">30</span>).translated(<span class="dv">50</span>, <span class="dv">50</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    row.rotated(deg(<span class="dv">270</span>)).translated(<span class="dv">50</span>, <span class="dv">50</span>)</span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Create a target rectangle outside the layout</span></span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    target <span class="op">=</span> Rect(<span class="dv">60</span>, <span class="dv">60</span>, fill<span class="op">=</span><span class="st">"honeydew"</span>).translated(<span class="dv">250</span>, <span class="dv">0</span>)</span>
@@ -406,12 +410,12 @@ window.Quarto = {
 <span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        c1.anchor(<span class="st">"left"</span>),</span>
 <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        curvature<span class="op">=-</span><span class="fl">0.25</span>,</span>
 <span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    Arrow(</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        c1.anchor(<span class="st">"top"</span>),</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        target.anchor(<span class="st">"left"</span>),</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        curvature<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    Arrow(</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        c1.anchor(<span class="st">"top"</span>),</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        target.anchor(<span class="st">"left"</span>),</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        curvature<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -442,7 +446,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="the-low-level-path-object">The Low-Level <code>Path</code> Object</h3>
 <p>The <code>Path</code> class roughly corresponds to the SVG <code>&lt;path&gt;</code> element. It operates like a pen: you move it to a location, then draw lines or curves to subsequent points.</p>
 <p>This is ideal for creating custom glyphs or specific geometric curves.</p>
-<div id="e47a4561" class="cell" data-execution_count="8">
+<div id="84837832" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Path</span>
@@ -490,7 +494,7 @@ window.Quarto = {
 <li><code>smoothness=0.2</code>: Subtle rounded corners (like a modern UI box).</li>
 <li><code>smoothness=1</code>: Maximum rounding (spline-like).</li>
 </ul>
-<div id="86a334c8" class="cell" data-execution_count="9">
+<div id="341be544" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Polyline, Point</span>
@@ -528,7 +532,7 @@ window.Quarto = {
 <section id="using-smart-connections" class="level3">
 <h3 class="anchored" data-anchor-id="using-smart-connections">Using smart connections</h3>
 <p>When drawing complex diagrams, it is often hard to wire connections in a way that respects shapes, especially if you keep changing the code. The <code>Grid</code> object in <code>tesserax.path</code> provides a way to keep track of where shapes are placed inside a group, and <code>trace</code> method to automatically find optimal routes for connections that do not collide with shapes.</p>
-<div id="2a3b1d2d" class="cell" data-execution_count="10">
+<div id="0182eda8" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Circle, Line, Polyline</span>
