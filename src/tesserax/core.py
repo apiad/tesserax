@@ -21,11 +21,9 @@ type Anchor = Literal[
 ]
 
 
-def deg(x: float) -> float:
-    return math.degrees(x)
-
-def rad(x: float) -> float:
-    return math.radians(x)
+def deg(degrees: float) -> float:
+    """Use this method to convert to radians."""
+    return math.radians(degrees)
 
 
 @dataclass(frozen=True)

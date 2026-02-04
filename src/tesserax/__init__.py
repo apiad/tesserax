@@ -1,5 +1,5 @@
 from .canvas import Canvas
-from .core import Shape, Bounds, Point, rad, deg
+from .core import Shape, Bounds, Point, deg
 from .base import (
     Rect,
     Square,

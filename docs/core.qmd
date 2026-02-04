@@ -159,7 +159,6 @@ with Canvas() as canvas:
         curvature=0.5,
     )
 
-
 canvas.fit(padding=10).display()
 ```
 
