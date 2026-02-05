@@ -116,6 +116,7 @@ class Group(Shape):
 
     def remove(self, shape: Shape) -> Self:
         self.shapes.remove(shape)
+        shape.parent = None
         return self
 
     def local(self) -> Bounds:

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Callable, Self, TYPE_CHECKING
+from typing import Callable, Self, TYPE_CHECKING, runtime_checkable
 import bisect
 import math
 import random
@@ -8,6 +8,7 @@ import io
 import base64
 import imageio
 import cairosvg
+
 
 # Prevent circular imports for type hints
 if TYPE_CHECKING:

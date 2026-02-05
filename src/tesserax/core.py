@@ -268,7 +268,6 @@ class Shape(ABC):
     def detach(self) -> Self:
         if self.parent:
             self.parent.remove(self)
-            self.parent = None
 
         return self
 
@@ -377,6 +376,7 @@ class Component(Shape):
     A Shape that is composed of other Shapes.
     Subclasses must implement build() which returns the geometric representation.
     """
+
     def __init__(self, **kwargs) -> None:
         super().__init__()
         self._primitive: Shape | None = None
