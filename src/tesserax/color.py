@@ -29,7 +29,7 @@ class Color:
     r: int = 0
     g: int = 0
     b: int = 0
-    a: float = 1.0
+    a: float = 0.0
 
     def __str__(self):
         return f"rgba({self.r},{self.g},{self.b},{self.a})"

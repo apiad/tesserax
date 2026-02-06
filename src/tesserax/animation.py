@@ -10,8 +10,9 @@ import base64
 import imageio
 import cairosvg
 
-# Prevent circular imports for type hints
-from .core import Point, Shape, Transform, HasPoints, HasStyle, HasTexT
+
+from .base import IVisual, Text, Polyline
+from .core import IShape, Point, Shape, Transform
 from .canvas import Canvas
 
 
@@ -236,7 +237,7 @@ class Wait(Animation):
 
 
 class Transformed(Animation):
-    def __init__(self, shape: Shape, target: Transform, **kwargs):
+    def __init__(self, shape: IShape, target: Transform, **kwargs):
         super().__init__(**kwargs)
         self.shape = shape
         self.target = target
@@ -254,7 +255,7 @@ class Transformed(Animation):
 
 
 class Styled(Animation):
-    def __init__(self, shape: HasStyle, fill=None, stroke=None, width=None, **kwargs):
+    def __init__(self, shape: IVisual, fill=None, stroke=None, width=None, **kwargs):
         super().__init__(**kwargs)
         self.shape = shape
         self.target_fill = fill
@@ -292,7 +293,7 @@ class Styled(Animation):
 
 
 class Written(Animation):
-    def __init__(self, shape: HasTexT, **kwargs):
+    def __init__(self, shape: Text, **kwargs):
         super().__init__(**kwargs)
         self.shape = shape
         self.full_text = getattr(shape, "text", "")
@@ -302,11 +303,11 @@ class Written(Animation):
 
     def _update(self, t: float):
         count = int(t * len(self.full_text))
-        self.shape.text = self.full_text[:count]
+        self.shape.content = self.full_text[:count]
 
 
 class Scrambled(Animation):
-    def __init__(self, shape: HasTexT, seed: int = 42, **kwargs):
+    def __init__(self, shape: Text, seed: int = 42, **kwargs):
         super().__init__(**kwargs)
         self.shape = shape
         self.full_text = getattr(shape, "text", "")
@@ -320,11 +321,11 @@ class Scrambled(Animation):
         remaining = total - resolved
         chars = string.ascii_letters + string.digits + "!@#$%"
         scramble = [self.rng.choice(chars) for _ in range(remaining)]
-        self.shape.text = "".join(result + scramble)
+        self.shape.content = "".join(result + scramble)
 
 
 class Morphed(Animation):
-    def __init__(self, shape: HasPoints, target_points: list, **kwargs):
+    def __init__(self, shape: Polyline, target_points: list, **kwargs):
         super().__init__(**kwargs)
         self.shape = shape
         self.target_points = target_points
@@ -363,7 +364,9 @@ class Morphed(Animation):
 
 
 class Following(Animation):
-    def __init__(self, shape: Shape, path: Shape, rotate_along: bool = False, **kwargs):
+    def __init__(
+        self, shape: IShape, path: Shape, rotate_along: bool = False, **kwargs
+    ):
         super().__init__(**kwargs)
         self.shape = shape
         self.path = path
@@ -400,7 +403,10 @@ class Warped(Animation):
     Applies a time-dependent transformation function to a shape's points.
     The function should accept a Point and the current time t [0, 1].
     """
-    def __init__(self, shape: HasPoints, func: Callable[[Point, float], Point], **kwargs):
+
+    def __init__(
+        self, shape: Polyline, func: Callable[[Point, float], Point], **kwargs
+    ):
         super().__init__(**kwargs)
         self.shape = shape
         self.func = func
@@ -426,10 +432,10 @@ class Warped(Animation):
 # --- Factory Class ---
 
 
-class Animator:
+class Animator[TShape: IShape]:
     """Helper attached to shape.animate"""
 
-    def __init__(self, shape: Shape):
+    def __init__(self, shape: TShape):
         self.shape = shape
 
     # Transform
@@ -450,6 +456,14 @@ class Animator:
         target.sy *= factor
         return Transformed(self.shape, target)
 
+    def follow(self, path: Shape, rotate: bool = False) -> Animation:
+        return Following(self.shape, path, rotate_along=rotate)
+
+
+class StyledAnimator[TShape: IVisual](Animator[TShape]):
+    def __init__(self, shape: TShape):
+        super().__init__(shape)
+
     # Style
     def fill(self, color: str) -> Animation:
         return Styled(self.shape, fill=color)
@@ -460,6 +474,11 @@ class Animator:
     def style(self, **kwargs) -> Animation:
         return Styled(self.shape, **kwargs)
 
+
+class TextAnimator(StyledAnimator[Text]):
+    def __init__(self, shape: Text):
+        super().__init__(shape)
+
     # Text
     def write(self) -> Animation:
         return Written(self.shape)
@@ -467,19 +486,19 @@ class Animator:
     def scramble(self) -> Animation:
         return Scrambled(self.shape)
 
-    # Geometry
-    def morph(self, target) -> Animation:
-        pts = target.points if hasattr(target, "points") else target
-        return Morphed(self.shape, pts)
 
-    def follow(self, path: Shape, rotate: bool = False) -> Animation:
-        return Following(self.shape, path, rotate_along=rotate)
+class PolylineAnimator(StyledAnimator[Polyline]):
+    # Geometry
+    def morph(self, target: Polyline) -> Animation:
+        pts = target.points
+        return Morphed(self.shape, pts)
 
     def warp(self, func: Callable[[Point, float], Point]) -> Animation:
         """
         Creates a warp animation using a function that maps (Point, t) -> Point.
         """
         return Warped(self.shape, func)
+
 
 # --- Scene Class ---
 

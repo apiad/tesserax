@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Self
 from .core import Shape, Bounds
 from .base import Group
+from .color import Colors
 
 
 class Canvas(Group):
@@ -21,7 +22,7 @@ class Canvas(Group):
         from .base import Path
 
         arrow = (
-            Path(fill="black", stroke="none")
+            Path(fill=Colors.Black, stroke=Colors.Transparent)
             .jump_to(-10, -4)
             .line_to(0, 0)
             .line_to(-10, 4)

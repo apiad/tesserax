@@ -40,13 +40,14 @@ First, we initialize the `Canvas` and add the central `Text` element. The `Canva
 
 ```{python}
 from tesserax import Canvas, Text
+from tesserax.color import Colors
 
 with Canvas() as canvas:
     t = Text(
         "tesserax",
         size=48,
         font="sans-serif",
-        fill="navyblue",
+        fill=Colors.Navy,
         anchor="middle",
     )
 
@@ -61,10 +62,11 @@ Next, we add a `Square` and a `Circle`. At this stage, we create them without sp
 
 ```{python}
 from tesserax import Square, Circle
+from tesserax.color import Colors
 
 with canvas:
-    r = Square(30, fill="green", stroke="none").translated(-120, 0)
-    c = Circle(20, fill="red", stroke="none").translated(120, 0)
+    r = Square(30, fill=Colors.Green, stroke=Colors.Transparent).translated(-120, 0)
+    c = Circle(20, fill=Colors.Red, stroke=Colors.Transparent).translated(120, 0)
 
 canvas.fit().display()
 ```
@@ -81,15 +83,15 @@ from tesserax import Group
 
 with Canvas() as canvas:
     with Group() as g:
-        r = Square(30, fill="green", stroke="none")
+        r = Square(30, fill=Colors.Green, stroke=Colors.Transparent)
         t = Text(
             "tesserax",
             size=48,
             font="sans-serif",
-            fill="navyblue",
+            fill=Colors.Navy,
             anchor="middle",
         )
-        c = Circle(20, fill="red", stroke="none")
+        c = Circle(20, fill=Colors.Red, stroke=Colors.Transparent)
 
     g.align("horizontal").distribute("horizontal")
 
@@ -107,15 +109,15 @@ from tesserax.layout import RowLayout
 
 with Canvas() as canvas:
     with RowLayout() as logo:
-        r = Square(30, fill="green", stroke="none")
+        r = Square(30, fill=Colors.Green, stroke=Colors.Transparent)
         t = Text(
             "tesserax",
             size=48,
             font="sans-serif",
-            fill="navyblue",
+            fill=Colors.Navy,
             anchor="middle",
         )
-        c = Circle(20, fill="red", stroke="none")
+        c = Circle(20, fill=Colors.Red, stroke=Colors.Transparent)
 
 canvas.fit().display()
 ```
@@ -133,7 +135,7 @@ with canvas:
     p = Polyline(
         points=[r.anchor("bottom").dy(10), c.anchor("bottom").dy(10)],
         smoothness=1.0,
-        stroke="black",
+        stroke=Colors.Black,
         marker_end="arrow"
     )
 
@@ -144,7 +146,7 @@ The `arrow` marker is a default arrow-like shape declared in the canvas, but you
 
 The `Polyline` is a type of `Component`, a very powerful kind of shape that allows encapsulating and reusing complex drawing logic.
 
-### Step 5: Making a Squiggle Line
+### Step 5: Making a Squiggly Line
 
 To add some fancy squiggles, we will use some of the powerful operations in `Polyline`. The first is `subdivide` which creates new points in the mid-point of every segment, recursively. Then other operation is `apply` which accepts a function to modify each point, and can be used to draw mathematical functions.
 

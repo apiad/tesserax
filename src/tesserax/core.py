@@ -8,6 +8,7 @@ from .color import Color, Colors
 
 if TYPE_CHECKING:
     from .base import Group
+    from .animation import Animator
 
 type Anchor = Literal[
     "top",
@@ -288,6 +289,11 @@ class Bounds:
         return Bounds(x_min, y_min, x_max - x_min, y_max - y_min)
 
 
+class IShape(Protocol):
+    transform: Transform
+    def render(self) -> str: ...
+
+
 class Shape(ABC):
     def __init__(
         self,
@@ -460,20 +466,3 @@ class Component(Shape):
         # Note: The primitive's own transform is applied inside its .render()
         # The Component's transform is applied by the caller (Shape.render)
         return self._shape.render()
-
-
-# Protocols for different types of shapes
-
-
-class HasStyle(Protocol):
-    fill: Color
-    stroke: Color
-    width: float
-
-
-class HasTexT(Protocol):
-    text: str
-
-
-class HasPoints(Protocol):
-    points: list[Point]

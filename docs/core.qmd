@@ -8,12 +8,13 @@ We will start by creating a simple 100x50 rectangle.
 
 ```{python}
 from tesserax import Canvas, Rect
+from tesserax.color import Colors
 
 # Initialize the canvas
 with Canvas() as canvas:
     # Adding our first shape
     # Primitives support standard SVG attributes like fill
-    Rect(100, 50, fill="lightblue")
+    Rect(100, 50, fill=Colors.LightBlue)
 
 # fit() adjusts the viewport to the content
 # display() renders it directly in the documentation
@@ -29,7 +30,7 @@ Text behaves exactly like any other shape in Tesserax.
 from tesserax import Canvas, Text
 
 with Canvas() as canvas:
-    Rect(150, 40, fill="lightblue")
+    Rect(150, 40, fill=Colors.LightBlue)
     Text("Hello World", size=24, font="serif")
 
 canvas.align().fit(10).display()
@@ -43,7 +44,7 @@ While you can add shapes and manually set their coordinates, Tesserax provides a
 from tesserax import Canvas, Rect, Circle
 
 with Canvas() as canvas:
-    Rect(100, 50, fill="lightblue")
+    Rect(100, 50, fill=Colors.LightBlue)
 
     # Adding a second shape and moving it manually
     # Circle is defined by its radius
@@ -62,9 +63,9 @@ from tesserax import Canvas, Rect, Circle, Square, Group
 
 with Canvas() as canvas:
     with Group() as g:
-        Rect(100, 50, fill="lightblue")
-        Circle(30, fill="salmon")
-        Square(40, fill="pink")
+        Rect(100, 50, fill=Colors.LightBlue)
+        Circle(30, fill=Colors.Salmon)
+        Square(40, fill=Colors.Pink)
 
     g.align("vertical", "center").distribute("horizontal", gap=10)
 
@@ -83,9 +84,9 @@ from tesserax.layout import RowLayout
 with Canvas() as canvas:
     # Row is also a context manager
     with RowLayout(gap=10):
-        Rect(100, 50, fill="lightblue")
-        Circle(30, fill="salmon")
-        Square(40, fill="pink")
+        Rect(100, 50, fill=Colors.LightBlue)
+        Circle(30, fill=Colors.Salmon)
+        Square(40, fill=Colors.Pink)
 
 canvas.fit(padding=10).display()
 
@@ -108,11 +109,11 @@ from tesserax.layout import RowLayout
 with Canvas() as canvas:
     # Create and rotate a layout
     with RowLayout(gap=20).rotated(deg(45)):
-        Rect(100, 50, fill="lightblue")
-        Circle(30, fill="salmon")
+        Rect(100, 50, fill=Colors.LightBlue)
+        Circle(30, fill=Colors.Salmon)
 
     # Add another shape to the scene
-    Rect(40, 40, fill="lightgreen").translated(100, -50)
+    Rect(40, 40, fill=Colors.LightGreen).translated(100, -50)
 
     # All shapes here are already part of the Canvas group.
 
@@ -135,13 +136,13 @@ from tesserax.layout import RowLayout
 with Canvas() as canvas:
     # 1. Create a Row and rotate it
     with RowLayout(gap=40) as row:
-        r1 = Rect(80, 40, fill="aliceblue")
-        c1 = Circle(30, fill="mistyrose")
+        r1 = Rect(80, 40, fill=Colors.AliceBlue)
+        c1 = Circle(30, fill=Colors.MistyRose)
 
     row.rotated(deg(45)).translated(50, 50)
 
     # 2. Create a target rectangle outside the layout
-    target = Rect(60, 60, fill="honeydew").translated(250, 0)
+    target = Rect(60, 60, fill=Colors.Honeydew).translated(250, 0)
 
     # 3. Connect them!
     # We use .anchor() to get semantic points.
@@ -238,11 +239,11 @@ with Canvas() as canvas:
 
     # 2. Slightly Rounded (30% smoothing)
     # Note how it preserves most of the straight line but rounds the tip.
-    Polyline(points, smoothness=0.3, stroke="blue").translated(0, 60)
+    Polyline(points, smoothness=0.3, stroke=Colors.Blue).translated(0, 60)
 
     # 3. Fully Smooth (100% smoothing)
     # This creates a flowing wave-like appearance, and closed.
-    Polyline(points, smoothness=1.0, stroke="red", closed=True).translated(0, 120)
+    Polyline(points, smoothness=1.0, stroke=Colors.Red, closed=True).translated(0, 120)
 
 canvas.fit(10).display()
 ```
@@ -257,12 +258,13 @@ When drawing complex diagrams, it is often hard to wire connections in a way tha
 from tesserax import Canvas, Circle, Line, Polyline
 from tesserax.layout import RowLayout
 from tesserax.path import Grid
+from tesserax.color import Colors
 
 with Canvas() as canvas:
     with RowLayout(gap=30) as row:
-        c1 = Circle(20, fill="lightblue")
-        c2 = Circle(30, fill="lightpink")
-        c3 = Circle(40, fill="lightgreen")
+        c1 = Circle(20, fill=Colors.LightBlue)
+        c2 = Circle(30, fill=Colors.LightPink)
+        c3 = Circle(40, fill=Colors.LightPink)
 
     g = Grid(row)
 

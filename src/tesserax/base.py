@@ -1,22 +1,56 @@
 from __future__ import annotations
 import math
-from typing import Callable, Literal, Self
-from .core import Anchor, Point, Shape, Bounds, Component
+from typing import Callable, Literal, Protocol, Self, TYPE_CHECKING, cast
+
+from tesserax.color import Color, Colors
+from .core import Anchor, IShape, Point, Shape, Bounds, Component
 
 
-class Rect(Shape):
+if TYPE_CHECKING:
+    from .animation import StyledAnimator, TextAnimator, PolylineAnimator
+
+
+class IVisual(IShape):
+    fill: Color
+    stroke: Color
+    width: float
+
+
+class Visual(Shape, IVisual):
+    def __init__(
+        self,
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
+        width: float = 1.0,
+    ) -> None:
+        super().__init__()
+        self.fill = fill
+        self.stroke = stroke
+        self.width = width
+
+    @property
+    def animate(self) -> StyledAnimator:
+        from .animation import StyledAnimator
+
+        if self._animator is None:
+            self._animator = StyledAnimator(self)
+
+        return cast(StyledAnimator, self._animator)
+
+
+class Rect(Visual):
     """A rectangular shape, the foundation for arrays and memory blocks."""
 
     def __init__(
         self,
         w: float,
         h: float,
-        stroke: str = "black",
-        fill: str = "none",
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
+        width: float = 1.0,
     ) -> None:
-        super().__init__()
+        super().__init__(fill=fill, stroke=stroke, width=width)
         self.w_val, self.h_val = w, h
-        self.stroke, self.fill = stroke, fill
 
         # Define relative to center (0,0)
         hw, hh = w / 2, h / 2
@@ -41,17 +75,28 @@ class Rect(Shape):
 class Square(Rect):
     """A specialized Rect where width equals height."""
 
-    def __init__(self, size: float, stroke: str = "black", fill: str = "none") -> None:
-        super().__init__(size, size, stroke, fill)
+    def __init__(
+        self,
+        size: float,
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
+        width: float = 1.0,
+    ) -> None:
+        super().__init__(size, size, fill=fill, stroke=stroke, width=width)
 
 
-class Circle(Shape):
+class Circle(Visual):
     """A circle, ideal for nodes in trees or states in automata."""
 
-    def __init__(self, r: float, stroke: str = "black", fill: str = "none") -> None:
-        super().__init__()
+    def __init__(
+        self,
+        r: float,
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
+        width: float = 1.0,
+    ) -> None:
+        super().__init__(fill=fill, stroke=stroke, width=width)
         self.r = r
-        self.stroke, self.fill = stroke, fill
 
     def local(self) -> Bounds:
         return Bounds(-self.r, -self.r, self.r * 2, self.r * 2)
@@ -61,19 +106,19 @@ class Circle(Shape):
         return f'<circle cx="0" cy="0" r="{self.r}" stroke="{self.stroke}" fill="{self.fill}" />'
 
 
-class Ellipse(Shape):
+class Ellipse(Visual):
     """An ellipse for when text labels are wider than they are tall."""
 
     def __init__(
         self,
         rx: float,
         ry: float,
-        stroke: str = "black",
-        fill: str = "none",
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
+        width: float = 1.0,
     ) -> None:
-        super().__init__()
+        super().__init__(fill=fill, stroke=stroke, width=width)
         self.rx, self.ry = rx, ry
-        self.stroke, self.fill = stroke, fill
 
     def local(self) -> Bounds:
         return Bounds(-self.rx, -self.ry, self.rx * 2, self.ry * 2)
@@ -230,7 +275,7 @@ class Group(Shape):
         return self
 
 
-class Text(Shape):
+class Text(Visual):
     """
     Text primitive. Default anchor is 'middle' for true centering.
     """
@@ -240,17 +285,27 @@ class Text(Shape):
         content: str,
         size: float = 12,
         font: str = "sans-serif",
-        fill: str = "black",
         anchor: Literal["start", "middle", "end"] = "middle",
         baseline: Literal["top", "middle", "bottom"] = "middle",
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
+        width: float = 1.0,
     ) -> None:
-        super().__init__()
+        super().__init__(fill=fill, stroke=stroke, width=width)
         self.content = content
         self.size = size
         self.font = font
-        self.fill = fill
         self._anchor = anchor
         self._baseline = baseline
+
+    @property
+    def animate(self) -> TextAnimator:
+        from .animation import TextAnimator
+
+        if self._animator is None:
+            self._animator = TextAnimator(self)
+
+        return cast(TextAnimator, self._animator)
 
     def local(self) -> Bounds:
         # Heuristic: average character width is ~60% of font size
@@ -276,23 +331,21 @@ class Text(Shape):
         )
 
 
-class Spacer(Shape):
+class Invisible(Shape):
+    def _render(self) -> str:
+        return ""
+
+
+class Spacer(Invisible):
     def __init__(self, w: float, h: float) -> None:
         super().__init__()
         self.w, self.h = w, h
 
     def local(self) -> Bounds:
-        # Spacer can remain top-left based or centered.
-        # Standard layouts often assume top-left flows, but let's stick to 0,0 center for consistency?
-        # Actually spacers are usually structural and invisible, so 0,0 to w,h is fine
-        # provided layouts handle them.
         return Bounds(0, 0, self.w, self.h)
 
-    def _render(self) -> str:
-        return ""
 
-
-class Ghost(Shape):
+class Ghost(Invisible):
     def __init__(self, target: Shape) -> None:
         super().__init__()
         self.target = target
@@ -300,11 +353,8 @@ class Ghost(Shape):
     def local(self) -> Bounds:
         return self.target.local()
 
-    def _render(self) -> str:
-        return ""
 
-
-class Spring(Shape):
+class Spring(Invisible):
     def __init__(self, flex: float = 1.0) -> None:
         super().__init__()
         self.flex = flex
@@ -313,27 +363,21 @@ class Spring(Shape):
     def local(self) -> Bounds:
         return Bounds(0, 0, self._size, self._size)
 
-    def _render(self) -> str:
-        return ""
 
-
-class Path(Shape):
+class Path(Visual):
     """
     A shape defined by an SVG path data string.
     """
 
     def __init__(
         self,
-        fill: str = "transparent",
-        stroke: str = "black",
-        width: float = 1,
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
+        width: float = 1.0,
         marker_start: str | None = None,
         marker_end: str | None = None,
     ) -> None:
-        super().__init__()
-        self.stroke = stroke
-        self.fill = fill
-        self.width = width
+        super().__init__(fill=fill, stroke=stroke, width=width)
         self.marker_start = marker_start
         self.marker_end = marker_end
         self._reset()
@@ -434,7 +478,7 @@ class Path(Shape):
 # Path-based components start here
 
 
-class Polyline(Component):
+class Polyline(Component, IVisual):
     """
     A sequence of connected lines.
     Supports .center() to re-align points around the origin.
@@ -445,8 +489,8 @@ class Polyline(Component):
         points: list[Point],
         smoothness: float = 0.0,
         closed: bool = False,
-        fill: str = "transparent",
-        stroke: str = "black",
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
         width: float = 1.0,
         marker_start: str | None = None,
         marker_end: str | None = None,
@@ -461,6 +505,15 @@ class Polyline(Component):
         self.points = points or []
         self.smoothness = smoothness
         self.closed = closed
+
+    @property
+    def animate(self) -> PolylineAnimator:
+        from .animation import PolylineAnimator
+
+        if self._animator is None:
+            self._animator = PolylineAnimator(self)
+
+        return cast(PolylineAnimator, self._animator)
 
     def append(self, p: Point) -> Self:
         self.points.append(p)
@@ -674,15 +727,16 @@ class Line(Component):
         p1: Point | Callable[[], Point],
         p2: Point | Callable[[], Point],
         curvature: float = 0.0,
-        stroke: str = "black",
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
         width: float = 1.0,
         marker_start: str | None = None,
         marker_end: str | None = None,
     ) -> None:
         super().__init__(
+            fill=fill,
             stroke=stroke,
             width=width,
-            fill="transparent",
             marker_start=marker_start,
             marker_end=marker_end,
         )
@@ -726,7 +780,8 @@ class Arrow(Line):
         p1: Point | Callable[[], Point],
         p2: Point | Callable[[], Point],
         curvature: float = 0.0,
-        stroke: str = "black",
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
         width: float = 1.0,
         marker_start: str | None = None,
         marker_end: str | None = "arrow",
@@ -735,6 +790,7 @@ class Arrow(Line):
             p1,
             p2,
             curvature,
+            fill,
             stroke,
             width,
             marker_start=marker_start,

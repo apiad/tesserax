@@ -10,11 +10,12 @@ The first step to create an animation is to construct a `Scene` object attached 
 import math
 from tesserax import Canvas, Rect, deg
 from tesserax.animation import Scene
+from tesserax.color import Colors
 
 # 1. Build
 with Canvas() as canvas:
-    back = Rect(100, 100, fill="white")
-    rect = Rect(50, 50, fill="orange")
+    back = Rect(100, 100, fill=Colors.White)
+    rect = Rect(50, 50, fill=Colors.Orange)
 
 # 2. Animate
 scene = Scene(canvas, fps=30)
@@ -39,11 +40,12 @@ On top of this abstraction, Tesserax provides a number of builtin animations for
 import math
 from tesserax import Canvas, Rect, deg
 from tesserax.animation import Scene
+from tesserax.color import Colors
 
 # 1. Build
 with Canvas() as canvas:
-    back = Rect(100, 100, fill="white")
-    rect = Rect(50, 50, fill="orange")
+    back = Rect(100, 100, fill=Colors.White)
+    rect = Rect(50, 50, fill=Colors.Orange)
 
 canvas.align().fit()
 
