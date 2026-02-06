@@ -40,8 +40,8 @@ class Animation(ABC):
     Base class for logic that modifies a shape over a normalized time t [0, 1].
     """
 
-    def __init__(self, rate: Callable[[float], float] = linear):
-        self.rate = rate
+    def __init__(self):
+        self.rate = linear
         self.relative_weight = 1.0
         self._started = False
 
@@ -87,23 +87,23 @@ class Animation(ABC):
         return self.rated(smooth)
 
     def delayed(self, delay_ratio: float) -> Animation:
-        return Wrapped(
-            self,
+        return Wrapped(self).rated(
             lambda t: 0 if t < delay_ratio else (t - delay_ratio) / (1 - delay_ratio),
         )
 
-    def looping(self, times: float = 1.0) -> Animation:
-        wrapper = Wrapped(self, lambda t: (t * times) % 1.0)
-        wrapper._is_loop = True
-        return wrapper
+    def repeating(self, times: float) -> Animation:
+        return Wrapped(self).rated(lambda t: (t * times) % 1.0)
+
+    def looping(self) -> Animation:
+        return Wrapped(self).rated(lambda t: t / 2 if t < 0.5 else 1 - t / 2)
 
     def reversed(self) -> Animation:
-        return Wrapped(self, lambda t: 1.0 - t)
+        return Wrapped(self).rated(lambda t: 1.0 - t)
 
     # --- Operator Overloads ---
 
     def __mul__(self, factor: float) -> Animation:
-        return self.looping(factor)
+        return self.repeating(factor)
 
     def __add__(self, other: Animation) -> Animation:
         children = self.children if isinstance(self, Sequence) else [self]
@@ -120,24 +120,16 @@ class Animation(ABC):
 
 
 class Wrapped(Animation):
-    def __init__(self, child: Animation, t_modifier: Callable[[float], float]):
+    def __init__(self, child: Animation):
         super().__init__()
         self.child = child
-        self.t_modifier = t_modifier
-        self._is_loop = False
-        # Inherit weight from child roughly, though it might be overridden
         self.relative_weight = child.relative_weight
 
-    def begin(self):
+    def _start(self):
         self.child.begin()
 
     def _update(self, t: float):
-        mod_t = self.t_modifier(t)
-
-        if not self._is_loop:
-            mod_t = max(0.0, min(1.0, mod_t))
-
-        self.child.update(mod_t)
+        self.child.update(t)
 
 
 class Sequence(Animation):

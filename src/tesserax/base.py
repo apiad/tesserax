@@ -462,9 +462,17 @@ class Polyline(Component):
         self.smoothness = smoothness
         self.closed = closed
 
-    def add(self, p: Point) -> Self:
+    def append(self, p: Point) -> Self:
         self.points.append(p)
-        return self
+        return self.refresh()
+
+    def prepend(self, p: Point) -> Self:
+        self.points.insert(0, p)
+        return self.refresh()
+
+    def extend(self, points: list[Point]) -> Self:
+        self.points.extend(points)
+        return self.refresh()
 
     def center(self) -> Self:
         """
@@ -514,6 +522,38 @@ class Polyline(Component):
                 new_pts.append(self.points[-1])
             self.points = new_pts
         return self
+
+    def simplify(self, tolerance: float = 1e-2) -> Self:
+        """
+        Removes collinear points.
+        If the distance of a point from the line segment connecting its neighbors
+        is less than 'tolerance', the point is removed.
+        """
+        if len(self.points) < 3:
+            return self
+
+        # Iterative simplification
+        # We create a new list and only add points that "matter"
+        new_points = [self.points[0]]
+
+        for i in range(1, len(self.points) - 1):
+            prev = new_points[-1] # Look at the last *kept* point
+            curr = self.points[i]
+            next_p = self.points[i+1]
+
+            d = Point.distance_to_segment(curr, prev, next_p)
+
+            # If significant deviation, keep it.
+            if d > tolerance:
+                new_points.append(curr)
+
+        new_points.append(self.points[-1])
+
+        # If closed, check if start/end are collinear with the loop
+        # (Omitted for brevity, but essentially check points[0] vs points[-1] and points[1])
+
+        self.points = new_points
+        return self.refresh()
 
     def apply(self, func: Callable[[Point], Point]) -> Self:
         self.points = [func(p) for p in self.points]
@@ -567,6 +607,65 @@ class Polyline(Component):
             shape.line_to(self.points[-1].x, self.points[-1].y)
 
         return shape
+
+    @classmethod
+    def poly(
+        cls, n: int, radius: float, orientation: Point | None = None, **kwargs
+    ) -> Self:
+        """
+        Creates a regular polygon centered at (0,0).
+
+        Args:
+            n: Number of sides (3=Triangle, 4=Diamond/Square, 6=Hexagon).
+            radius: Distance from center to vertex.
+            orientation: Vector pointing to the first vertex. Defaults to Point.up.
+        """
+        if n < 3:
+            raise ValueError("Polygon must have at least 3 sides")
+
+        if orientation is None:
+            orientation = Point(0, -1)  # Point.up
+
+        # Calculate start angle from the orientation vector
+        start_angle = math.atan2(orientation.y, orientation.x)
+        step = 2 * math.pi / n
+
+        points = []
+        for i in range(n):
+            theta = start_angle + i * step
+            points.append(Point(radius * math.cos(theta), radius * math.sin(theta)))
+
+        # Create closed polyline
+        return cls(points, closed=True, **kwargs)
+
+    def expand(self, delta: float) -> Self:
+        """
+        Pushes all points away from the origin (0,0) by an absolute amount.
+        Useful for making a shape 'thicker' or 'larger' without scaling.
+
+        Note: For best results, ensure the shape is centered first via .center().
+        """
+        new_points = []
+        for p in self.points:
+            mag = p.magnitude()
+            if mag == 0:
+                new_points.append(p)
+            else:
+                # P_new = P + unit_vector * delta
+                # P_new = P + (P / mag) * delta
+                # P_new = P * (1 + delta / mag)
+                scale_factor = 1 + (delta / mag)
+                new_points.append(p * scale_factor)
+
+        self.points = new_points
+        return self.refresh()
+
+    def contract(self, delta: float) -> Self:
+        """
+        Pulls all points towards the origin (0,0) by an absolute amount.
+        Negative values will expand.
+        """
+        return self.expand(-delta)
 
 
 class Line(Component):

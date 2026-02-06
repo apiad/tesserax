@@ -74,11 +74,12 @@ with Canvas() as canvas:
 # Use fit() to frame the logo perfectly
 canvas.fit(padding=10)
 
+# Create a simple animation
 scene = Scene(canvas)
 scene.play(
     r.animate.rotate(deg(90)),
     c.animate.translate(5, 0).looping(),
-    duration=2,
+    duration=1,
 )
 
 scene.display()

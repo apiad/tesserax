@@ -32,6 +32,36 @@ class Point:
     x: float
     y: float
 
+    @classmethod
+    def zero(cls) -> Point: return cls(0, 0)
+
+    @classmethod
+    def up(cls) -> Point: return cls(0, -1) # SVG Y is down
+
+    @classmethod
+    def down(cls) -> Point: return cls(0, 1)
+
+    @classmethod
+    def left(cls) -> Point: return cls(-1, 0)
+
+    @classmethod
+    def right(cls) -> Point: return cls(1, 0)
+
+    @staticmethod
+    def distance_to_segment(p: Point, start: Point, end: Point) -> float:
+        # Area of triangle = 0.5 * base * height
+        # Height = (2 * Area) / base
+        # Area can be found via cross product
+        dx = end.x - start.x
+        dy = end.y - start.y
+
+        if dx == 0 and dy == 0:
+            return (p - start).magnitude()
+
+        num = abs(dy * p.x - dx * p.y + end.x * start.y - end.y * start.x)
+        den = math.sqrt(dy**2 + dx**2)
+        return num / den
+
     def apply(self, tx=0.0, ty=0.0, r=0.0, s=1.0) -> Point:
         rad = math.radians(r)
         nx, ny = self.x * s, self.y * s
@@ -262,6 +292,7 @@ class Shape(ABC):
 
         self.transform = Transform.identity()
         self.parent: Group | None = None
+        self.hidden: bool = False
 
         if (gp := Group.current()) is not None:
             gp.append(self)
@@ -272,6 +303,14 @@ class Shape(ABC):
         if self.parent:
             self.parent.remove(self)
 
+        return self
+
+    def show(self) -> Self:
+        self.hidden = False
+        return self
+
+    def hide(self) -> Self:
+        self.hidden = True
         return self
 
     @property
@@ -302,7 +341,10 @@ class Shape(ABC):
         pass
 
     def render(self) -> str:
-        """Wraps the inner content in a transform group."""
+        """Generates the SVG expression for this shape, including transformation."""
+        if self.hidden:
+            return ""
+
         t = self.transform
 
         # Optimization: Return raw render if transform is identity
