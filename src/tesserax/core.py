@@ -33,19 +33,24 @@ class Point:
     y: float
 
     @classmethod
-    def zero(cls) -> Point: return cls(0, 0)
+    def zero(cls) -> Point:
+        return cls(0, 0)
 
     @classmethod
-    def up(cls) -> Point: return cls(0, -1) # SVG Y is down
+    def up(cls) -> Point:
+        return cls(0, -1)  # SVG Y is down
 
     @classmethod
-    def down(cls) -> Point: return cls(0, 1)
+    def down(cls) -> Point:
+        return cls(0, 1)
 
     @classmethod
-    def left(cls) -> Point: return cls(-1, 0)
+    def left(cls) -> Point:
+        return cls(-1, 0)
 
     @classmethod
-    def right(cls) -> Point: return cls(1, 0)
+    def right(cls) -> Point:
+        return cls(1, 0)
 
     @staticmethod
     def distance_to_segment(p: Point, start: Point, end: Point) -> float:

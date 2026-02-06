@@ -537,9 +537,9 @@ class Polyline(Component):
         new_points = [self.points[0]]
 
         for i in range(1, len(self.points) - 1):
-            prev = new_points[-1] # Look at the last *kept* point
+            prev = new_points[-1]  # Look at the last *kept* point
             curr = self.points[i]
-            next_p = self.points[i+1]
+            next_p = self.points[i + 1]
 
             d = Point.distance_to_segment(curr, prev, next_p)
 
