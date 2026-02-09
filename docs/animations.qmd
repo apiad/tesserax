@@ -289,7 +289,7 @@ You pass properties as keyword arguments. Each argument accepts a dictionary map
 from tesserax.animation import ease_out, ease_in_out_cubic, linear
 
 with Canvas() as c:
-    box = Square(30, fill=Colors.Orange, stroke=Colors.Transparent)
+    box = Square(30, fill=Colors.Orange)
 
 c.fit(50)
 scene = Scene(c)
