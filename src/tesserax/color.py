@@ -79,28 +79,28 @@ class Color:
         return Color(self.r, self.g, self.b, alpha)
 
     def lighter(self, alpha: float) -> Color:
-        return self.towards(Colors.White, alpha, space="rgb")
+        return self.lerp(Colors.White, alpha, space="rgb")
 
     def darker(self, alpha: float) -> Color:
-        return self.towards(Colors.Black, alpha, space="rgb")
+        return self.lerp(Colors.Black, alpha, space="rgb")
 
     def brighter(self, alpha: float) -> Color:
-        return self.towards(self.saturated(1.0), alpha, space="hsv")
+        return self.lerp(self.saturated(1.0), alpha, space="hsv")
 
     def dimmer(self, alpha: float) -> Color:
-        return self.towards(self.saturated(0.0), alpha, space="hsv")
+        return self.lerp(self.saturated(0.0), alpha, space="hsv")
 
     def redshift(self, percent: float) -> Color:
         _, l, s = hls(self)
         target = hls(0, l, s)
-        return self.towards(target, percent, space="rgb")
+        return self.lerp(target, percent, space="rgb")
 
     def blueshift(self, percent: float) -> Color:
         _, l, s = hls(self)
         target = hls(1, l, s)
-        return self.towards(target, percent, space="rgb")
+        return self.lerp(target, percent, space="rgb")
 
-    def towards(self, other: Color, percent: float, *, space="hls") -> Color:
+    def lerp(self, other: Color, percent: float, *, space="hls") -> Color:
         space = dict(rgb=rgb, hls=hls, hsv=hsv)[space]
 
         start_values = space(self)
@@ -125,8 +125,32 @@ class Color:
     @staticmethod
     def palette(start: Color, end: Color, steps: int, space="hls") -> List[Color]:
         percents = scale(float, 0, 1, steps)
-        return [start.towards(end, p, space=space) for p in percents]
+        return [start.lerp(end, p, space=space) for p in percents]
 
+
+    def __add__(self, other:Color) -> Color:
+        return rgb(
+            self.r / 255 + other.r / 255,
+            self.g / 255 + other.g / 255,
+            self.b / 255 + other.b / 255,
+            alpha=self.a + other.a # Additive alpha? Usually mix, but for vectors + is correct
+        )
+
+    def __sub__(self, other: Color) -> Color:
+        return rgb(
+            self.r / 255 - other.r / 255,
+            self.g / 255 - other.g / 255,
+            self.b / 255 - other.b / 255,
+            alpha=self.a - other.a
+        )
+
+    def __mul__(self, other: int|float) -> Color:
+        return rgb(
+            self.r / 255 * other,
+            self.g / 255 * other,
+            self.b / 255 * other,
+            alpha=self.a * other
+        )
 
 # ## Color spaces
 

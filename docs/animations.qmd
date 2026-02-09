@@ -262,7 +262,7 @@ def spiral(shape, t):
     shape.transform.ty = math.sin(angle) * radius
 
     # We can also change other properties!
-    shape.fill = Colors.Purple.towards(Colors.Yellow, t)
+    shape.fill = Colors.Purple.lerp(Colors.Yellow, t)
 
 scene.play(
     ball.animate.custom(spiral).smoothed().looping(),
@@ -271,3 +271,57 @@ scene.play(
 
 scene.display()
 ```
+
+## Keyframe Animation
+
+For complex motion graphics where an object needs to follow a specific "script" (e.g., "move right, wait, rotate, then shrink"), chaining simple animations becomes tedious.
+
+The `.keyframes()` method allows you to define a timeline for multiple properties simultaneously in a single call.
+
+### The Timeline API
+
+You pass properties as keyword arguments. Each argument accepts a dictionary mapping a **normalized time** ($0.0 \to 1.0$) to a **target value**.
+
+* If $0.0$ is missing, Tesserax infers it from the current state.
+* Tesserax automatically detects if the property belongs to the `Shape` (like `fill`) or its `Transform` (like `tx`, `rotation`).
+
+```{python}
+from tesserax.animation import ease_out, ease_in_out_cubic, linear
+
+with Canvas() as c:
+    box = Square(30, fill=Colors.Orange, stroke=Colors.Transparent)
+
+c.fit(50)
+scene = Scene(c)
+
+scene.play(
+    box.animate.keyframes(
+        # Track 1: Movement (Transform property)
+        tx={
+            0.0: -20,
+            0.4: 20, # Move fast to 100
+            0.6: 20, # Stay there for 20% of time
+            1.0: -20,    # Return home
+        },
+        # Track 2: Rotation (Transform property)
+        # We can use (value, easing) tuples for precise control
+        rotation={
+            0.0: 0,
+            1.0: (deg(360), ease_in_out_cubic) # Spin fully with smooth accel/decel
+        },
+        # Track 3: Color (Shape property)
+        fill={
+            0.5: Colors.Orange,
+            0.8: Colors.Red, # Turn red near the end
+            1.0: Colors.Orange
+        }
+    ),
+    duration=3.0
+)
+
+scene.display()
+```
+
+By default, Tesserax interpolates linearly between keyframes. However, you often want specific segments to feel different (e.g., a "snap" effect).
+
+You can pass a tuple `(value, easing_function)` instead of just a raw value. The easing function applies to the time interval **leading up to** that keyframe.

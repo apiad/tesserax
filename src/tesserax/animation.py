@@ -307,9 +307,9 @@ class Styled(Animation):
                 self.start_width + (self.target_width - self.start_width) * t
             )
         if self.target_fill is not None:
-            self.shape.fill = self.start_fill.towards(self.target_fill, t)
+            self.shape.fill = self.start_fill.lerp(self.target_fill, t)
         if self.target_stroke is not None:
-            self.shape.stroke = self.start_stroke.towards(self.target_stroke, t)
+            self.shape.stroke = self.start_stroke.lerp(self.target_stroke, t)
 
 
 # --- Specialized Animations ---
@@ -496,6 +496,88 @@ class FunctionalAnimation(Animation):
         self.func(self.obj, t)
 
 
+class KeyframeAnimation(Animation):
+    """
+    Animates multiple properties using keyframes.
+    Usage: KeyframeAnimation(shape, tx={1.0: 100}, rotation={0.5: deg(180), 1.0: deg(360)})
+    """
+    def __init__(self, shape: IShape, **tracks):
+        super().__init__()
+        self.shape = shape
+        self.raw_tracks = tracks
+        self.compiled_tracks = {}
+
+    def _start(self):
+        self.compiled_tracks = {}
+
+        for name, keyframes in self.raw_tracks.items():
+            # 1. Resolve Target (Transform vs Shape)
+            # Priority: Transform property -> Shape property
+            target = self.shape
+            if hasattr(self.shape, "transform") and hasattr(self.shape.transform, name):
+                target = self.shape.transform
+            elif not hasattr(self.shape, name):
+                raise AttributeError(f"Property '{name}' not found on shape or transform.")
+
+            # 2. Capture Current Value
+            current_val = getattr(target, name)
+
+            # 3. Sort and Normalize Frames
+            # Structure: [(time, value, easing_func), ...]
+            sorted_times = sorted(keyframes.keys())
+            frames = []
+
+            # Automatic 0.0 Keyframe
+            if 0.0 not in keyframes:
+                frames.append((0.0, current_val, linear))
+
+            for t in sorted_times:
+                entry = keyframes[t]
+
+                # Support tuple for (value, easing)
+                if isinstance(entry, tuple):
+                    val, func = entry
+                else:
+                    val, func = entry, linear
+
+                frames.append((t, val, func))
+
+            # Separate times for bisect
+            times = [f[0] for f in frames]
+            self.compiled_tracks[name] = (target, times, frames)
+
+    def _update(self, t: float):
+        for name, (target, times, frames) in self.compiled_tracks.items():
+            # Find the interval [t0, t1] where t0 <= t <= t1
+            idx = bisect.bisect_right(times, t)
+
+            # Clamp to boundaries
+            if idx == 0:
+                setattr(target, name, frames[0][1])
+                continue
+            if idx >= len(frames):
+                setattr(target, name, frames[-1][1])
+                continue
+
+            # Get surrounding frames
+            t0, v0, _ = frames[idx - 1]
+            t1, v1, easing = frames[idx]
+
+            # Normalize t to the segment 0..1
+            segment_duration = t1 - t0
+            if segment_duration <= 1e-9:
+                local_t = 1.0
+            else:
+                local_t = (t - t0) / segment_duration
+
+            # Apply segment easing
+            eased_t = easing(local_t)
+
+            # Interpolate
+            current = v0 + (v1 - v0) * eased_t
+            setattr(target, name, current)
+
+
 # --- Factory Class ---
 
 
@@ -544,6 +626,9 @@ class Animator[TShape: IShape]:
             return NumericAnimation(self.shape, name, target)
 
         return proxy
+
+    def keyframes(self, **tracks) -> Animation:
+        return KeyframeAnimation(self.shape, **tracks)
 
 
 class StyledAnimator[TShape: IVisual](Animator[TShape]):
