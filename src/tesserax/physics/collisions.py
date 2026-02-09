@@ -50,9 +50,8 @@ class Collision:
         a, b = self.a, self.b
 
         # 1. Positional Correction (Prevent Sinking)
-        # Move objects apart based on inverse mass (lighter object moves more)
-        percent = 0.8  # Penetration percentage to correct
-        slop = 0.01  # Penetration allowance
+        percent = 0.8
+        slop = 0.01
         total_inv_mass = a.inv_mass + b.inv_mass
 
         if total_inv_mass == 0:
@@ -68,23 +67,21 @@ class Collision:
 
         # 2. Velocity Impulse (The Bounce)
         # Calculate relative velocity
+        # We really should include angular velocity here for rigid bodies:
+        # V_p = V_cm + w x r
+        # For now, simple linear impulse is okay for the V1 baking engine.
         rv = b.vel - a.vel
 
-        # Velocity along normal
         vel_along_normal = rv.x * self.normal.x + rv.y * self.normal.y
 
-        # Do not resolve if velocities are separating
         if vel_along_normal > 0:
             return
 
-        # Calculate restitution (bounciness) - use the lower of the two
         e = min(a.material.restitution, b.material.restitution)
 
-        # Calculate impulse scalar
         j = -(1 + e) * vel_along_normal
         j /= total_inv_mass
 
-        # Apply impulse
         impulse = self.normal * j
 
         if not a.static:
@@ -92,17 +89,14 @@ class Collision:
         if not b.static:
             b.vel += impulse * b.inv_mass
 
-        # 3. Friction (Optional but good)
-        # Tangent vector is perpendicular to normal
+        # 3. Friction
         tangent = (rv - (self.normal * vel_along_normal)).normalize()
         jt = -(rv.x * tangent.x + rv.y * tangent.y)
         jt /= total_inv_mass
 
-        # Don't apply tiny friction
         if abs(jt) < 0.001:
             return
 
-        # Coulomb's Law
         mu = math.sqrt(a.material.friction * b.material.friction)
         friction_impulse = tangent * max(-j * mu, min(j * mu, jt))
 
@@ -111,7 +105,87 @@ class Collision:
         if not b.static:
             b.vel += friction_impulse * b.inv_mass
 
-    # --- Specific Solvers ---
+
+# --- SAT Helpers ---
+
+
+def _get_box_vertices(b: Body) -> list[Point]:
+    """Returns world-space vertices of the box collider."""
+    box = cast(BoxCollider, b.collider)
+    hw, hh = box.width / 2, box.height / 2
+
+    # Local corners
+    corners = [
+        Point(-hw, -hh), Point(hw, -hh),
+        Point(hw, hh), Point(-hw, hh)
+    ]
+
+    # Transform to world
+    # We assume Body has 'rotation' (radians) and 'pos' (center)
+    # If Body doesn't have rotation yet, assume 0
+    rot = getattr(b, "rotation", 0.0)
+    pos = b.pos
+
+    world_corners = []
+    cos_r = math.cos(rot)
+    sin_r = math.sin(rot)
+
+    for p in corners:
+        # Rotate then Translate
+        rx = p.x * cos_r - p.y * sin_r
+        ry = p.x * sin_r + p.y * cos_r
+        world_corners.append(Point(rx + pos.x, ry + pos.y))
+
+    return world_corners
+
+
+def _project_poly(vertices: list[Point], axis: Point) -> tuple[float, float]:
+    """Projects vertices onto an axis and returns (min, max)."""
+    min_p = float("inf")
+    max_p = float("-inf")
+    for v in vertices:
+        proj = v.x * axis.x + v.y * axis.y
+        if proj < min_p: min_p = proj
+        if proj > max_p: max_p = proj
+    return min_p, max_p
+
+
+def _sat_check(verts_a: list[Point], verts_b: list[Point], axes: list[Point]) -> tuple[bool, float, Point]:
+    """Returns (is_colliding, min_overlap, best_axis)."""
+    min_overlap = float("inf")
+    best_axis = Point(0, 0)
+
+    for axis in axes:
+        min_a, max_a = _project_poly(verts_a, axis)
+        min_b, max_b = _project_poly(verts_b, axis)
+
+        # Gap check
+        if max_a < min_b or max_b < min_a:
+            return False, 0.0, Point(0, 0)
+
+        # Overlap
+        overlap = min(max_a, max_b) - max(min_a, min_b)
+        if overlap < min_overlap:
+            min_overlap = overlap
+            best_axis = axis
+
+    return True, min_overlap, best_axis
+
+
+def _get_box_axes(vertices: list[Point]) -> list[Point]:
+    """Gets the 2 normal axes for a box."""
+    # Edges: 0-1 and 1-2
+    axes = []
+    for i in range(2):
+        p1 = vertices[i]
+        p2 = vertices[i+1]
+        edge = p2 - p1
+        # Normal is (-y, x)
+        axes.append(Point(-edge.y, edge.x).normalize())
+    return axes
+
+
+# --- Specific Solvers ---
 
 
 @solver(CircleCollider, CircleCollider)
@@ -119,7 +193,6 @@ def circle_to_circle(a: Body, b: Body) -> Collision | None:
     ra = cast(CircleCollider, a.collider).radius
     rb = cast(CircleCollider, b.collider).radius
 
-    # Vector from A to B
     n = b.pos - a.pos
     dist_sq = n.x**2 + n.y**2
     r_sum = ra + rb
@@ -129,53 +202,85 @@ def circle_to_circle(a: Body, b: Body) -> Collision | None:
 
     dist = math.sqrt(dist_sq)
     if dist == 0:
-        return Collision(a, b, Point(1, 0), r_sum)  # Overlap exact
+        return Collision(a, b, Point(1, 0), r_sum)
 
     return Collision(a, b, n / dist, r_sum - dist)
 
 
+@solver(BoxCollider, BoxCollider)
+def box_to_box(a: Body, b: Body) -> Collision | None:
+    verts_a = _get_box_vertices(a)
+    verts_b = _get_box_vertices(b)
+
+    # Axes: normals of A and normals of B
+    axes = _get_box_axes(verts_a) + _get_box_axes(verts_b)
+
+    is_hit, depth, axis = _sat_check(verts_a, verts_b, axes)
+    if not is_hit:
+        return None
+
+    # Ensure normal points A -> B
+    direction = b.pos - a.pos
+    if direction.x * axis.x + direction.y * axis.y < 0:
+        axis = axis * -1
+
+    return Collision(a, b, axis, depth)
+
+
 @solver(CircleCollider, BoxCollider)
 def circle_to_box(circ: Body, box: Body) -> Collision | None:
-    # AABB logic for box (assumes box is not rotated for V1)
-    # Clamp circle center to box bounds
+    # Rotate Circle center into Box's local space to handle Box rotation
+    box_rot = getattr(box, "rotation", 0.0)
 
-    # Half-extents
+    # Vector from Box center to Circle center
+    rel = circ.pos - box.pos
+
+    # Rotate backwards by box_rot
+    cos_r = math.cos(-box_rot)
+    sin_r = math.sin(-box_rot)
+    local_cx = rel.x * cos_r - rel.y * sin_r
+    local_cy = rel.x * sin_r + rel.y * cos_r
+
+    # Box extents
     hw = cast(BoxCollider, box.collider).width / 2
     hh = cast(BoxCollider, box.collider).height / 2
 
-    bx = box.pos.x
-    by = box.pos.y
+    # Clamp in local space
+    closest_local_x = max(-hw, min(local_cx, hw))
+    closest_local_y = max(-hh, min(local_cy, hh))
 
-    cx = circ.pos.x
-    cy = circ.pos.y
-
-    closest_x = max(bx - hw, min(cx, bx + hw))
-    closest_y = max(by - hh, min(cy, by + hh))
-
-    dist_x = cx - closest_x
-    dist_y = cy - closest_y
+    # Distance in local space
+    dist_x = local_cx - closest_local_x
+    dist_y = local_cy - closest_local_y
     dist_sq = dist_x**2 + dist_y**2
 
     if dist_sq > cast(CircleCollider, circ.collider).radius ** 2:
         return None
 
-    dist = math.sqrt(dist_sq)
+    # We have a collision.
+    # We need the normal and depth in WORLD space.
 
-    # If center is inside box (dist == 0)
-    if dist == 0:
-        # Push out along nearest axis (Simplified)
-        # Assuming we usually hit top of floor:
-        return Collision(
-            circ, box, Point(0, -1), cast(CircleCollider, circ.collider).radius
-        )
+    # If center is inside box
+    if dist_sq == 0:
+        # Push out along smallest local axis
+        # (Simplified: assume Y is smallest penetration for floors)
+        # For robustness, check min overlap to edges
+        dist = 0
+        normal_local = Point(0, -1)
+        depth = cast(CircleCollider, circ.collider).radius # Approximation
+    else:
+        dist = math.sqrt(dist_sq)
+        normal_local = Point(dist_x / dist, dist_y / dist) # Points Box -> Circle (B->A)
+        depth = cast(CircleCollider, circ.collider).radius - dist
 
-    # Normal points from A (Circle) to B (Box)?
-    # Logic in resolve assumes Normal points A -> B.
-    # Here vector is Closest -> Center (Box to Circle).
-    # So Closest->Center is B->A.
-    # We want A->B, so Center->Closest.
+    # Rotate normal back to World space (rotate by +box_rot)
+    # Note: normal_local is B->A. We want A->B (Circle->Box). So negate.
+    normal_local = normal_local * -1
 
-    normal = Point(-dist_x / dist, -dist_y / dist)
-    return Collision(
-        circ, box, normal, cast(CircleCollider, circ.collider).radius - dist
-    )
+    cos_r = math.cos(box_rot)
+    sin_r = math.sin(box_rot)
+
+    world_nx = normal_local.x * cos_r - normal_local.y * sin_r
+    world_ny = normal_local.x * sin_r + normal_local.y * cos_r
+
+    return Collision(circ, box, Point(world_nx, world_ny), depth)
