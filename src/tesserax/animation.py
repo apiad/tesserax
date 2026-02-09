@@ -501,6 +501,7 @@ class KeyframeAnimation(Animation):
     Animates multiple properties using keyframes.
     Usage: KeyframeAnimation(shape, tx={1.0: 100}, rotation={0.5: deg(180), 1.0: deg(360)})
     """
+
     def __init__(self, shape: IShape, **tracks):
         super().__init__()
         self.shape = shape
@@ -517,7 +518,9 @@ class KeyframeAnimation(Animation):
             if hasattr(self.shape, "transform") and hasattr(self.shape.transform, name):
                 target = self.shape.transform
             elif not hasattr(self.shape, name):
-                raise AttributeError(f"Property '{name}' not found on shape or transform.")
+                raise AttributeError(
+                    f"Property '{name}' not found on shape or transform."
+                )
 
             # 2. Capture Current Value
             current_val = getattr(target, name)

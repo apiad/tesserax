@@ -127,13 +127,13 @@ class Color:
         percents = scale(float, 0, 1, steps)
         return [start.lerp(end, p, space=space) for p in percents]
 
-
-    def __add__(self, other:Color) -> Color:
+    def __add__(self, other: Color) -> Color:
         return rgb(
             self.r / 255 + other.r / 255,
             self.g / 255 + other.g / 255,
             self.b / 255 + other.b / 255,
-            alpha=self.a + other.a # Additive alpha? Usually mix, but for vectors + is correct
+            alpha=self.a
+            + other.a,  # Additive alpha? Usually mix, but for vectors + is correct
         )
 
     def __sub__(self, other: Color) -> Color:
@@ -141,16 +141,17 @@ class Color:
             self.r / 255 - other.r / 255,
             self.g / 255 - other.g / 255,
             self.b / 255 - other.b / 255,
-            alpha=self.a - other.a
+            alpha=self.a - other.a,
         )
 
-    def __mul__(self, other: int|float) -> Color:
+    def __mul__(self, other: int | float) -> Color:
         return rgb(
             self.r / 255 * other,
             self.g / 255 * other,
             self.b / 255 * other,
-            alpha=self.a * other
+            alpha=self.a * other,
         )
+
 
 # ## Color spaces
 
