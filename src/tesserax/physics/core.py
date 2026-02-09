@@ -12,6 +12,7 @@ class Body:
     def __init__(
         self,
         shape: Shape,
+        mass: float = 1.0,
         collider: Collider | None = None,
         material: Material | None = None,
         static: bool = False
@@ -29,6 +30,7 @@ class Body:
         self.rotation = getattr(shape.transform, "rotation", 0.0)
         self.angular_vel = 0.0
         self.torque = 0.0
+        self.mass = mass
 
         # Mass & Inertia Properties
         if static:
@@ -37,9 +39,7 @@ class Body:
         else:
             # 1. Mass
             b = shape.bounds()
-            area = b.width * b.height
-            mass = self.material.density * (area / 1000.0)
-            self.inv_mass = 1.0 / mass
+            self.inv_mass = 1.0 / self.mass
 
             # 2. Moment of Inertia
             # Box: m * (w^2 + h^2) / 12
@@ -74,3 +74,6 @@ class Body:
         # Angular Damping (Air resistance for spin)
         # This helps stop eternal spinning
         self.angular_vel *= 0.99
+
+    def apply(self, force: Point):
+        self.acc += force * self.mass

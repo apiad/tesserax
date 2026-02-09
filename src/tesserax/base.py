@@ -745,6 +745,9 @@ class Line(Component):
         self.p2 = p2
         self.curvature = curvature
 
+        if callable(self.p1) or callable(self.p2):
+            self._dynamic = True
+
     def _resolve(self) -> tuple[Point, Point]:
         p1 = self.p1() if callable(self.p1) else self.p1
         p2 = self.p2() if callable(self.p2) else self.p2

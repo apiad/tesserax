@@ -42,8 +42,8 @@ class Spring(Constraint):
         # Apply equal and opposite forces
         f_vector = normal * total_force
 
-        self.a.apply_force(f_vector)
-        self.b.apply_force(f_vector * -1)  # Newton's 3rd Law
+        self.a.apply(f_vector)
+        self.b.apply(f_vector * -1)  # Newton's 3rd Law
 
 
 class Rod(Constraint):

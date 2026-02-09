@@ -447,6 +447,7 @@ class Component(Shape):
     def __init__(self, **kwargs) -> None:
         super().__init__()
         self._primitive: Shape | None = None
+        self._dynamic = False
         self._kwargs = kwargs
 
     @abstractmethod
@@ -464,7 +465,7 @@ class Component(Shape):
 
     @property
     def _shape(self) -> Shape:
-        if self._primitive is None:
+        if self._primitive is None or self._dynamic:
             self._primitive = self._build().detach()
 
         return self._primitive

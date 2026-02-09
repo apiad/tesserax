@@ -33,7 +33,7 @@ class World:
             for b in self.bodies:
                 tracks[b]['tx'][t_norm] = b.pos.x
                 tracks[b]['ty'][t_norm] = b.pos.y
-                tracks[b]['rotation'][t_norm] = b.angle # Radians
+                tracks[b]['rotation'][t_norm] = b.rotation # Radians
 
             # 2. Physics Step
             self._step(dt)
