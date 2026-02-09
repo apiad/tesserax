@@ -173,7 +173,7 @@ from tesserax import deg
 scene = Scene(canvas)
 scene.play(
     r.animate.rotate(deg(90)),
-    c.animate.translate(-10, 0) + c.animate.translate(0, 0),
+    c.animate.translate(-10, 0) | c.animate.translate(0, 0),
     p.animate.warp(
         lambda p, t: p.dy(
             math.sin(p.x / logo.bounds().width * 20 + t * math.pi * 2) * 5

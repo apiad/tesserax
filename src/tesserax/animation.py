@@ -106,7 +106,7 @@ class Animation(ABC):
     def __mul__(self, factor: float) -> Animation:
         return self.repeating(factor)
 
-    def __add__(self, other: Animation) -> Animation:
+    def __or__(self, other: Animation) -> Animation:
         children = self.children if isinstance(self, Sequence) else [self]
 
         if isinstance(other, Sequence):
@@ -114,7 +114,18 @@ class Animation(ABC):
         else:
             children.append(other)
 
-        return Sequence(children)
+        return Sequence(*children)
+
+    def __add__(self, other: Animation) -> Animation:
+        children = self.children if isinstance(self, Parallel) else [self]
+
+        if isinstance(other, Sequence):
+            children.extend(other.children)
+        else:
+            children.append(other)
+
+        return Parallel(*children)
+
 
 
 # --- Structural Animations ---
@@ -134,22 +145,18 @@ class Wrapped(Animation):
 
 
 class Sequence(Animation):
-    def __init__(self, children: list[Animation]):
-        super().__init__()
-        self.children = children
+    def __init__(self, *animations: Animation, **kwargs):
+        super().__init__(**kwargs)
+        self.children = list(animations)
 
-        total_weight = sum(c.relative_weight for c in children)
+        total_weight = sum(c.relative_weight for c in animations)
         self.checkpoints = []
         current = 0.0
 
-        for c in children:
+        for c in animations:
             width = c.relative_weight / (total_weight or 1)
             current += width
             self.checkpoints.append(current)
-
-    def begin(self):
-        self._started = True
-        # Lazy start: Do not start children yet
 
     def _update(self, t: float):
         n = len(self.children)
@@ -184,6 +191,20 @@ class Sequence(Animation):
             active.begin()
 
         active.update(local_t)
+
+
+class Parallel(Animation):
+    def __init__(self, *animations: Animation, **kwargs):
+        super().__init__(**kwargs)
+        self.children = list(animations)
+
+    def _start(self) -> None:
+        for anim in self.children:
+            anim.begin()
+
+    def _update(self, t: float):
+        for anim in self.children:
+            anim.update(t)
 
 
 class Delayed(Animation):
