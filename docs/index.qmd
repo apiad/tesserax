@@ -55,7 +55,6 @@ with Canvas() as canvas:
     )
 
 canvas.fit().display()
-
 ```
 
 ### Step 2: Adding Geometric Shapes
