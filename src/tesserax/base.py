@@ -287,8 +287,8 @@ class Text(Visual):
         font: str = "sans-serif",
         anchor: Literal["start", "middle", "end"] = "middle",
         baseline: Literal["top", "middle", "bottom"] = "middle",
-        fill: Color = Colors.Transparent,
-        stroke: Color = Colors.Black,
+        fill: Color = Colors.Black,
+        stroke: Color = Colors.Transparent,
         width: float = 1.0,
     ) -> None:
         super().__init__(fill=fill, stroke=stroke, width=width)

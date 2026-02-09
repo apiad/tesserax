@@ -316,6 +316,16 @@ class Shape(ABC):
 
         return self
 
+    def attach(self) -> Self:
+        from .base import Group
+
+        self.detach()
+
+        if Group.stack:
+            Group.stack[-1].append(self)
+
+        return self
+
     def show(self) -> Self:
         self.hidden = False
         return self
@@ -391,7 +401,7 @@ class Shape(ABC):
         return self
 
     def clone(self) -> Self:
-        return copy.deepcopy(self)
+        return copy.deepcopy(self).attach()
 
     def __add__(self, other: Shape) -> Group:
         # Import internally to avoid circular import with base.py

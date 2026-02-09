@@ -9,7 +9,9 @@ website:
       - href: index.qmd
         text: Home
       - href: core.qmd
-        text: User Guide
+        text: Core
+      - href: layout.qmd
+        text: Layouts
       - href: animations.qmd
         text: Animations
       - href: gallery.qmd

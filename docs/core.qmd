@@ -1,284 +1,258 @@
-This guide will walk you through building a scene from scratch, demonstrating how **Tesserax** handles shapes, positioning, and composition.
+# Core Concepts & Primitives
 
-## The Canvas and the First Shape
+**Tesserax** is designed to be a "thin layer" of geometric logic over SVG. Unlike plotting libraries that try to decide for you how axes and scales should work, Tesserax gives you a blank canvas and a set of precise drafting tools.
 
-Every drawing starts with a `Canvas`. In Tesserax, the `Canvas` acts as the root container and provides a context manager to automatically add shapes created within its block.
+This guide covers the fundamental building blocks: the coordinate system, basic shapes, transformations, the anchor system, and the powerful `Polyline` API.
 
-We will start by creating a simple 100x50 rectangle.
+## The Canvas and Coordinates
 
-```{python}
-from tesserax import Canvas, Rect
-from tesserax.color import Colors
+Every diagram begins with a `Canvas`. In Tesserax, the `Canvas` serves two roles:
 
-# Initialize the canvas
-with Canvas() as canvas:
-    # Adding our first shape
-    # Primitives support standard SVG attributes like fill
-    Rect(100, 50, fill=Colors.LightBlue)
+1.  **Container**: It collects all shapes created within its context.
+2.  **Viewport**: It manages the final SVG bounding box and coordinate mapping.
 
-# fit() adjusts the viewport to the content
-# display() renders it directly in the documentation
-canvas.fit(padding=10).display()
+### Mathematical Coordinate System
 
-```
+Tesserax follows the standard **SVG Coordinate System**:
 
-## Drawing Text
+* The **origin** $(0, 0)$ is at the top-left corner (initially).
+* The **X-axis** points to the right ($+x$).
+* The **Y-axis** points down ($+y$).
 
-Text behaves exactly like any other shape in Tesserax.
+This is crucial to remember when applying rotations. A positive rotation (counter-clockwise) moves the $+x$ axis towards the $+y$ axis (downwards on the screen).
 
 ```{python}
-from tesserax import Canvas, Text
-
-with Canvas() as canvas:
-    Rect(150, 40, fill=Colors.LightBlue)
-    Text("Hello World", size=24, font="serif")
-
-canvas.align().fit(10).display()
-```
-
-## Adding and Transforming Shapes
-
-While you can add shapes and manually set their coordinates, Tesserax provides a fluent API for transformations. Here, we add a `Circle` and use `translated()` to move it into position.
-
-```{python}
-from tesserax import Canvas, Rect, Circle
-
-with Canvas() as canvas:
-    Rect(100, 50, fill=Colors.LightBlue)
-
-    # Adding a second shape and moving it manually
-    # Circle is defined by its radius
-    Circle(30, fill="salmon").translated(100, 0)
-
-canvas.fit(padding=10).display()
-
-```
-
-## Grouping and Aligning Shapes
-
-The `Group` class acts a container that has control over its children positions, so you can align and layout shapes easily with a procedural API.
-
-```{python}
-from tesserax import Canvas, Rect, Circle, Square, Group
-
-with Canvas() as canvas:
-    with Group() as g:
-        Rect(100, 50, fill=Colors.LightBlue)
-        Circle(30, fill=Colors.Salmon)
-        Square(40, fill=Colors.Pink)
-
-    g.align("vertical", "center").distribute("horizontal", gap=10)
-
-canvas.fit(padding=10).display()
-
-```
-
-## Simplifying with Layouts
-
-Manually calculating offsets or calling procedural alignment becomes tedious in complex diagrams. **Layouts** automate this positioning. The `Row` layout arranges its children horizontally with an optional `gap`. The `Column` does so vertically.
-
-```{python}
-from tesserax import Canvas, Rect, Circle
-from tesserax.layout import RowLayout
-
-with Canvas() as canvas:
-    # Row is also a context manager
-    with RowLayout(gap=10):
-        Rect(100, 50, fill=Colors.LightBlue)
-        Circle(30, fill=Colors.Salmon)
-        Square(40, fill=Colors.Pink)
-
-canvas.fit(padding=10).display()
-
-```
-
-## Composing Transforms and Groups
-
-Because Layouts are themselves a type of `Group`, you can apply transformations to the entire layout at once. In this step, we will:
-
-1. Create a `Row` layout.
-2. Rotate that entire row by 45 degrees.
-3. Add a new shape outside of that row.
-4. Wrap everything in another `Group` to demonstrate hierarchical composition.
-
-
-```{python}
-from tesserax import Canvas, Rect, Circle, Group, deg
-from tesserax.layout import RowLayout
-
-with Canvas() as canvas:
-    # Create and rotate a layout
-    with RowLayout(gap=20).rotated(deg(45)):
-        Rect(100, 50, fill=Colors.LightBlue)
-        Circle(30, fill=Colors.Salmon)
-
-    # Add another shape to the scene
-    Rect(40, 40, fill=Colors.LightGreen).translated(100, -50)
-
-    # All shapes here are already part of the Canvas group.
-
-canvas.fit(padding=10).display()
-
-```
-
-By nesting Layouts and Groups, you can build extremely complex diagrams without ever having to manually compute a single SVG coordinate string.
-
-## Bridging Contexts with Anchors
-
-One of the most powerful features of Tesserax is the **Anchor System**. When you place a shape inside a `Layout` or a `Group`, its local coordinates change to reflect its position within that container. However, Tesserax allows you to retrieve the "global" position of a shape's anchors, making it trivial to connect objects across different coordinate systems.
-
-In this example, we will connect the `Circle` (which is inside a rotated `Row`) to the `Rect` (which is outside) using an `Arrow`, and the two shapes inside the row. Notice the `curvature` parameter which controls the direction (sign) and radius of curvature, from $0$ (flat) to $1$ (full semicirle).
-
-```{python}
-from tesserax import Canvas, Rect, Circle, Arrow, deg
-from tesserax.layout import RowLayout
-
-with Canvas() as canvas:
-    # 1. Create a Row and rotate it
-    with RowLayout(gap=40) as row:
-        r1 = Rect(80, 40, fill=Colors.AliceBlue)
-        c1 = Circle(30, fill=Colors.MistyRose)
-
-    row.rotated(deg(45)).translated(50, 50)
-
-    # 2. Create a target rectangle outside the layout
-    target = Rect(60, 60, fill=Colors.Honeydew).translated(250, 0)
-
-    # 3. Connect them!
-    # We use .anchor() to get semantic points.
-    # Even though c1 is inside a rotated row, c1.anchor("right")
-    # returns the correct global coordinate for the arrow.
-    Arrow(
-        r1.anchor("right"),
-        c1.anchor("left"),
-        curvature=-0.25,
-    )
-
-    Arrow(
-        c1.anchor("top"),
-        target.anchor("left"),
-        curvature=0.5,
-    )
-
-canvas.fit(padding=10).display()
-```
-
-### How Coordinate Mapping Works
-
-When you call `shape.anchor(name)`, Tesserax performs the following behind the scenes:
-
-1. **Local Geometry**: It identifies the point on the shape (e.g., the rightmost edge of the `Circle`).
-2. **Transformation Path**: It traverses up the hierarchy (from the `Circle` to the `Row`, then to the `Canvas`), applying every rotation, scale, and translation encountered along the way.
-3. **Global Result**: It returns a `Point` that represents exactly where that anchor sits on the final SVG canvas.
-
-This means you never have to manually calculate `sin()` or `cos()` to find where a rotated object's edge is located—you just ask for the anchor.
-
-For explicit anchoring, you can use `Shape.resolve(p: Point)` to map a point in local space to the global space, this way you can, e.g., get the point at 2/3rds of the way inside a rectangle and map it to global space.
-
-## Drawing Paths and Lines
-
-While shapes like `Rect` and `Circle` cover many use cases, sometimes you need to draw arbitrary lines, custom shapes, or connectors. Tesserax offers two ways to do this: the low-level `Path` for precise control and the high-level `Polyline` for rapid sequences.
-
-### The Low-Level `Path` Object
-
-The `Path` class roughly corresponds to the SVG `<path>` element. It operates like a pen: you move it to a location, then draw lines or curves to subsequent points.
-
-This is ideal for creating custom glyphs or specific geometric curves.
-
-```{python}
-from tesserax import Canvas, Path
-
-with Canvas() as canvas:
-    # 1. A simple custom shape (a triangle)
-    p = Path()
-    p.jump_to(0, 0).line_to(50, 50).line_to(0, 50).close()
-    p.translated(20, 20)
-
-    # 2. A curved path using Bezier curves
-    curve = Path()
-    curve.jump_to(100, 20)
-
-    # Cubic Bezier: 2 control points, 1 end point
-    curve.cubic_to(
-        150, 20,   # Control Point 1
-        150, 80,   # Control Point 2
-        200, 80    # End Point
-    )
-
-    # Quadratic Bezier: 1 control point, 1 end point
-    curve.quadratic_to(
-        250, 80,   # Control Point
-        300, 20    # End Point
-    )
-
-canvas.fit(padding=10).display()
-```
-
-### The High-Level `Polyline`
-
-For many diagrams, you simply want to connect a sequence of points. The `Polyline` shape automates this.
-
-Its most powerful feature is the `smoothness` parameter. Instead of manually calculating Bezier control points to round a corner, you can simply tell `Polyline` to blend the corners for you.
-
-* `smoothness=0`: Sharp corners (standard polygon).
-* `smoothness=0.2`: Subtle rounded corners (like a modern UI box).
-* `smoothness=1`: Maximum rounding (spline-like).
-
-```{python}
-from tesserax import Canvas, Polyline, Point
-
-# Helper to generate a zigzag pattern
-points = [
-    Point(0, 50), Point(50, 0), Point(100, 50),
-    Point(150, 0), Point(200, 50)
-]
-
-with Canvas() as canvas:
-    # 1. Sharp Polyline (Default)
-    Polyline(points, smoothness=0).translated(0, 0)
-
-    # 2. Slightly Rounded (30% smoothing)
-    # Note how it preserves most of the straight line but rounds the tip.
-    Polyline(points, smoothness=0.3, stroke=Colors.Blue).translated(0, 60)
-
-    # 3. Fully Smooth (100% smoothing)
-    # This creates a flowing wave-like appearance, and closed.
-    Polyline(points, smoothness=1.0, stroke=Colors.Red, closed=True).translated(0, 120)
-
-canvas.fit(10).display()
-```
-
-This makes `Polyline` an excellent tool for drawing graph edges, wiring diagrams, or "hand-drawn" style annotations where sharp vertices look unnatural.
-
-### Using smart connections
-
-When drawing complex diagrams, it is often hard to wire connections in a way that respects shapes, especially if you keep changing the code. The `Grid` object in `tesserax.path` provides a way to keep track of where shapes are placed inside a group, and `trace` method to automatically find optimal routes for connections that do not collide with shapes.
-
-```{python}
-from tesserax import Canvas, Circle, Line, Polyline
-from tesserax.layout import RowLayout
-from tesserax.path import Grid
+from tesserax import Canvas, Rect, Text
 from tesserax.color import Colors
 
 with Canvas() as canvas:
-    with RowLayout(gap=30) as row:
-        c1 = Circle(20, fill=Colors.LightBlue)
-        c2 = Circle(30, fill=Colors.LightPink)
-        c3 = Circle(40, fill=Colors.LightPink)
+    # A simple reference grid
+    Rect(100, 100, stroke=Colors.LightGray, fill=Colors.White)
 
-    g = Grid(row)
+    # Origin marker
+    Text("(0,0)", size=20)
 
-    Polyline(
-        g.trace(c1.anchor("left").dx(-5), c3.anchor("right").dx(5)),
-        smoothness=1,
-        marker_end="arrow",
-    )
+    # Positive X/Y indication
+    Text("+X", size=20).translated(70, 0)
+    Text("+Y", size=20).translated(0, 70)
 
-    Polyline(
-        g.trace(c2.anchor("bottom").dy(5), c3.anchor("bottom").dy(5)),
-        smoothness=1,
-        marker_end="arrow",
-    )
+canvas.fit(5).display()
+```
 
-canvas.fit(10).display()
+## Basic Primitives
+
+Tesserax provides a suite of geometric atoms. All visual shapes inherit from the `Visual` class, which standardizes properties like `fill`, `stroke`, and `width`.
+
+### Rectangles and Circles
+
+* `Rect(w, h)`: Defined by width and height. **Centered** at  by default.
+* `Square(size)`: A convenience wrapper for `Rect`.
+* `Circle(r)`: Defined by radius. **Centered** at .
+* `Ellipse(rx, ry)`: Defined by horizontal and vertical radii.
+
+```{python}
+from tesserax import Canvas, Rect, Square, Circle, Ellipse
+
+with Canvas() as c:
+    # Shapes are placed at (0,0) by default, so we translate them to separate them.
+    Square(40, fill=Colors.LightBlue).translated(0, 0)
+    Rect(60, 30, fill=Colors.LightGreen).translated(60, 0)
+    Circle(20, fill=Colors.Salmon).translated(120, 0)
+    Ellipse(20, 10, fill=Colors.Plum).translated(170, 0)
+
+c.fit(10).display()
+
+```
+
+### Text and Alignment
+
+Text in SVG can be tricky due to alignment issues. Tesserax simplifies this by defaulting to **center/middle** alignment.
+
+You can control this via:
+
+* `anchor`: Horizontal alignment (`"start"`, `"middle"`, `"end"`).
+* `baseline`: Vertical alignment (`"top"`, `"middle"`, `"bottom"`).
+
+```{python}
+from tesserax import Text, Line, Point
+
+with Canvas() as c:
+    # Draw a crosshair at the origin to show alignment
+    Line(Point(0, -20), Point(0, 20), stroke=Colors.LightGray)
+    Line(Point(-50, 0), Point(50, 0), stroke=Colors.LightGray)
+
+    # Default Text (Centered)
+    Text("Origin", size=16, fill=Colors.Black)
+
+    # Custom alignment
+    Text("Top-Left", anchor="end", baseline="bottom").translated(-20, -20)
+    Text("Bottom-Right", anchor="start", baseline="top").translated(20, 20)
+
+c.fit(10).display()
+```
+
+## The Transformation Model
+
+Every shape in Tesserax carries a `Transform` object. This defines an **Affine Transformation** that maps the shape's local coordinate space to the parent space.
+
+The operation order is strict: **Scale - Rotate - Translate**.
+
+1. **Scale**: The object is stretched.
+2. **Rotate**: The object is rotated around the (scaled) origin.
+3. **Translate**: The object is moved to its final position.
+
+Tesserax provides a fluent API to chain these operations:
+
+```{python}
+from tesserax import Canvas, Rect, deg
+
+with Canvas() as c:
+    # 1. Create a rectangle at (0,0)
+    r = Rect(50, 30, fill=Colors.LightBlue, stroke=Colors.Blue)
+
+    # 2. Scale it by 1.5x
+    # 3. Rotate it by 45 degrees
+    # 4. Move it to (50, 50)
+    r.scaled(1.5).rotated(deg(45)).translated(50, 50)
+
+    # Show the origin for reference
+    Circle(2, fill=Colors.Red).translated(50, 50)
+
+c.fit(20).display()
+```
+
+## The Anchor System
+
+One of Tesserax's most powerful features is semantic anchoring. Because shapes are often nested inside Groups or transformed heavily, calculating the exact coordinate of "the top-right corner of that rotated rectangle" is mathematically tedious.
+
+The `.anchor(name)` method solves this by resolving the local coordinate through the entire transformation stack.
+
+Available anchors: `center`, `top`, `bottom`, `left`, `right`, `topleft`, `topright`, `bottomleft`, `bottomright`.
+
+```{python}
+from tesserax import Arrow
+
+with Canvas() as c:
+    # A generic shape
+    obj = Rect(60, 40, fill=Colors.Honeydew, stroke=Colors.Green)
+    obj.rotated(deg(30)).translated(50, 50)
+
+    # A target point
+    target = Circle(5, fill=Colors.Red).translated(150, 50)
+
+    # Connect the top-right corner of the rotated rect to the target
+    # We don't need to know where "top-right" is in global space,
+    # .anchor() calculates it.
+    Arrow(obj.anchor("topright"), target.anchor("center"))
+
+c.fit(20).display()
+```
+
+## Paths and Lines
+
+For arbitrary drawing, Tesserax offers both low-level and high-level path tools.
+
+### The Low-Level `Path`
+
+The `Path` class maps directly to SVG commands (`M`, `L`, `C`, `Q`, `Z`).
+
+```{python}
+from tesserax import Path
+
+with Canvas() as c:
+    p = Path(fill=Colors.Transparent, stroke=Colors.Blue, width=2)
+    p.jump_to(0, 0)
+    p.line_to(50, 50)
+    p.quadratic_to(100, 50, 100, 0) # Control point (100,50), End (100,0)
+
+c.fit(10).display()
+```
+
+### Lines and Arrows
+
+`Line` and `Arrow` are specialized paths that connect two points. They support a `curvature` parameter to create arcs without manually calculating Bezier control points.
+
+```{python}
+from tesserax import Line
+
+with Canvas() as c:
+    start, end = Point(0, 0), Point(100, 0)
+
+    Line(start, end, curvature=0, stroke=Colors.LightGray) # Straight
+    Line(start, end, curvature=0.5, stroke=Colors.Blue)   # Arc Up
+    Arrow(start, end, curvature=-0.5, stroke=Colors.Red)  # Arc Down
+
+c.fit(30).display()
+```
+
+## The Polyline API
+
+The `Polyline` is a versatile tool for creating complex polygons, wireframes, and smooth curves. It maintains a list of `Point` objects and renders them sequentially.
+
+### Smoothing and Rounding
+
+The `smoothness` parameter ($0$ to $1$) automatically converts sharp vertices into rounded corners using quadratic Bezier interpolation.
+
+```{python}
+from tesserax import Polyline
+
+pts = [Point(0, 0), Point(50, 50), Point(100, 0), Point(150, 50)]
+
+with Canvas() as c:
+    # Sharp (0.0)
+    Polyline(pts, smoothness=0, stroke=Colors.Black).translated(0, 0)
+
+    # Rounded (0.5)
+    Polyline(pts, smoothness=0.5, stroke=Colors.Blue).translated(0, 60)
+
+    # Fluid (1.0)
+    Polyline(pts, smoothness=1.0, stroke=Colors.Red).translated(0, 120)
+
+c.fit(10).display()
+```
+
+### Procedural Generation
+
+The `Polyline` class includes powerful methods to procedurally generate and manipulate shapes.
+
+* `Polyline.poly(n, radius)`: Creates a regular n-gon (triangle, hexagon, etc.).
+* `.subdivide(n)`: Inserts  midpoints between every segment, increasing resolution.
+* `.simplify(tolerance)`: Removes points that are collinear or redundant.
+* `.expand(delta)`: Pushes points away from the origin (inflation).
+* `.apply(func)`: Maps a function over every point.
+
+```{python}
+import math
+
+with Canvas() as c:
+    # 1. Create a Hexagon
+    hex = Polyline.poly(n=6, radius=40, fill=Colors.AliceBlue)
+    hex.translated(50, 50)
+
+    # 2. Create a "Wobbly" Circle
+    # Start with a simple polygon, subdivide it to get many vertices,
+    # then apply a noise function to the radius.
+    blob = Polyline.poly(n=8, radius=40, fill=Colors.MistyRose, smoothness=1)
+    blob.subdivide(3) # Increase vertex count 8 -> 16 -> 32 -> 64
+
+    # Apply a wave function to distort it
+    def distort(p: Point) -> Point:
+        # Get angle of point
+        theta = math.atan2(p.y, p.x)
+        # Vary radius based on angle
+        wave = math.sin(theta * 5) * 5
+        return p + p.normalize() * wave
+
+    blob.apply(distort)
+    blob.translated(150, 50)
+
+    # 3. Contract/Expand
+    # Useful for creating outlines or offsets
+    base = Polyline.poly(4, 30, stroke=Colors.Black)
+    inner = base.clone().contract(5) # Shrink
+
+    base.translated(250, 50)
+    inner.translated(250, 50)
+
+c.fit(10).display()
 ```
