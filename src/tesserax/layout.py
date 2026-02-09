@@ -195,12 +195,14 @@ class ForceLayout(Layout):
         self,
         shapes: list[Shape] | None = None,
         iterations: int = 100,
+        diameter: int = 100,
         k: float | None = None,
     ) -> None:
         super().__init__(shapes)
         self.connections: list[tuple[Shape, Shape]] = []
         self.iterations = iterations
-        self.k_const = k
+        self.diameter = diameter
+        self.k = k
 
     def connect(self, u: Shape, v: Shape) -> Self:
         """
@@ -226,8 +228,8 @@ class ForceLayout(Layout):
 
         # 2. Simulation parameters
         # k is the optimal distance between nodes
-        area = 600 * 600
-        k = self.k_const or math.sqrt(area / len(self.shapes))
+        area = self.diameter * self.diameter
+        k = self.k or math.sqrt(area / len(self.shapes))
         t = 100.0  # Temperature (max displacement per step)
         dt = t / self.iterations
 
