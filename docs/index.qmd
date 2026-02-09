@@ -6,12 +6,12 @@ Beyond static diagrams, Tesserax now includes a **deterministic physics engine**
 
 ## Key Features
 
-* **Declarative Layouts**: Effortlessly arrange shapes in `Row`, `Column`, or `Grid` containers, or use algorithmic layouts like `Tree` and `Force`.
-* **Physics Simulation**: Bake high-precision rigid body simulations directly into your animations using the built-in `World` and `Body` primitives.
-* **Cinematic Animations**: Create complex motion graphics using a declarative, code-first API that supports keyframes, morphing, and warping.
-* **Anchor System**: Connect shapes using semantic anchors like `top`, `bottom`, `left`, `right`, and `center`.
 * **Rich Primitives**: Includes standard shapes (`Rect`, `Circle`) plus advanced procedural geometry like `Polyline` with smoothing and subdivision support.
+* **Declarative Layouts**: Effortlessly arrange shapes in `Row`, `Column`, or `Grid` containers, or use algorithmic layouts like `Tree` and `Force`.
 * **Smart Canvas**: Automatically fit the canvas viewport to the content with adjustable padding.
+* **Anchor System**: Connect shapes using semantic anchors like `top`, `bottom`, `left`, `right`, and `center`.
+* **Cinematic Animations**: Create complex motion graphics using a declarative, code-first API that supports keyframes, morphing, and warping.
+* **Physics Simulation**: Bake high-precision rigid body simulations directly into your animations using the built-in `World` and `Body` primitives.
 
 ## Installation
 
