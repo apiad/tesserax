@@ -4,6 +4,7 @@ from .forces import Field
 from .constraints import Constraint
 from .collisions import Collision
 
+
 class World:
     def __init__(self):
         self.bodies: list[Body] = []
@@ -23,7 +24,7 @@ class World:
         steps = int(duration / dt)
 
         # Tracks now include 'rotation'
-        tracks = {b: {'tx': {}, 'ty': {}, 'rotation': {}} for b in self.bodies}
+        tracks = {b: {"tx": {}, "ty": {}, "rotation": {}} for b in self.bodies}
 
         time = 0.0
         for _ in range(steps):
@@ -31,9 +32,9 @@ class World:
 
             # 1. Record
             for b in self.bodies:
-                tracks[b]['tx'][t_norm] = b.pos.x
-                tracks[b]['ty'][t_norm] = b.pos.y
-                tracks[b]['rotation'][t_norm] = b.rotation # Radians
+                tracks[b]["tx"][t_norm] = b.pos.x
+                tracks[b]["ty"][t_norm] = b.pos.y
+                tracks[b]["rotation"][t_norm] = b.rotation  # Radians
 
             # 2. Physics Step
             self._step(dt)
@@ -42,12 +43,14 @@ class World:
         # 3. Bake
         anims = []
         for b, props in tracks.items():
-            anims.append(KeyframeAnimation(
-                b.shape,
-                tx=props['tx'],
-                ty=props['ty'],
-                rotation=props['rotation'] # This maps to transform.rotation
-            ))
+            anims.append(
+                KeyframeAnimation(
+                    b.shape,
+                    tx=props["tx"],
+                    ty=props["ty"],
+                    rotation=props["rotation"],  # This maps to transform.rotation
+                )
+            )
 
         return Parallel(*anims)
 
@@ -73,7 +76,8 @@ class World:
                 b = self.bodies[j]
 
                 # Optimization: Don't check static vs static
-                if a.static and b.static: continue
+                if a.static and b.static:
+                    continue
 
                 if col := Collision.solve(a, b):
                     col.resolve()

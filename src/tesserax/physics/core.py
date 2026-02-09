@@ -2,11 +2,13 @@ from dataclasses import dataclass
 from tesserax.core import Shape, Point
 from .colliders import Collider, BoxCollider, CircleCollider
 
+
 @dataclass
 class Material:
     density: float = 1.0
     restitution: float = 0.5
     friction: float = 0.3
+
 
 class Body:
     def __init__(
@@ -15,7 +17,7 @@ class Body:
         mass: float = 1.0,
         collider: Collider | None = None,
         material: Material | None = None,
-        static: bool = False
+        static: bool = False,
     ):
         self.shape = shape
         self.material = material or Material()
@@ -45,7 +47,7 @@ class Body:
             # Box: m * (w^2 + h^2) / 12
             # Circle: 0.5 * m * r^2
             if isinstance(collider, CircleCollider):
-                inertia = 0.5 * mass * (collider.radius ** 2)
+                inertia = 0.5 * mass * (collider.radius**2)
             else:
                 # Default to Box inertia
                 w, h = b.width, b.height
@@ -54,10 +56,13 @@ class Body:
             self.inv_inertia = 1.0 / inertia
 
         # Collider
-        self.collider = collider or BoxCollider(shape.bounds().width, shape.bounds().height)
+        self.collider = collider or BoxCollider(
+            shape.bounds().width, shape.bounds().height
+        )
 
     def integrate(self, dt: float):
-        if self.static: return
+        if self.static:
+            return
 
         # Linear
         self.vel += self.acc * dt
