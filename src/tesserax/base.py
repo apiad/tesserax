@@ -5,7 +5,6 @@ from typing import Callable, Literal, Protocol, Self, TYPE_CHECKING, cast
 from tesserax.color import Color, Colors
 from .core import Anchor, IShape, Point, Shape, Bounds, Component
 
-
 if TYPE_CHECKING:
     from .animation import StyledAnimator, TextAnimator, PolylineAnimator
 

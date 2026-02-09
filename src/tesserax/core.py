@@ -291,6 +291,7 @@ class Bounds:
 
 class IShape(Protocol):
     transform: Transform
+
     def render(self) -> str: ...
 
 

@@ -127,7 +127,6 @@ class Animation(ABC):
         return Parallel(*children)
 
 
-
 # --- Structural Animations ---
 
 
