@@ -18,6 +18,8 @@ def solver[C1: Collider, C2: Collider](t1: type[C1], t2: type[C2]):
 
 @dataclass
 class Collision:
+    """Stores information about a collision between A and B."""
+
     a: Body
     b: Body
     normal: Point  # A -> B
@@ -51,7 +53,8 @@ class Collision:
         if total_inv_mass == 0:
             return
 
-        correction = max(self.depth - 0.01, 0.0) / total_inv_mass * 0.5
+        # Increased from 0.5 to 0.8 to reduce "mushiness"
+        correction = max(self.depth - 0.01, 0.0) / total_inv_mass * 0.8
         move = n * correction
         if not a.static:
             a.pos -= move * a.inv_mass
@@ -76,8 +79,6 @@ class Collision:
             return  # Separating
 
         # 4. Compute Impulse Scalar (J)
-        # J = -(1+e) * V_rel / (1/ma + 1/mb + (ra x n)^2 / Ia + (rb x n)^2 / Ib)
-
         raxn = ra.x * n.y - ra.y * n.x  # Cross product 2D (scalar)
         rbxn = rb.x * n.y - rb.y * n.x
 
@@ -99,7 +100,6 @@ class Collision:
         # 5. Friction Impulse
         t = (rv - (n * vel_along_normal)).normalize()
 
-        # Solve for tangent impulse Jt
         raxt = ra.x * t.y - ra.y * t.x
         rbxt = rb.x * t.y - rb.y * t.x
         inv_mass_sum_t = (
@@ -112,7 +112,6 @@ class Collision:
         jt = -(rv.x * t.x + rv.y * t.y)
         jt /= inv_mass_sum_t
 
-        # Coulomb's Law
         mu = math.sqrt(a.material.friction * b.material.friction)
 
         max_j = j * mu
@@ -126,13 +125,11 @@ class Collision:
     def _apply_impulse(self, impulse: Point, ra: Point, rb: Point):
         a, b = self.a, self.b
 
-        # Linear
         if not a.static:
             a.vel -= impulse * a.inv_mass
         if not b.static:
             b.vel += impulse * b.inv_mass
 
-        # Angular: Torque = r x F
         torque_a = ra.x * impulse.y - ra.y * impulse.x
         torque_b = rb.x * impulse.y - rb.y * impulse.x
 
@@ -228,29 +225,23 @@ def circle_to_box(circ: Body, box: Body) -> Collision | None:
     if dist_sq > r**2:
         return None
 
-    # 3. Calculate World Normal & Depth
     dist = math.sqrt(dist_sq)
     if dist == 0:
-        # Deep penetration fallback (Local Up)
         local_n = Point(0, -1)
         depth = r
     else:
         local_n = Point(dx / dist, dy / dist)
         depth = r - dist
 
-    # Rotate Normal to World (Box Frame -> World)
+    # Rotate Normal to World
     # Note: local_n points Box->Circle. This matches A->B convention?
-    # Wait, solver(Circle, Box) means A=Circle, B=Box.
-    # We want Normal A->B (Circle->Box).
-    # current local_n is Box->Circle. So we negate.
+    # No, A=Circle, B=Box. We want A->B. Current is B->A.
     local_n = local_n * -1
 
     cos_w, sin_w = math.cos(box_rot), math.sin(box_rot)
     nx = local_n.x * cos_w - local_n.y * sin_w
     ny = local_n.x * sin_w + local_n.y * cos_w
 
-    # 4. Calculate World Contact Point
-    # Transform closest box point (cx, cy) to world
     wx = cx * cos_w - cy * sin_w
     wy = cx * sin_w + cy * cos_w
     contact = box.pos + Point(wx, wy)
@@ -263,67 +254,67 @@ def box_to_box(a: Body, b: Body) -> Collision | None:
     verts_a = _get_box_vertices(a)
     verts_b = _get_box_vertices(b)
 
-    # SAT: Check all axes
-    axes = _get_axes(verts_a) + _get_axes(verts_b)
+    axes_a = _get_axes(verts_a)
+    axes_b = _get_axes(verts_b)
+    all_axes = axes_a + axes_b
 
     min_overlap = float("inf")
     best_axis = Point(0, 0)
 
-    for axis in axes:
+    # 1. SAT Check
+    for axis in all_axes:
         min_a, max_a = _project(verts_a, axis)
         min_b, max_b = _project(verts_b, axis)
 
         if max_a < min_b or max_b < min_a:
-            return None  # Gap found
+            return None
 
         overlap = min(max_a, max_b) - max(min_a, min_b)
         if overlap < min_overlap:
             min_overlap = overlap
             best_axis = axis
 
-    # Correct Normal Direction: Must point A -> B
+    # 2. Correct Normal A -> B
     direction = b.pos - a.pos
     if direction.x * best_axis.x + direction.y * best_axis.y < 0:
         best_axis = best_axis * -1
 
-    # --- FIND CONTACT POINT (Deepest Vertex) ---
-    # 1. Identify "Incident" Body (The one pushing INTO the other)
-    # We check which vertices of B are most opposed to the Normal (deepest in A)
-    # Or which vertices of A are most along the Normal (deepest in B)
-    # Since Normal is A->B, we look for vertex of A most along Normal?
-    # Actually, easiest heuristic:
-    # Find vertex of A closest to B's center? No.
-    # Find vertex of A with Max projection along Normal?
-    # Find vertex of B with Min projection along Normal?
+    # 3. Identify Contact Point (Reference Face vs Incident Vertex)
+    # The body with a face most perpendicular to the normal is the Reference.
+    def get_max_axis_dot(axes, n):
+        max_d = 0.0
+        for ax in axes:
+            d = abs(ax.x * n.x + ax.y * n.y)
+            if d > max_d:
+                max_d = d
+        return max_d
 
-    # Let's check both sets and pick the one that is actually inside.
-    # Or simpler: The "Support Point" is the vertex furthest along the separation direction.
+    dot_a = get_max_axis_dot(axes_a, best_axis)
+    dot_b = get_max_axis_dot(axes_b, best_axis)
 
-    # Vertices of B with Min projection along Normal (Deepest into A)
-    min_proj_b = float("inf")
-    best_vert_b = verts_b[0]
-    for v in verts_b:
-        proj = v.x * best_axis.x + v.y * best_axis.y
-        if proj < min_proj_b:
-            min_proj_b = proj
-            best_vert_b = v
-
-    # Vertices of A with Max projection along Normal (Deepest into B)
-    max_proj_a = float("-inf")
-    best_vert_a = verts_a[0]
-    for v in verts_a:
-        proj = v.x * best_axis.x + v.y * best_axis.y
-        if proj > max_proj_a:
-            max_proj_a = proj
-            best_vert_a = v
-
-    # Which penetration is significant?
-    # Usually we pick the vertex from the "Incident Face".
-    # For V1, we simply return the midpoint of these two "deepest" candidates
-    # OR simpler: pick 'best_vert_b' (Vertex of B penetrating A).
-    # Since Normal is A->B, B is being pushed away. The vertex of B "furthest back"
-    # is the one penetrating most.
-
-    contact = best_vert_b
+    if dot_a > dot_b:
+        # A is Reference (Flat Face), B is Incident (Corner)
+        # Find B's vertex most opposite to Normal (deepest into A)
+        candidates = verts_b
+        best_v = candidates[0]
+        min_d = float("inf")
+        for v in candidates:
+            d = v.x * best_axis.x + v.y * best_axis.y
+            if d < min_d:
+                min_d = d
+                best_v = v
+        contact = best_v
+    else:
+        # B is Reference (Flat Face), A is Incident (Corner)
+        # Find A's vertex most along Normal (deepest into B)
+        candidates = verts_a
+        best_v = candidates[0]
+        max_d = float("-inf")
+        for v in candidates:
+            d = v.x * best_axis.x + v.y * best_axis.y
+            if d > max_d:
+                max_d = d
+                best_v = v
+        contact = best_v
 
     return Collision(a, b, best_axis, min_overlap, contact)

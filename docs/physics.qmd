@@ -65,15 +65,22 @@ Tesserax physics engine also supports some simple constraints like `Spring`s (so
 from tesserax import Canvas, Rect, Circle, Line, Point
 from tesserax.animation import Scene
 from tesserax.physics import World, Gravity, Material
-from tesserax.physics.constraints import Spring
+from tesserax.physics.constraints import Spring, Rod
 
 with Canvas() as canvas:
     floor = Rect(600, 50, fill="#333").translated(300, 380)
     box = Rect(50, 50, fill="steelblue").translated(200, 100)
     ball = Circle(15, fill="orange").translated(300, 100)
+    ball2 = Rect(20, 20, fill="green").translated(400, 100)
     spring_line = Line(
         lambda: box.anchor("center"),
         lambda: ball.anchor("center"),
+        stroke="gray",
+        width=3,
+    )
+    rod_line = Line(
+        lambda: ball.anchor("center"),
+        lambda: ball2.anchor("center"),
         stroke="gray",
         width=3,
     )
@@ -89,9 +96,13 @@ body_box.angular_vel = 5.0  # Radians/sec
 body_ball = world.add(
     ball, material=Material(restitution=0.8), collider=CircleCollider(15)
 )
+body_ball2 = world.add(
+    ball2, material=Material(restitution=0.1), mass=2
+)
 
 # Physics Constraint
 world.constraint(Spring(body_box, body_ball, length=100, k=5.0))
+world.constraint(Rod(body_ball, body_ball2, length=100))
 
 # 3. Bake
 simulation = world.simulate(duration=4.0)
