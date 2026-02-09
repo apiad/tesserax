@@ -96,7 +96,7 @@ class Animation(ABC):
         return Wrapped(self).rated(lambda t: (t * times) % 1.0)
 
     def looping(self) -> Animation:
-        return Wrapped(self).rated(lambda t: t / 2 if t < 0.5 else 1 - t / 2)
+        return Wrapped(self).rated(lambda t: 2 * t if t < 0.5 else 2 - 2 * t)
 
     def reversed(self) -> Animation:
         return Wrapped(self).rated(lambda t: 1.0 - t)
@@ -252,6 +252,9 @@ class Wait(Animation):
         super().__init__()
         self.weight(weight)
 
+    def _update(self, t: float):
+        return super()._update(t)
+
 
 # --- Property Animations ---
 
@@ -316,10 +319,10 @@ class Written(Animation):
     def __init__(self, shape: Text, **kwargs):
         super().__init__(**kwargs)
         self.shape = shape
-        self.full_text = getattr(shape, "text", "")
+        self.full_text = shape.content
 
     def _start(self):
-        self.full_text = getattr(self.shape, "text", "")
+        self.full_text = self.shape.content
 
     def _update(self, t: float):
         count = int(t * len(self.full_text))
@@ -330,8 +333,11 @@ class Scrambled(Animation):
     def __init__(self, shape: Text, seed: int = 42, **kwargs):
         super().__init__(**kwargs)
         self.shape = shape
-        self.full_text = getattr(shape, "text", "")
+        self.full_text = self.shape.content
         self.rng = random.Random(seed)
+
+    def _start(self):
+        self.full_text = self.shape.content
 
     def _update(self, t: float):
         total = len(self.full_text)
@@ -381,6 +387,7 @@ class Morphed(Animation):
             new_pts.append(self._Point(nx, ny))
 
         self.shape.points = new_pts
+        self.shape.refresh()
 
 
 class Following(Animation):
@@ -559,6 +566,9 @@ class Scene:
         # Finalize
         for anim in animations:
             anim.finish()
+
+    def wait(self, duration: float):
+        self.play(Wait(), duration=duration)
 
     def save(self, dest, format=None):
         if not self._frames:

@@ -1,58 +1,199 @@
-**Tesserax** comes with a powerful procedural animation system that renders animated GIF or MP4 videos. To enable it, you need to install it with the `tesserax[export]` to download the appropriate dependencies.
+# Animation & Video
 
-::: {.callout-note}
-You can use the animation framework without the `export` extra to build the animations, and export a sequence of SVG files to stitch them on your own.
-:::
+Tesserax isn't just for static images. It includes a lightweight, code-first animation engine capable of exporting GIFs and MP4s.
 
-The first step to create an animation is to construct a `Scene` object attached to your `Canvas`. With that, you can manually capture snapshots of the whole canvas, and render the final sequence proceduraly.
+> **Note**: To use animation features, ensure you installed Tesserax with the export dependencies: `pip install tesserax[export]`.
+
+## The `Scene` Object
+
+The `Scene` is the director of your animation. It wraps a `Canvas` and manages the render loop, frame capture, and file export.
+
+### 1. The Manual Way: Frame-by-Frame
+
+At its lowest level, you can animate simply by changing shapes in a loop and calling `scene.capture()`. This gives you total control over every frame.
 
 ```{python}
-import math
-from tesserax import Canvas, Rect, deg
+from tesserax import Canvas, Square, deg
 from tesserax.animation import Scene
 from tesserax.color import Colors
 
-# 1. Build
+# 1. Setup the static scene
 with Canvas() as canvas:
-    back = Rect(100, 100, fill=Colors.White)
-    rect = Rect(50, 50, fill=Colors.Orange)
+    # A background is usually good for video
+    Square(100, fill=Colors.White, stroke=Colors.Transparent)
+    rect = Square(40, fill=Colors.Orange)
+
+canvas.fit(10)
 
 # 2. Animate
 scene = Scene(canvas, fps=30)
-for i in range(30):
-    rect.rotated(deg(3))
-    canvas.align().fit()
-    scene.capture()
 
-# 3. View inline
+# We manually drive the loop
+for i in range(30):
+    rect.rotated(deg(3)) # Rotate 3 degrees per frame
+    scene.capture()      # Snap!
+
+# 3. Render
 scene.display()
 ```
 
-<br>
+## Declarative Animations
 
-## The Animation Engine
+While manual loops are powerful, they get messy quickly. Tesserax provides a declarative API where you define *what* happens, not *how*.
 
-Building animations by hand is powerful, but suboptimal for large scale diagrams. For complex animations that require, e.g., interpolating vectors, Tesserax provides an `Animation` class that abstracts the process of procedural animation.
+The `Scene.play()` method accepts one or more `Animation` objects.
 
-On top of this abstraction, Tesserax provides a number of builtin animations for most common patterns. `Scene.play(...)` allows to automatically run animations and capture the corresponding steps. The easiest way to do this is to use the `Shape.animate` helper, which contains several methods to create animations on the fly for a given shape.
+* **Parallel**: Arguments passed to `play(a, b)` run **simultaneously**.
+* **Sequential**: Animations added with `a + b` run **one after another**.
+
+We use the `.animate` property on shapes to quickly generate these objects.
+
+```{python}
+from tesserax import Circle
+
+with Canvas() as canvas:
+    Square(150, fill=Colors.White, stroke=Colors.Transparent)
+    box = Square(30, fill=Colors.LightBlue).translated(-40, 0)
+    ball = Circle(15, fill=Colors.Salmon).translated(40, 0)
+
+canvas.fit(10)
+scene = Scene(canvas, fps=30)
+
+# Define animations
+move_box = box.animate.rotate(deg(90)) | box.animate.translate(0, 20)
+fade_ball = ball.animate.scale(0.5)
+
+# Run them together (box moves sequentially, ball scales in parallel)
+scene.play(move_box, fade_ball, duration=2.0)
+
+canvas.fit(10)
+scene.display()
+```
+
+### Animation Modifiers
+
+You can tweak the timing and behavior of any animation using fluent modifiers:
+
+* `.reversed()`: Plays backwards.
+* `.looping()`: Plays forward then backward (yoyo).
+* `.repeating(n)`: Repeats `n` times within the duration.
+* `.delayed(t)`: Waits for `t` (0.0 to 1.0) before starting.
+* `.smoothed()`: Applies an ease-in-out curve (default is linear).
+
+```{python}
+from tesserax import Shape
+
+with Canvas() as c:
+    Square(100, fill=Colors.White, stroke=Colors.Transparent)
+    b1 = Circle(10, fill=Colors.Red).translated(-30, 0)
+    b2 = Circle(10, fill=Colors.Blue).translated(0, 0)
+    b3 = Circle(10, fill=Colors.Green).translated(30, 0)
+
+c.fit(10)
+scene = Scene(c)
+
+# Create a jump animation
+def jump(shape: Shape):
+    return (
+        shape.animate.translate(0, -40).smoothed() |
+        shape.animate.translate(0, 0).smoothed()
+    )
+
+scene.play(
+    jump(b1),
+    jump(b2).delayed(0.2), # Start 20% later
+    jump(b3).delayed(0.4), # Start 40% later
+    duration=1.5
+)
+
+scene.display()
+```
+
+## Morphing and Warping
+
+For `Polyline` shapes, Tesserax offers advanced vertex manipulation.
+
+### Morphing
+
+The `.morph(target)` animation smoothly interpolates the points of one shape into another.
+
+```{python}
+from tesserax import Polyline
+
+with Canvas() as c:
+    Square(120, fill=Colors.White, stroke=Colors.Transparent)
+    # Start as a Triangle
+    shape = Polyline.poly(3, 40, fill=Colors.Gold).subdivide()
+    # Target is a Hexagon
+    target = Polyline.poly(6, 40).hide()
+
+c.fit(10)
+scene = Scene(c)
+
+scene.play(
+    shape.animate.morph(target).smoothed().looping(),
+    duration=2.0
+)
+
+scene.display()
+```
+
+### Warping
+
+The `.warp(func)` animation allows you to apply a function  to every point in a shape over time. This is perfect for wave effects.
 
 ```{python}
 import math
-from tesserax import Canvas, Rect, deg
-from tesserax.animation import Scene
-from tesserax.color import Colors
+from tesserax import Point
 
-# 1. Build
-with Canvas() as canvas:
-    back = Rect(100, 100, fill=Colors.White)
-    rect = Rect(50, 50, fill=Colors.Orange)
+with Canvas() as c:
+    Square(120, fill=Colors.White, stroke=Colors.Transparent)
 
-canvas.align().fit()
+    # Create a dense line so we have points to warp
+    line = Polyline([Point(x, 0) for x in range(-50, 50, 2)], stroke=Colors.Blue)
 
-# 2. Animate
-scene = Scene(canvas, fps=30)
-scene.play(rect.animate.rotate(deg(90)), duration=1)
+c.fit(10)
+scene = Scene(c)
 
-# 3. View inline
+# Define a wave function
+def wave(p, t):
+    # t goes 0 -> 1
+    # We use it to shift the phase
+    phase = t * math.pi * 2
+    amplitude = 10
+    freq = 0.1
+    return Point(p.x, math.sin(p.x * freq + phase) * amplitude)
+
+scene.play(
+    line.animate.warp(wave).repeating(2),
+    duration=2.0
+)
+
+canvas.fit(10)
+scene.display()
+```
+
+## Text Effects
+
+Text objects have their own special animator with effects like `write` (typewriter style) and `scramble` (hacker style).
+
+```{python}
+from tesserax import Text
+
+with Canvas() as c:
+    Square(200, fill=Colors.White, stroke=Colors.Transparent)
+    t1 = Text("Hello World", size=24).translated(0, -20)
+    t2 = Text("Encryption", size=24, fill=Colors.Green, font="monospace").translated(0, 20)
+
+c.fit(10)
+scene = Scene(c)
+
+scene.play(
+    t1.animate.write(),
+    t2.animate.scramble(),
+    duration=2.0
+)
+scene.wait(1.0)
+
 scene.display()
 ```
