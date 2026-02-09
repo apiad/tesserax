@@ -159,7 +159,11 @@ window.Quarto = {
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./core.html" aria-current="page"> 
-<span class="menu-text">User Guide</span></a>
+<span class="menu-text">Core</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./layout.html"> 
+<span class="menu-text">Layouts</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./animations.html"> 
@@ -185,50 +189,88 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-canvas-and-the-first-shape" id="toc-the-canvas-and-the-first-shape" class="nav-link active" data-scroll-target="#the-canvas-and-the-first-shape">The Canvas and the First Shape</a></li>
-  <li><a href="#drawing-text" id="toc-drawing-text" class="nav-link" data-scroll-target="#drawing-text">Drawing Text</a></li>
-  <li><a href="#adding-and-transforming-shapes" id="toc-adding-and-transforming-shapes" class="nav-link" data-scroll-target="#adding-and-transforming-shapes">Adding and Transforming Shapes</a></li>
-  <li><a href="#grouping-and-aligning-shapes" id="toc-grouping-and-aligning-shapes" class="nav-link" data-scroll-target="#grouping-and-aligning-shapes">Grouping and Aligning Shapes</a></li>
-  <li><a href="#simplifying-with-layouts" id="toc-simplifying-with-layouts" class="nav-link" data-scroll-target="#simplifying-with-layouts">Simplifying with Layouts</a></li>
-  <li><a href="#composing-transforms-and-groups" id="toc-composing-transforms-and-groups" class="nav-link" data-scroll-target="#composing-transforms-and-groups">Composing Transforms and Groups</a></li>
-  <li><a href="#bridging-contexts-with-anchors" id="toc-bridging-contexts-with-anchors" class="nav-link" data-scroll-target="#bridging-contexts-with-anchors">Bridging Contexts with Anchors</a>
+  <li><a href="#the-canvas-and-coordinates" id="toc-the-canvas-and-coordinates" class="nav-link active" data-scroll-target="#the-canvas-and-coordinates">The Canvas and Coordinates</a>
   <ul class="collapse">
-  <li><a href="#how-coordinate-mapping-works" id="toc-how-coordinate-mapping-works" class="nav-link" data-scroll-target="#how-coordinate-mapping-works">How Coordinate Mapping Works</a></li>
+  <li><a href="#mathematical-coordinate-system" id="toc-mathematical-coordinate-system" class="nav-link" data-scroll-target="#mathematical-coordinate-system">Mathematical Coordinate System</a></li>
   </ul></li>
-  <li><a href="#drawing-paths-and-lines" id="toc-drawing-paths-and-lines" class="nav-link" data-scroll-target="#drawing-paths-and-lines">Drawing Paths and Lines</a>
+  <li><a href="#basic-primitives" id="toc-basic-primitives" class="nav-link" data-scroll-target="#basic-primitives">Basic Primitives</a>
   <ul class="collapse">
-  <li><a href="#the-low-level-path-object" id="toc-the-low-level-path-object" class="nav-link" data-scroll-target="#the-low-level-path-object">The Low-Level <code>Path</code> Object</a></li>
-  <li><a href="#the-high-level-polyline" id="toc-the-high-level-polyline" class="nav-link" data-scroll-target="#the-high-level-polyline">The High-Level <code>Polyline</code></a></li>
-  <li><a href="#using-smart-connections" id="toc-using-smart-connections" class="nav-link" data-scroll-target="#using-smart-connections">Using smart connections</a></li>
+  <li><a href="#rectangles-and-circles" id="toc-rectangles-and-circles" class="nav-link" data-scroll-target="#rectangles-and-circles">Rectangles and Circles</a></li>
+  <li><a href="#text-and-alignment" id="toc-text-and-alignment" class="nav-link" data-scroll-target="#text-and-alignment">Text and Alignment</a></li>
+  </ul></li>
+  <li><a href="#the-transformation-model" id="toc-the-transformation-model" class="nav-link" data-scroll-target="#the-transformation-model">The Transformation Model</a></li>
+  <li><a href="#the-anchor-system" id="toc-the-anchor-system" class="nav-link" data-scroll-target="#the-anchor-system">The Anchor System</a></li>
+  <li><a href="#paths-and-lines" id="toc-paths-and-lines" class="nav-link" data-scroll-target="#paths-and-lines">Paths and Lines</a>
+  <ul class="collapse">
+  <li><a href="#the-low-level-path" id="toc-the-low-level-path" class="nav-link" data-scroll-target="#the-low-level-path">The Low-Level <code>Path</code></a></li>
+  <li><a href="#lines-and-arrows" id="toc-lines-and-arrows" class="nav-link" data-scroll-target="#lines-and-arrows">Lines and Arrows</a></li>
+  </ul></li>
+  <li><a href="#the-polyline-api" id="toc-the-polyline-api" class="nav-link" data-scroll-target="#the-polyline-api">The Polyline API</a>
+  <ul class="collapse">
+  <li><a href="#smoothing-and-rounding" id="toc-smoothing-and-rounding" class="nav-link" data-scroll-target="#smoothing-and-rounding">Smoothing and Rounding</a></li>
+  <li><a href="#procedural-generation" id="toc-procedural-generation" class="nav-link" data-scroll-target="#procedural-generation">Procedural Generation</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Core Concepts &amp; Primitives</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>This guide will walk you through building a scene from scratch, demonstrating how <strong>Tesserax</strong> handles shapes, positioning, and composition.</p>
-<section id="the-canvas-and-the-first-shape" class="level2">
-<h2 class="anchored" data-anchor-id="the-canvas-and-the-first-shape">The Canvas and the First Shape</h2>
-<p>Every drawing starts with a <code>Canvas</code>. In Tesserax, the <code>Canvas</code> acts as the root container and provides a context manager to automatically add shapes created within its block.</p>
-<p>We will start by creating a simple 100x50 rectangle.</p>
-<div id="8c9c0522" class="cell" data-execution_count="1">
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>Tesserax</strong> is designed to be a “thin layer” of geometric logic over SVG. Unlike plotting libraries that try to decide for you how axes and scales should work, Tesserax gives you a blank canvas and a set of precise drafting tools.</p>
+<p>This guide covers the fundamental building blocks: the coordinate system, basic shapes, transformations, the anchor system, and the powerful <code>Polyline</code> API.</p>
+<section id="the-canvas-and-coordinates" class="level2">
+<h2 class="anchored" data-anchor-id="the-canvas-and-coordinates">The Canvas and Coordinates</h2>
+<p>Every diagram begins with a <code>Canvas</code>. In Tesserax, the <code>Canvas</code> serves two roles:</p>
+<ol type="1">
+<li><strong>Container</strong>: It collects all shapes created within its context.</li>
+<li><strong>Viewport</strong>: It manages the final SVG bounding box and coordinate mapping.</li>
+</ol>
+<section id="mathematical-coordinate-system" class="level3">
+<h3 class="anchored" data-anchor-id="mathematical-coordinate-system">Mathematical Coordinate System</h3>
+<p>Tesserax follows the standard <strong>SVG Coordinate System</strong>:</p>
+<ul>
+<li>The <strong>origin</strong> <span class="math inline">\((0, 0)\)</span> is at the top-left corner (initially).</li>
+<li>The <strong>X-axis</strong> points to the right (<span class="math inline">\(+x\)</span>).</li>
+<li>The <strong>Y-axis</strong> points down (<span class="math inline">\(+y\)</span>).</li>
+</ul>
+<p>This is crucial to remember when applying rotations. A positive rotation (counter-clockwise) moves the <span class="math inline">\(+x\)</span> axis towards the <span class="math inline">\(+y\)</span> axis (downwards on the screen).</p>
+<div id="03f71df9" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the canvas</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Text</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.color <span class="im">import</span> Colors</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Adding our first shape</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Primitives support standard SVG attributes like fill</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    Rect(<span class="dv">100</span>, <span class="dv">50</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># fit() adjusts the viewport to the content</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># display() renders it directly in the documentation</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A simple reference grid</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    Rect(<span class="dv">100</span>, <span class="dv">100</span>, stroke<span class="op">=</span>Colors.LightGray, fill<span class="op">=</span>Colors.White)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Origin marker</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    Text(<span class="st">"(0,0)"</span>, size<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Positive X/Y indication</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    Text(<span class="st">"+X"</span>, size<span class="op">=</span><span class="dv">20</span>).translated(<span class="dv">70</span>, <span class="dv">0</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    Text(<span class="st">"+Y"</span>, size<span class="op">=</span><span class="dv">20</span>).translated(<span class="dv">0</span>, <span class="dv">70</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>canvas.fit(<span class="dv">5</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -239,19 +281,31 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="drawing-text" class="level2">
-<h2 class="anchored" data-anchor-id="drawing-text">Drawing Text</h2>
-<p>Text behaves exactly like any other shape in Tesserax.</p>
-<div id="065603c7" class="cell" data-execution_count="2">
+</section>
+<section id="basic-primitives" class="level2">
+<h2 class="anchored" data-anchor-id="basic-primitives">Basic Primitives</h2>
+<p>Tesserax provides a suite of geometric atoms. All visual shapes inherit from the <code>Visual</code> class, which standardizes properties like <code>fill</code>, <code>stroke</code>, and <code>width</code>.</p>
+<section id="rectangles-and-circles" class="level3">
+<h3 class="anchored" data-anchor-id="rectangles-and-circles">Rectangles and Circles</h3>
+<ul>
+<li><code>Rect(w, h)</code>: Defined by width and height. <strong>Centered</strong> at by default.</li>
+<li><code>Square(size)</code>: A convenience wrapper for <code>Rect</code>.</li>
+<li><code>Circle(r)</code>: Defined by radius. <strong>Centered</strong> at .</li>
+<li><code>Ellipse(rx, ry)</code>: Defined by horizontal and vertical radii.</li>
+</ul>
+<div id="dcc5c22e" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Text</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Square, Circle, Ellipse</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    Rect(<span class="dv">150</span>, <span class="dv">40</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    Text(<span class="st">"Hello World"</span>, size<span class="op">=</span><span class="dv">24</span>, font<span class="op">=</span><span class="st">"serif"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>canvas.align().fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Shapes are placed at (0,0) by default, so we translate them to separate them.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    Square(<span class="dv">40</span>, fill<span class="op">=</span>Colors.LightBlue).translated(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    Rect(<span class="dv">60</span>, <span class="dv">30</span>, fill<span class="op">=</span>Colors.LightGreen).translated(<span class="dv">60</span>, <span class="dv">0</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    Circle(<span class="dv">20</span>, fill<span class="op">=</span>Colors.Salmon).translated(<span class="dv">120</span>, <span class="dv">0</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    Ellipse(<span class="dv">20</span>, <span class="dv">10</span>, fill<span class="op">=</span>Colors.Plum).translated(<span class="dv">170</span>, <span class="dv">0</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -262,22 +316,32 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="adding-and-transforming-shapes" class="level2">
-<h2 class="anchored" data-anchor-id="adding-and-transforming-shapes">Adding and Transforming Shapes</h2>
-<p>While you can add shapes and manually set their coordinates, Tesserax provides a fluent API for transformations. Here, we add a <code>Circle</code> and use <code>translated()</code> to move it into position.</p>
-<div id="5f0d29e8" class="cell" data-execution_count="3">
+<section id="text-and-alignment" class="level3">
+<h3 class="anchored" data-anchor-id="text-and-alignment">Text and Alignment</h3>
+<p>Text in SVG can be tricky due to alignment issues. Tesserax simplifies this by defaulting to <strong>center/middle</strong> alignment.</p>
+<p>You can control this via:</p>
+<ul>
+<li><code>anchor</code>: Horizontal alignment (<code>"start"</code>, <code>"middle"</code>, <code>"end"</code>).</li>
+<li><code>baseline</code>: Vertical alignment (<code>"top"</code>, <code>"middle"</code>, <code>"bottom"</code>).</li>
+</ul>
+<div id="5209f894" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Text, Line, Point</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    Rect(<span class="dv">100</span>, <span class="dv">50</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Adding a second shape and moving it manually</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Circle is defined by its radius</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"salmon"</span>).translated(<span class="dv">100</span>, <span class="dv">0</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw a crosshair at the origin to show alignment</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    Line(Point(<span class="dv">0</span>, <span class="op">-</span><span class="dv">20</span>), Point(<span class="dv">0</span>, <span class="dv">20</span>), stroke<span class="op">=</span>Colors.LightGray)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    Line(Point(<span class="op">-</span><span class="dv">50</span>, <span class="dv">0</span>), Point(<span class="dv">50</span>, <span class="dv">0</span>), stroke<span class="op">=</span>Colors.LightGray)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Default Text (Centered)</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    Text(<span class="st">"Origin"</span>, size<span class="op">=</span><span class="dv">16</span>, fill<span class="op">=</span>Colors.Black)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Custom alignment</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    Text(<span class="st">"Top-Left"</span>, anchor<span class="op">=</span><span class="st">"end"</span>, baseline<span class="op">=</span><span class="st">"bottom"</span>).translated(<span class="op">-</span><span class="dv">20</span>, <span class="op">-</span><span class="dv">20</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    Text(<span class="st">"Bottom-Right"</span>, anchor<span class="op">=</span><span class="st">"start"</span>, baseline<span class="op">=</span><span class="st">"top"</span>).translated(<span class="dv">20</span>, <span class="dv">20</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -288,23 +352,35 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="grouping-and-aligning-shapes" class="level2">
-<h2 class="anchored" data-anchor-id="grouping-and-aligning-shapes">Grouping and Aligning Shapes</h2>
-<p>The <code>Group</code> class acts a container that has control over its children positions, so you can align and layout shapes easily with a procedural API.</p>
-<div id="3f0fc846" class="cell" data-execution_count="4">
+</section>
+<section id="the-transformation-model" class="level2">
+<h2 class="anchored" data-anchor-id="the-transformation-model">The Transformation Model</h2>
+<p>Every shape in Tesserax carries a <code>Transform</code> object. This defines an <strong>Affine Transformation</strong> that maps the shape’s local coordinate space to the parent space.</p>
+<p>The operation order is strict: <strong>Scale - Rotate - Translate</strong>.</p>
+<ol type="1">
+<li><strong>Scale</strong>: The object is stretched.</li>
+<li><strong>Rotate</strong>: The object is rotated around the (scaled) origin.</li>
+<li><strong>Translate</strong>: The object is moved to its final position.</li>
+</ol>
+<p>Tesserax provides a fluent API to chain these operations:</p>
+<div id="343d9f86" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle, Square, Group</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, deg</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> Group() <span class="im">as</span> g:</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">100</span>, <span class="dv">50</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"salmon"</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        Square(<span class="dv">40</span>, fill<span class="op">=</span><span class="st">"pink"</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    g.align(<span class="st">"vertical"</span>, <span class="st">"center"</span>).distribute(<span class="st">"horizontal"</span>, gap<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Create a rectangle at (0,0)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> Rect(<span class="dv">50</span>, <span class="dv">30</span>, fill<span class="op">=</span>Colors.LightBlue, stroke<span class="op">=</span>Colors.Blue)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Scale it by 1.5x</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Rotate it by 45 degrees</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 4. Move it to (50, 50)</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    r.scaled(<span class="fl">1.5</span>).rotated(deg(<span class="dv">45</span>)).translated(<span class="dv">50</span>, <span class="dv">50</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Show the origin for reference</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    Circle(<span class="dv">2</span>, fill<span class="op">=</span>Colors.Red).translated(<span class="dv">50</span>, <span class="dv">50</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">20</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -315,23 +391,30 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="simplifying-with-layouts" class="level2">
-<h2 class="anchored" data-anchor-id="simplifying-with-layouts">Simplifying with Layouts</h2>
-<p>Manually calculating offsets or calling procedural alignment becomes tedious in complex diagrams. <strong>Layouts</strong> automate this positioning. The <code>Row</code> layout arranges its children horizontally with an optional <code>gap</code>. The <code>Column</code> does so vertically.</p>
-<div id="669fa459" class="cell" data-execution_count="5">
+<section id="the-anchor-system" class="level2">
+<h2 class="anchored" data-anchor-id="the-anchor-system">The Anchor System</h2>
+<p>One of Tesserax’s most powerful features is semantic anchoring. Because shapes are often nested inside Groups or transformed heavily, calculating the exact coordinate of “the top-right corner of that rotated rectangle” is mathematically tedious.</p>
+<p>The <code>.anchor(name)</code> method solves this by resolving the local coordinate through the entire transformation stack.</p>
+<p>Available anchors: <code>center</code>, <code>top</code>, <code>bottom</code>, <code>left</code>, <code>right</code>, <code>topleft</code>, <code>topright</code>, <code>bottomleft</code>, <code>bottomright</code>.</p>
+<div id="b2d1b97c" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Row is also a context manager</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> RowLayout(gap<span class="op">=</span><span class="dv">10</span>):</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">100</span>, <span class="dv">50</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"salmon"</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        Square(<span class="dv">40</span>, fill<span class="op">=</span><span class="st">"pink"</span>)</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Arrow</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A generic shape</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    obj <span class="op">=</span> Rect(<span class="dv">60</span>, <span class="dv">40</span>, fill<span class="op">=</span>Colors.Honeydew, stroke<span class="op">=</span>Colors.Green)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    obj.rotated(deg(<span class="dv">30</span>)).translated(<span class="dv">50</span>, <span class="dv">50</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A target point</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    target <span class="op">=</span> Circle(<span class="dv">5</span>, fill<span class="op">=</span>Colors.Red).translated(<span class="dv">150</span>, <span class="dv">50</span>)</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Connect the top-right corner of the rotated rect to the target</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We don't need to know where "top-right" is in global space,</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># .anchor() calculates it.</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    Arrow(obj.anchor(<span class="st">"topright"</span>), target.anchor(<span class="st">"center"</span>))</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">20</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -342,33 +425,24 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="composing-transforms-and-groups" class="level2">
-<h2 class="anchored" data-anchor-id="composing-transforms-and-groups">Composing Transforms and Groups</h2>
-<p>Because Layouts are themselves a type of <code>Group</code>, you can apply transformations to the entire layout at once. In this step, we will:</p>
-<ol type="1">
-<li>Create a <code>Row</code> layout.</li>
-<li>Rotate that entire row by 45 degrees.</li>
-<li>Add a new shape outside of that row.</li>
-<li>Wrap everything in another <code>Group</code> to demonstrate hierarchical composition.</li>
-</ol>
-<div id="abb96c8a" class="cell" data-execution_count="6">
+<section id="paths-and-lines" class="level2">
+<h2 class="anchored" data-anchor-id="paths-and-lines">Paths and Lines</h2>
+<p>For arbitrary drawing, Tesserax offers both low-level and high-level path tools.</p>
+<section id="the-low-level-path" class="level3">
+<h3 class="anchored" data-anchor-id="the-low-level-path">The Low-Level <code>Path</code></h3>
+<p>The <code>Path</code> class maps directly to SVG commands (<code>M</code>, <code>L</code>, <code>C</code>, <code>Q</code>, <code>Z</code>).</p>
+<div id="cfa833b4" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle, Group, deg</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create and rotate a layout</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> RowLayout(gap<span class="op">=</span><span class="dv">20</span>).rotated(deg(<span class="op">-</span><span class="dv">45</span>)):</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">100</span>, <span class="dv">50</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"salmon"</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add another shape to the scene</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    Rect(<span class="dv">40</span>, <span class="dv">40</span>, fill<span class="op">=</span><span class="st">"lightgreen"</span>).translated(<span class="dv">100</span>, <span class="op">-</span><span class="dv">50</span>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># All shapes here are already part of the Canvas group.</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Path</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> Path(fill<span class="op">=</span>Colors.Transparent, stroke<span class="op">=</span>Colors.Blue, width<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    p.jump_to(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    p.line_to(<span class="dv">50</span>, <span class="dv">50</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    p.quadratic_to(<span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">0</span>) <span class="co"># Control point (100,50), End (100,0)</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -378,46 +452,23 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>By nesting Layouts and Groups, you can build extremely complex diagrams without ever having to manually compute a single SVG coordinate string.</p>
 </section>
-<section id="bridging-contexts-with-anchors" class="level2">
-<h2 class="anchored" data-anchor-id="bridging-contexts-with-anchors">Bridging Contexts with Anchors</h2>
-<p>One of the most powerful features of Tesserax is the <strong>Anchor System</strong>. When you place a shape inside a <code>Layout</code> or a <code>Group</code>, its local coordinates change to reflect its position within that container. However, Tesserax allows you to retrieve the “global” position of a shape’s anchors, making it trivial to connect objects across different coordinate systems.</p>
-<p>In this example, we will connect the <code>Circle</code> (which is inside a rotated <code>Row</code>) to the <code>Rect</code> (which is outside) using an <code>Arrow</code>, and the two shapes inside the row. Notice the <code>curvature</code> parameter which controls the direction (sign) and radius of curvature, from <span class="math inline">\(0\)</span> (flat) to <span class="math inline">\(1\)</span> (full semicirle).</p>
-<div id="ba9929c8" class="cell" data-execution_count="7">
+<section id="lines-and-arrows" class="level3">
+<h3 class="anchored" data-anchor-id="lines-and-arrows">Lines and Arrows</h3>
+<p><code>Line</code> and <code>Arrow</code> are specialized paths that connect two points. They support a <code>curvature</code> parameter to create arcs without manually calculating Bezier control points.</p>
+<div id="5d5bd29d" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle, Arrow, deg</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Create a Row and rotate it</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> RowLayout(gap<span class="op">=</span><span class="dv">40</span>) <span class="im">as</span> row:</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        r1 <span class="op">=</span> Rect(<span class="dv">80</span>, <span class="dv">40</span>, fill<span class="op">=</span><span class="st">"aliceblue"</span>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        c1 <span class="op">=</span> Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"mistyrose"</span>)</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Line</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    start, end <span class="op">=</span> Point(<span class="dv">0</span>, <span class="dv">0</span>), Point(<span class="dv">100</span>, <span class="dv">0</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    Line(start, end, curvature<span class="op">=</span><span class="dv">0</span>, stroke<span class="op">=</span>Colors.LightGray) <span class="co"># Straight</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    Line(start, end, curvature<span class="op">=</span><span class="fl">0.5</span>, stroke<span class="op">=</span>Colors.Blue)   <span class="co"># Arc Up</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    Arrow(start, end, curvature<span class="op">=-</span><span class="fl">0.5</span>, stroke<span class="op">=</span>Colors.Red)  <span class="co"># Arc Down</span></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    row.rotated(deg(<span class="dv">270</span>)).translated(<span class="dv">50</span>, <span class="dv">50</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Create a target rectangle outside the layout</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    target <span class="op">=</span> Rect(<span class="dv">60</span>, <span class="dv">60</span>, fill<span class="op">=</span><span class="st">"honeydew"</span>).translated(<span class="dv">250</span>, <span class="dv">0</span>)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Connect them!</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We use .anchor() to get semantic points.</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Even though c1 is inside a rotated row, c1.anchor("right")</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># returns the correct global coordinate for the arrow.</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    Arrow(</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        r1.anchor(<span class="st">"right"</span>),</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        c1.anchor(<span class="st">"left"</span>),</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        curvature<span class="op">=-</span><span class="fl">0.25</span>,</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    Arrow(</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        c1.anchor(<span class="st">"top"</span>),</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        target.anchor(<span class="st">"left"</span>),</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        curvature<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">30</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -427,54 +478,32 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<section id="how-coordinate-mapping-works" class="level3">
-<h3 class="anchored" data-anchor-id="how-coordinate-mapping-works">How Coordinate Mapping Works</h3>
-<p>When you call <code>shape.anchor(name)</code>, Tesserax performs the following behind the scenes:</p>
-<ol type="1">
-<li><strong>Local Geometry</strong>: It identifies the point on the shape (e.g., the rightmost edge of the <code>Circle</code>).</li>
-<li><strong>Transformation Path</strong>: It traverses up the hierarchy (from the <code>Circle</code> to the <code>Row</code>, then to the <code>Canvas</code>), applying every rotation, scale, and translation encountered along the way.</li>
-<li><strong>Global Result</strong>: It returns a <code>Point</code> that represents exactly where that anchor sits on the final SVG canvas.</li>
-</ol>
-<p>This means you never have to manually calculate <code>sin()</code> or <code>cos()</code> to find where a rotated object’s edge is located—you just ask for the anchor.</p>
-<p>For explicit anchoring, you can use <code>Shape.resolve(p: Point)</code> to map a point in local space to the global space, this way you can, e.g., get the point at 2/3rds of the way inside a rectangle and map it to global space.</p>
 </section>
 </section>
-<section id="drawing-paths-and-lines" class="level2">
-<h2 class="anchored" data-anchor-id="drawing-paths-and-lines">Drawing Paths and Lines</h2>
-<p>While shapes like <code>Rect</code> and <code>Circle</code> cover many use cases, sometimes you need to draw arbitrary lines, custom shapes, or connectors. Tesserax offers two ways to do this: the low-level <code>Path</code> for precise control and the high-level <code>Polyline</code> for rapid sequences.</p>
-<section id="the-low-level-path-object" class="level3">
-<h3 class="anchored" data-anchor-id="the-low-level-path-object">The Low-Level <code>Path</code> Object</h3>
-<p>The <code>Path</code> class roughly corresponds to the SVG <code>&lt;path&gt;</code> element. It operates like a pen: you move it to a location, then draw lines or curves to subsequent points.</p>
-<p>This is ideal for creating custom glyphs or specific geometric curves.</p>
-<div id="84837832" class="cell" data-execution_count="8">
+<section id="the-polyline-api" class="level2">
+<h2 class="anchored" data-anchor-id="the-polyline-api">The Polyline API</h2>
+<p>The <code>Polyline</code> is a versatile tool for creating complex polygons, wireframes, and smooth curves. It maintains a list of <code>Point</code> objects and renders them sequentially.</p>
+<section id="smoothing-and-rounding" class="level3">
+<h3 class="anchored" data-anchor-id="smoothing-and-rounding">Smoothing and Rounding</h3>
+<p>The <code>smoothness</code> parameter (<span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span>) automatically converts sharp vertices into rounded corners using quadratic Bezier interpolation.</p>
+<div id="e8f91582" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Path</span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Polyline</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. A simple custom shape (a triangle)</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> Path()</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    p.jump_to(<span class="dv">0</span>, <span class="dv">0</span>).line_to(<span class="dv">50</span>, <span class="dv">50</span>).line_to(<span class="dv">0</span>, <span class="dv">50</span>).close()</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    p.translated(<span class="dv">20</span>, <span class="dv">20</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>pts <span class="op">=</span> [Point(<span class="dv">0</span>, <span class="dv">0</span>), Point(<span class="dv">50</span>, <span class="dv">50</span>), Point(<span class="dv">100</span>, <span class="dv">0</span>), Point(<span class="dv">150</span>, <span class="dv">50</span>)]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sharp (0.0)</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    Polyline(pts, smoothness<span class="op">=</span><span class="dv">0</span>, stroke<span class="op">=</span>Colors.Black).translated(<span class="dv">0</span>, <span class="dv">0</span>)</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. A curved path using Bezier curves</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    curve <span class="op">=</span> Path()</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    curve.jump_to(<span class="dv">100</span>, <span class="dv">20</span>)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cubic Bezier: 2 control points, 1 end point</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    curve.cubic_to(</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        <span class="dv">150</span>, <span class="dv">20</span>,   <span class="co"># Control Point 1</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="dv">150</span>, <span class="dv">80</span>,   <span class="co"># Control Point 2</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="dv">200</span>, <span class="dv">80</span>    <span class="co"># End Point</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Quadratic Bezier: 1 control point, 1 end point</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    curve.quadratic_to(</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="dv">250</span>, <span class="dv">80</span>,   <span class="co"># Control Point</span></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        <span class="dv">300</span>, <span class="dv">20</span>    <span class="co"># End Point</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>canvas.fit(padding<span class="op">=</span><span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Rounded (0.5)</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    Polyline(pts, smoothness<span class="op">=</span><span class="fl">0.5</span>, stroke<span class="op">=</span>Colors.Blue).translated(<span class="dv">0</span>, <span class="dv">60</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fluid (1.0)</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    Polyline(pts, smoothness<span class="op">=</span><span class="fl">1.0</span>, stroke<span class="op">=</span>Colors.Red).translated(<span class="dv">0</span>, <span class="dv">120</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -485,86 +514,57 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="the-high-level-polyline" class="level3">
-<h3 class="anchored" data-anchor-id="the-high-level-polyline">The High-Level <code>Polyline</code></h3>
-<p>For many diagrams, you simply want to connect a sequence of points. The <code>Polyline</code> shape automates this.</p>
-<p>Its most powerful feature is the <code>smoothness</code> parameter. Instead of manually calculating Bezier control points to round a corner, you can simply tell <code>Polyline</code> to blend the corners for you.</p>
+<section id="procedural-generation" class="level3">
+<h3 class="anchored" data-anchor-id="procedural-generation">Procedural Generation</h3>
+<p>The <code>Polyline</code> class includes powerful methods to procedurally generate and manipulate shapes.</p>
 <ul>
-<li><code>smoothness=0</code>: Sharp corners (standard polygon).</li>
-<li><code>smoothness=0.2</code>: Subtle rounded corners (like a modern UI box).</li>
-<li><code>smoothness=1</code>: Maximum rounding (spline-like).</li>
+<li><code>Polyline.poly(n, radius)</code>: Creates a regular n-gon (triangle, hexagon, etc.).</li>
+<li><code>.subdivide(n)</code>: Inserts midpoints between every segment, increasing resolution.</li>
+<li><code>.simplify(tolerance)</code>: Removes points that are collinear or redundant.</li>
+<li><code>.expand(delta)</code>: Pushes points away from the origin (inflation).</li>
+<li><code>.apply(func)</code>: Maps a function over every point.</li>
 </ul>
-<div id="341be544" class="cell" data-execution_count="9">
+<div id="5a8106fe" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Polyline, Point</span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Helper to generate a zigzag pattern</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>points <span class="op">=</span> [</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    Point(<span class="dv">0</span>, <span class="dv">50</span>), Point(<span class="dv">50</span>, <span class="dv">0</span>), Point(<span class="dv">100</span>, <span class="dv">50</span>),</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    Point(<span class="dv">150</span>, <span class="dv">0</span>), Point(<span class="dv">200</span>, <span class="dv">50</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Sharp Polyline (Default)</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    Polyline(points, smoothness<span class="op">=</span><span class="dv">0</span>).translated(<span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Slightly Rounded (30% smoothing)</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note how it preserves most of the straight line but rounds the tip.</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    Polyline(points, smoothness<span class="op">=</span><span class="fl">0.3</span>, stroke<span class="op">=</span><span class="st">"blue"</span>).translated(<span class="dv">0</span>, <span class="dv">60</span>)</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Fully Smooth (100% smoothing)</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This creates a flowing wave-like appearance, and closed.</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    Polyline(points, smoothness<span class="op">=</span><span class="fl">1.0</span>, stroke<span class="op">=</span><span class="st">"red"</span>, closed<span class="op">=</span><span class="va">True</span>).translated(<span class="dv">0</span>, <span class="dv">120</span>)</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>canvas.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Create a Hexagon</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">hex</span> <span class="op">=</span> Polyline.poly(n<span class="op">=</span><span class="dv">6</span>, radius<span class="op">=</span><span class="dv">40</span>, fill<span class="op">=</span>Colors.AliceBlue)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">hex</span>.translated(<span class="dv">50</span>, <span class="dv">50</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Create a "Wobbly" Circle</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Start with a simple polygon, subdivide it to get many vertices,</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># then apply a noise function to the radius.</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    blob <span class="op">=</span> Polyline.poly(n<span class="op">=</span><span class="dv">8</span>, radius<span class="op">=</span><span class="dv">40</span>, fill<span class="op">=</span>Colors.MistyRose, smoothness<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    blob.subdivide(<span class="dv">3</span>) <span class="co"># Increase vertex count 8 -&gt; 16 -&gt; 32 -&gt; 64</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply a wave function to distort it</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> distort(p: Point) <span class="op">-&gt;</span> Point:</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Get angle of point</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        theta <span class="op">=</span> math.atan2(p.y, p.x)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Vary radius based on angle</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        wave <span class="op">=</span> math.sin(theta <span class="op">*</span> <span class="dv">5</span>) <span class="op">*</span> <span class="dv">5</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> p <span class="op">+</span> p.normalize() <span class="op">*</span> wave</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    blob.<span class="bu">apply</span>(distort).simplify(<span class="fl">0.1</span>)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    blob.translated(<span class="dv">150</span>, <span class="dv">50</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Contract/Expand</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Useful for creating outlines or offsets</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    base <span class="op">=</span> Polyline.poly(<span class="dv">4</span>, <span class="dv">30</span>, stroke<span class="op">=</span>Colors.Black)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    inner <span class="op">=</span> base.clone().contract(<span class="dv">5</span>) <span class="co"># Shrink</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    base.translated(<span class="dv">250</span>, <span class="dv">50</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    inner.translated(<span class="dv">250</span>, <span class="dv">50</span>)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="core_files/figure-html/cell-10-output-1.svg" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>This makes <code>Polyline</code> an excellent tool for drawing graph edges, wiring diagrams, or “hand-drawn” style annotations where sharp vertices look unnatural.</p>
-</section>
-<section id="using-smart-connections" class="level3">
-<h3 class="anchored" data-anchor-id="using-smart-connections">Using smart connections</h3>
-<p>When drawing complex diagrams, it is often hard to wire connections in a way that respects shapes, especially if you keep changing the code. The <code>Grid</code> object in <code>tesserax.path</code> provides a way to keep track of where shapes are placed inside a group, and <code>trace</code> method to automatically find optimal routes for connections that do not collide with shapes.</p>
-<div id="0182eda8" class="cell" data-execution_count="10">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Circle, Line, Polyline</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.path <span class="im">import</span> Grid</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> RowLayout(gap<span class="op">=</span><span class="dv">30</span>) <span class="im">as</span> row:</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        c1 <span class="op">=</span> Circle(<span class="dv">20</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        c2 <span class="op">=</span> Circle(<span class="dv">30</span>, fill<span class="op">=</span><span class="st">"lightpink"</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        c3 <span class="op">=</span> Circle(<span class="dv">40</span>, fill<span class="op">=</span><span class="st">"lightgreen"</span>)</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    g <span class="op">=</span> Grid(row)</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    Polyline(</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        g.trace(c1.anchor(<span class="st">"left"</span>).dx(<span class="op">-</span><span class="dv">5</span>), c3.anchor(<span class="st">"right"</span>).dx(<span class="dv">5</span>)),</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        smoothness<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        marker_end<span class="op">=</span><span class="st">"arrow"</span>,</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    Polyline(</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        g.trace(c2.anchor(<span class="st">"bottom"</span>).dy(<span class="dv">5</span>), c3.anchor(<span class="st">"bottom"</span>).dy(<span class="dv">5</span>)),</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        smoothness<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        marker_end<span class="op">=</span><span class="st">"arrow"</span>,</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>canvas.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="core_files/figure-html/cell-11-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>

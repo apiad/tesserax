@@ -1,16 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="268.3518190446798" height="233.842975656659" viewBox="21.64818095532015 -40.0 268.3518190446798 233.842975656659">
-  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/></marker></defs>
-  <g transform="translate(50.0 50.0) rotate(886357.7145031709) scale(1.0 1.0)">
-<g transform="translate(40.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-40.0" y="-20.0" width="80" height="40" stroke="black" fill="aliceblue"/>
-</g>
-<g transform="translate(150.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<circle cx="0" cy="0" r="30" stroke="black" fill="mistyrose"/>
-</g>
-</g>
-  <g transform="translate(250.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-30.0" y="-30.0" width="60" height="60" stroke="black" fill="honeydew"/>
-</g>
-  <path d="M 113.28549703621313 98.93818411914626 A 42.5 42.5 0 0 0 144.9282455543197 123.4072761787194" fill="transparent" stroke="black" stroke-width="1.0" marker-end="url(#arrow)"/>
-  <path d="M 187.01212598757948 118.02703383481932 A 76.5939490197968 76.5939490197968 0 0 1 220.0 0.0" fill="transparent" stroke="black" stroke-width="1.0" marker-end="url(#arrow)"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="160.0" height="60.0" viewBox="-30.0 -30.0 160.0 60.0">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
+  <path d="M 0 0 L 100 0" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="1.0"/>
+  <path d="M 0 0 A 62.5 62.5 0 0 1 100 0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,255,1.0)" stroke-width="1.0"/>
+  <path d="M 0 0 A 62.5 62.5 0 0 0 100 0" fill="rgba(0,0,0,0.0)" stroke="rgba(255,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
 </svg>

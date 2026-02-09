@@ -1,7 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200.0" height="80.0" viewBox="-60.0 -40.0 200.0 80.0">
-  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/></marker></defs>
-  <rect x="-50.0" y="-25.0" width="100" height="50" stroke="black" fill="lightblue"/>
-  <g transform="translate(100.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<circle cx="0" cy="0" r="30" stroke="black" fill="salmon"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="204.0" height="72.0" viewBox="-87.6 -36.0 204.0 72.0">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
+  <path d="M 0 -20 L 0 20" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="1.0"/>
+  <path d="M -50 0 L 50 0" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="1.0"/>
+  <text x="0" y="0" font-family="sans-serif" font-size="16" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">Origin</text>
+  <g transform="translate(-20.0 -20.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="bottom">Top-Left</text>
+</g>
+  <g transform="translate(20.0 20.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="start" dominant-baseline="top">Bottom-Right</text>
 </g>
 </svg>

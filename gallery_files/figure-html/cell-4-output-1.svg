@@ -1,22 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="180.0" height="166.0" viewBox="-110.0 -20.0 180.0 166.0">
-  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><g transform="translate(0.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/>
-</g></marker></defs>
-  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<g transform="translate(0.0 15.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-50.0" y="-15.0" width="100" height="30" stroke="blue" fill="none"/>
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
+  <g transform="translate(0.0 15.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-50.0" y="-15.0" width="100" height="30" stroke="blue" fill="rgba(0,0,0,0.0)"/>
 </g>
 <g transform="translate(0.0 47.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-50.0" y="-15.0" width="100" height="30" stroke="black" fill="none"/>
+<rect x="-50.0" y="-15.0" width="100" height="30" stroke="black" fill="rgba(0,0,0,0.0)"/>
 </g>
 <g transform="translate(0.0 79.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-50.0" y="-15.0" width="100" height="30" stroke="black" fill="none"/>
+<rect x="-50.0" y="-15.0" width="100" height="30" stroke="black" fill="rgba(0,0,0,0.0)"/>
 </g>
 <g transform="translate(0.0 111.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-50.0" y="-15.0" width="100" height="30" stroke="black" fill="none"/>
+<rect x="-50.0" y="-15.0" width="100" height="30" stroke="black" fill="rgba(0,0,0,0.0)"/>
 </g>
-</g>
-  <g transform="translate(0.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<path d="M -90.0 15.0 L -55.0 15.0" fill="transparent" stroke="black" stroke-width="1.0" marker-end="url(#arrow)"/>
-</g>
+  <path d="M -90.0 15.0 L -55.0 15.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
 </svg>

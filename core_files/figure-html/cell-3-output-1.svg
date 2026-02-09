@@ -1,5 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="178.4" height="60.0" viewBox="-89.2 -30.0 178.4 60.0">
-  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/></marker></defs>
-  <rect x="-75.0" y="-20.0" width="150" height="40" stroke="black" fill="lightblue"/>
-  <text x="0" y="0" font-family="serif" font-size="24" fill="black" text-anchor="middle" dominant-baseline="middle">Hello World</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="230.0" height="60.0" viewBox="-30.0 -30.0 230.0 60.0">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
+  <rect x="-20.0" y="-20.0" width="40" height="40" stroke="rgba(0,0,0,1.0)" fill="rgba(173,216,230,1.0)"/>
+  <g transform="translate(60.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-30.0" y="-15.0" width="60" height="30" stroke="rgba(0,0,0,1.0)" fill="rgba(144,238,144,1.0)"/>
+</g>
+  <g transform="translate(120.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="20" stroke="rgba(0,0,0,1.0)" fill="rgba(250,128,114,1.0)"/>
+</g>
+  <g transform="translate(170.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<ellipse cx="0" cy="0" rx="20" ry="10" stroke="rgba(0,0,0,1.0)" fill="rgba(221,160,221,1.0)"/>
+</g>
 </svg>

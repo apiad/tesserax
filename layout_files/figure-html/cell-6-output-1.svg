@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100.0" height="210.0" viewBox="-50.0 -10.0 100.0 210.0">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
+  <g transform="translate(0.0 20.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="20" stroke="rgba(0,0,0,1.0)" fill="rgba(255,215,0,1.0)"/>
+</g>
+<g transform="translate(-25.0 105.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="15" stroke="rgba(0,0,0,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(25.0 105.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="15" stroke="rgba(0,0,0,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(-20.0 180.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="10" stroke="rgba(0,0,0,1.0)" fill="rgba(144,238,144,1.0)"/>
+</g>
+<g transform="translate(20.0 180.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="10" stroke="rgba(0,0,0,1.0)" fill="rgba(144,238,144,1.0)"/>
+</g>
+  <path d="M 0.0 40.0 L -25.0 90.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+  <path d="M 0.0 40.0 L 25.0 90.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+  <path d="M -25.0 120.0 L -20.0 170.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+  <path d="M -25.0 120.0 L 20.0 170.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+</svg>

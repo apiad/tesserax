@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://apiad.github.io/tesserax/index.html</loc>
-    <lastmod>2026-02-04T15:11:49.644Z</lastmod>
-  </url>
-  <url>
-    <loc>https://apiad.github.io/tesserax/core.html</loc>
-    <lastmod>2026-02-04T19:52:34.971Z</lastmod>
-  </url>
-  <url>
-    <loc>https://apiad.github.io/tesserax/animations.html</loc>
-    <lastmod>2026-02-04T20:32:26.225Z</lastmod>
+    <loc>https://apiad.github.io/tesserax/layout.html</loc>
+    <lastmod>2026-02-09T16:07:31.894Z</lastmod>
   </url>
   <url>
     <loc>https://apiad.github.io/tesserax/gallery.html</loc>
     <lastmod>2026-02-03T16:19:25.349Z</lastmod>
+  </url>
+  <url>
+    <loc>https://apiad.github.io/tesserax/animations.html</loc>
+    <lastmod>2026-02-09T16:24:36.678Z</lastmod>
+  </url>
+  <url>
+    <loc>https://apiad.github.io/tesserax/core.html</loc>
+    <lastmod>2026-02-09T15:25:41.485Z</lastmod>
+  </url>
+  <url>
+    <loc>https://apiad.github.io/tesserax/index.html</loc>
+    <lastmod>2026-02-09T14:48:38.861Z</lastmod>
   </url>
 </urlset>

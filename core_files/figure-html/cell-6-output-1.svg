@@ -1,12 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="240.0" height="80.0" viewBox="-10.0 -40.0 240.0 80.0">
-  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="black" stroke="none" stroke-width="1"/></marker></defs>
-  <g transform="translate(50.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-50.0" y="-25.0" width="100" height="50" stroke="black" fill="lightblue"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="180.98076211353316" height="104.64101615137753" viewBox="-5.98076211353316 -2.320508075688771 180.98076211353316 104.64101615137753">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
+  <g transform="translate(50.0 50.0) rotate(29.999999999999996) scale(1.0 1.0)">
+<rect x="-30.0" y="-20.0" width="60" height="40" stroke="rgba(0,128,0,1.0)" fill="rgba(240,255,240,1.0)"/>
 </g>
-<g transform="translate(140.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<circle cx="0" cy="0" r="30" stroke="black" fill="salmon"/>
+  <g transform="translate(150.0 50.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="5" stroke="rgba(0,0,0,1.0)" fill="rgba(255,0,0,1.0)"/>
 </g>
-<g transform="translate(200.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-20.0" y="-20.0" width="40" height="40" stroke="black" fill="pink"/>
-</g>
+  <path d="M 85.98076211353316 47.67949192431122 L 150.0 50.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
 </svg>
