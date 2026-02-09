@@ -64,7 +64,7 @@ Standard layouts like `Row` and `Column` are specialized Groups that automatical
 
 ### Row and Column
 
-These layouts are perfect for linear arrangements.
+These layouts are perfect for linear arrangements. They can be nested arbitrarily.
 
 ```{python}
 from tesserax.layout import RowLayout, ColumnLayout
@@ -74,15 +74,13 @@ with Canvas() as c:
     with RowLayout(gap=10, align="middle") as row:
         Rect(20, 40, fill=Colors.LightGray)
         Circle(15, fill=Colors.MistyRose)
-        Rect(20, 20, fill=Colors.LightGray)
+        Rect(20, 20, fill=Colors.LightCoral)
 
-    # A Column automatically distributes vertically
-    with ColumnLayout(gap=10, align="middle") as col:
-        Rect(40, 20, fill=Colors.PowderBlue)
-        Circle(15, fill=Colors.Thistle)
-
-    # Layouts are Shapes, so they can be nested!
-    col.translated(100, 0)
+        # A Column automatically distributes vertically
+        # Notice we can nest layouts
+        with ColumnLayout(gap=10, align="middle") as col:
+            Rect(40, 20, fill=Colors.PowderBlue)
+            Circle(15, fill=Colors.Thistle)
 
 c.fit(10).display()
 ```
@@ -90,8 +88,6 @@ c.fit(10).display()
 ### The Grid Layout
 
 The `Grid` layout provides a powerful 2D arrangement system. Unlike a simple HTML table, the Tesserax `Grid` allows for spanning and alignment control per cell.
-
-> **Note**: Do not confuse `tesserax.layout.Grid` (positioning) with `tesserax.path.Grid` (routing connections).
 
 ```{python}
 from tesserax.layout import GridLayout
