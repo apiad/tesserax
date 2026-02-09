@@ -49,29 +49,20 @@ class Rect(Visual):
         width: float = 1.0,
     ) -> None:
         super().__init__(fill=fill, stroke=stroke, width=width)
-        self.w_val, self.h_val = w, h
-
-        # Define relative to center (0,0)
-        hw, hh = w / 2, h / 2
-        self.points = [
-            Point(-hw, -hh),  # Top-Left
-            Point(hw, -hh),  # Top-Right
-            Point(hw, hh),  # Bottom-Right
-            Point(-hw, hh),  # Bottom-Left
-        ]
+        self.w, self.h = w, h
 
     def local(self) -> Bounds:
         # Returns bounds centered at 0,0
-        hw, hh = self.w_val / 2, self.h_val / 2
-        return Bounds(-hw, -hh, self.w_val, self.h_val)
+        hw, hh = self.w / 2, self.h / 2
+        return Bounds(-hw, -hh, self.w, self.h)
 
     def _render(self) -> str:
         # Render centered at 0,0
         # x and y are top-left coordinates relative to the origin
-        return f'<rect x="{-self.w_val/2}" y="{-self.h_val/2}" width="{self.w_val}" height="{self.h_val}" stroke="{self.stroke}" fill="{self.fill}" />'
+        return f'<rect x="{-self.w/2}" y="{-self.h/2}" width="{self.w}" height="{self.h}" stroke="{self.stroke}" fill="{self.fill}" />'
 
 
-class Square(Rect):
+class Square(Visual):
     """A specialized Rect where width equals height."""
 
     def __init__(
@@ -81,7 +72,19 @@ class Square(Rect):
         stroke: Color = Colors.Black,
         width: float = 1.0,
     ) -> None:
-        super().__init__(size, size, fill=fill, stroke=stroke, width=width)
+        super().__init__(fill=fill, stroke=stroke, width=width)
+        self.size = size
+
+    def local(self) -> Bounds:
+        # Returns bounds centered at 0,0
+        hw, hh = self.size / 2, self.size / 2
+        return Bounds(-hw, -hh, self.size, self.size)
+
+    def _render(self) -> str:
+        # Render centered at 0,0
+        # x and y are top-left coordinates relative to the origin
+        return f'<rect x="{-self.size/2}" y="{-self.size/2}" width="{self.size}" height="{self.size}" stroke="{self.stroke}" fill="{self.fill}" />'
+
 
 
 class Circle(Visual):

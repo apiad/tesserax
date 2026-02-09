@@ -186,3 +186,88 @@ scene.wait(1.0)
 
 scene.display()
 ```
+
+## Animating Arbitrary Properties
+
+Sometimes you need to animate a property that Tesserax doesn't have a built-in method for, like the `radius` of a circle, the `gap` of a layout, or a custom attribute you added to a subclass.
+
+### The `property` Method
+
+The `animator.property(name, value)` method allows you to interpolate **any numeric attribute** on the shape from its current value to a target value.
+
+```{python}
+from tesserax import Circle
+
+with Canvas() as c:
+    # A circle starts with radius 10
+    ball = Circle(10, fill=Colors.Red)
+
+c.fit(15)
+scene = Scene(c)
+
+scene.play(
+    # Explicitly animate the 'r' attribute (radius) to 50
+    ball.animate.property("r", 20).looping(),
+    duration=1.0
+)
+scene.display()
+```
+
+### Magic Property Access
+
+For even cleaner code, the animator supports **dynamic property access**. If you try to call a method on `.animate` that doesn't exist (e.g., `.radius(...)`), Tesserax assumes you want to animate the property of that name.
+
+```{python}
+from tesserax import Square
+
+with Canvas() as c:
+    # Square defined by 'size'
+    box = Square(20, fill=Colors.Blue)
+
+c.fit(25)
+scene = Scene(c)
+
+scene.play(
+    # 'size' is not a built-in animation method,
+    # so this automatically animates box.size -> 100
+    box.animate.size(40).looping(),
+    duration=1.0
+)
+scene.display()
+```
+
+## Custom Animation Logic
+
+When standard interpolation isn't enough, the `.custom()` method gives you a direct hook into the animation loop. You provide a callback function that receives the **shape** and the **time**  (from 0 to 1), and you can do whatever you want.
+
+This is perfect for complex math, interdependent properties, or non-linear behaviors. The fun part is that you add `.looping()` or `.smoothed()` or any other standard `Animation` modifier even to these custom animations.
+
+```{python}
+import math
+
+with Canvas() as c:
+    ball = Circle(10, fill=Colors.Purple)
+
+c.fit(50)
+scene = Scene(c)
+
+# A custom function to move in a spiral
+def spiral(shape, t):
+    # t goes 0 -> 1
+    angle = t * math.pi * 4  # 2 full turns
+    radius = t * 50          # Spiral out to 50px
+
+    # Update position manually
+    shape.transform.tx = math.cos(angle) * radius
+    shape.transform.ty = math.sin(angle) * radius
+
+    # We can also change other properties!
+    shape.fill = Colors.Purple.towards(Colors.Yellow, t)
+
+scene.play(
+    ball.animate.custom(spiral).smoothed().looping(),
+    duration=3.0
+)
+
+scene.display()
+```

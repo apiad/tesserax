@@ -43,7 +43,7 @@ class Animation(ABC):
 
     def __init__(self):
         self.rate = linear
-        self.relative_weight = 1.0
+        self._weight = 1.0
         self._started = False
 
     def begin(self) -> None:
@@ -77,7 +77,7 @@ class Animation(ABC):
     # --- Fluent API Modifiers ---
 
     def weight(self, w: float) -> Self:
-        self.relative_weight = w
+        self._weight = w
         return self
 
     def rated(self, func: Callable[[float], float]) -> Self:
@@ -134,7 +134,7 @@ class Wrapped(Animation):
     def __init__(self, child: Animation):
         super().__init__()
         self.child = child
-        self.relative_weight = child.relative_weight
+        self.relative_weight = child._weight
 
     def _start(self):
         self.child.begin()
@@ -148,12 +148,12 @@ class Sequence(Animation):
         super().__init__(**kwargs)
         self.children = list(animations)
 
-        total_weight = sum(c.relative_weight for c in animations)
+        total_weight = sum(c._weight for c in animations)
         self.checkpoints = []
         current = 0.0
 
         for c in animations:
-            width = c.relative_weight / (total_weight or 1)
+            width = c._weight / (total_weight or 1)
             current += width
             self.checkpoints.append(current)
 
@@ -456,6 +456,43 @@ class Warped(Animation):
             self.shape.refresh()
 
 
+class NumericAnimation(Animation):
+    """
+    Animates any float/int attribute on an object.
+    """
+    def __init__(self, target: object, attribute: str, value: float, **kwargs):
+        super().__init__(**kwargs)
+        self.target_obj = target
+        self.attribute = attribute
+        self.value = value
+        self.start = 0.0
+
+    def _start(self):
+        # Capture the current value when animation begins
+        try:
+            val = getattr(self.target_obj, self.attribute)
+            self.start = float(val)
+        except AttributeError:
+            raise AttributeError(f"Object {self.target_obj} has no attribute '{self.attribute}'")
+
+    def _update(self, t: float):
+        # Lerp: start + (end - start) * t
+        current = self.start + (self.value - self.start) * t
+
+        # Apply using setter
+        setattr(self.target_obj, self.attribute, current)
+
+
+class FunctionalAnimation(Animation):
+    def __init__(self, obj:IShape, func: Callable):
+        super().__init__()
+        self.func = func
+        self.obj = obj
+
+    def _update(self, t: float):
+        self.func(self.obj, t)
+
+
 # --- Factory Class ---
 
 
@@ -486,6 +523,23 @@ class Animator[TShape: IShape]:
     def follow(self, path: Shape, rotate: bool = False) -> Animation:
         return Following(self.shape, path, rotate_along=rotate)
 
+    def property(self, name: str, value: float) -> Animation:
+        """Explicitly animate a property by name."""
+        return NumericAnimation(self.shape, name, value)
+
+    def custom(self, func: Callable[[TShape, float]]) -> Animation:
+        """Custom, function-based animation."""
+        return FunctionalAnimation(self.shape, func)
+
+    def __getattr__(self, name: str):
+        """
+        Magic method: shape.animate.foo(100) -> animates 'foo' to 100.
+        Returns a callable that creates the animation.
+        """
+        def proxy(target: float):
+            return NumericAnimation(self.shape, name, target)
+
+        return proxy
 
 class StyledAnimator[TShape: IVisual](Animator[TShape]):
     def __init__(self, shape: TShape):
