@@ -14,6 +14,8 @@ website:
         text: Layouts
       - href: animations.qmd
         text: Animations
+      - href: physics.qmd
+        text: Physics
       - href: gallery.qmd
         text: Gallery
 
