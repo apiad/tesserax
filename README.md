@@ -2,15 +2,16 @@
 
 Tesserax is a modern Python 3.12 library designed for programmatic SVG generation with a focus on ease of use, layout management, and flexible geometric primitives. It is particularly well-suited for visualizing data structures, algorithms, and technical diagrams.
 
-> [**Read the full documentation**](https://apiad.github.io/tesserax).
+Beyond static diagrams, Tesserax now includes a **deterministic physics engine** and a **cinematic animation system**, making it a complete toolkit for scientific communication.
 
 ## Key Features
 
-* **Declarative Layouts**: Effortlessly arrange shapes in `Row` or `Column` containers with automatic alignment and spacing.
-* **Anchor System**: Connect shapes using semantic anchors like `top`, `bottom`, `left`, `right`, and `center`.
-* **Context Manager Support**: Use `with` statements to group shapes naturally within the code.
+* **Rich Primitives**: Includes standard shapes (`Rect`, `Circle`) plus advanced procedural geometry like `Polyline` with smoothing and subdivision support.
+* **Declarative Layouts**: Effortlessly arrange shapes in `Row`, `Column`, or `Grid` containers, or use algorithmic layouts like `Tree` and `Force`.
 * **Smart Canvas**: Automatically fit the canvas viewport to the content with adjustable padding.
-* **Rich Primitives**: Includes `Rect`, `Square`, `Circle`, `Ellipse`, `Line`, `Arrow`, and `Path`.
+* **Anchor System**: Connect shapes using semantic anchors like `top`, `bottom`, `left`, `right`, and `center`.
+* **Cinematic Animations**: Create complex motion graphics using a declarative, code-first API that supports keyframes, morphing, and warping.
+* **Physics Simulation**: Bake high-precision rigid body simulations directly into your animations using the built-in `World` and `Body` primitives.
 
 ## Installation
 
@@ -82,70 +83,50 @@ canvas.fit(padding=10).display()
 
 The `display()` method in the `Canvas` class is an IPython/Jupyter/Quarto compatible  shortcut to automatically include the rendered SVG (in all its beautiful vectorial glory) directly in a notebook. But you can also use `Canvas.save()` to generate a plain old, boring SVG file on this, and `str(canvas)` to get the actual SVG code as a plain string.
 
-## Core Components
+## Deep Dive: Beyond the Basics
 
-Tesserax comes with all basic components you need to draw the spectrum of SVG shapes.
-All shapes support standard SVG attributes like `stroke` and `fill`.
+Tesserax scales from simple scripts to complex simulations. Here is an overview of the advanced capabilities available.
 
-* **Rect & Square**: Defined by width/height or a single size.
-* **Circle & Ellipse**: Defined by radii.
-* **Groups**: For grouping shapes and applying transforms to them as a single shape.
-* **Arrow**: A specialized line that automatically includes an arrowhead marker.
-* **Path**: Supports a fluent API for complex paths using `move_to`, `line_to`, `cubic_to`, and `close`.
+### Geometric Primitives & Procedural Shapes
 
-### Layouts
+Tesserax provides a robust suite of atoms like `Rect`, `Circle`, `Ellipse`, and `Arrow`.
 
-Layouts are a unique feature of Tesserax to automate the positioning of child elements. We currently have three layouts, but these are very easy to extend:
+* **Polyline API**: The `Polyline` class supports `smoothing` (Bezier interpolation), `subdivision` (increasing resolution), and `simplification` (reducing vertices).
+* **Path API**: For low-level control, use the `Path` class with standard SVG commands (`move_to`, `cubic_to`, `arc`).
 
-* **Row**: Aligns shapes horizontally. Baselines can be set to `start`, `middle`, or `end`.
-* **Column**: Aligns shapes vertically with `start`, `middle`, or `end` alignment.
-* **HierarchicalLayout**: Useful for drawing trees, DAGs, automata, etc.
-* **ForceLayout**: Typically used to draw arbitrary graphs with a force-directed algorithm.
+### The Layout Engine
 
-### Transforms
+Forget manual pixel pushing. Tesserax offers a hierarchy of layout engines:
 
-Every shape has a `Transform` object allowing for:
+* **Standard Layouts**: `Row`, `Column`, and `Grid` automatically position elements based on gaps and alignment.
+* **Hierarchical Layout**: Automatically draws Trees and Directed Acyclic Graphs (DAGs).
+* **Force-Directed Layout**: Simulates physical forces to arrange arbitrary network graphs.
 
-* **Translation**: `shape.translated(dx, dy)`.
-* **Rotation**: `shape.rotated(degrees)`.
-* **Scaling**: `shape.scaled(factor)`.
+### Cinematic Animation
 
-Groups of shapes also have their own transform, and this can be composed _ad-infinitum_ to create complex drawing.
+The animation system is designed for **storytelling**, not just movement.
+
+* **Declarative API**: Compose animations using `parallel (|)` and `sequential (+)` operators.
+* **Keyframes**: Define complex multi-stage timelines for any property (position, rotation, color).
+* **Morphing & Warping**: Smoothly transform one shape into another or apply wave functions to geometry.
+
+### Physics Engine
+
+Tesserax includes a **baked physics engine** for high-precision rigid body simulations.
+
+* **Deterministic**: Define a `World`, add `Body` objects, and apply `Field`s like Gravity or Drag.
+* **Baked Playback**: The simulation is calculated upfront and converted into standard keyframes, allowing high-resolution physics (e.g., 1000 steps/sec) to play back smoothly at any framerate.
+* **Interoperable**: Physics animations can be mixed and matched with standard tweens.
 
 ## Why Tesserax?
 
-In the Python ecosystem, there is a clear divide between **data visualization** (plotting numbers) and **diagrammatic representation** (drawing concepts). Tesserax is built for the latter.
+In the Python ecosystem, there is a clear divide between **data visualization** (plotting numbers) and **diagrammatic representation** (drawing concepts).
 
-It is designed for researchers, educators, and authors who need the geometric precision of a professional drafting tool combined with the power of a modern programming language.
+Tesserax is for **Scientific Drawing**---providing the low-level primitives needed for total layout authority.
 
-### Tesserax vs. The Alternatives
+Libraries like **Matplotlib** map data to charts. Tesserax maps concepts to geometry. Use Tesserax for the schematics, geometric proofs, and algorithmic walkthroughs in your papers.
 
-#### Precision over Statistics
-
-Libraries like **Matplotlib**, **Seaborn**, or **Altair** are designed to map data points to visual encodings (bars, lines, scatter points).
-
-**The Difference**: Tesserax does not compete with these libraries because it does not render data graphs. You wouldn't use Tesserax to plot a CSV. Instead, Tesserax is for "the rest" of the figures in a paper: the schematics, the geometric proofs, the architectural diagrams, and the algorithmic walkthroughs where exact spatial relationships convey the meaning.
-
-#### Control over Constraints
-
-**Mermaid** and **Graphviz** are excellent for quickly rendering flowcharts using "black-box" layout engines.
-
-**The Difference**: These tools sacrifice control for convenience. If you need an arrow to point exactly at the tangent of a rotated ellipse, or a shape to be sized exactly according to a geometric ratio, Mermaid cannot help you. Tesserax is for **Scientific Drawing**—providing the low-level primitives needed for total layout authority.
-
-#### The "TikZ for Python" Philosophy
-
-**TikZ** is the industry standard for academic figures, but it requires learning a specialized, often cryptic macro language.
-
-**The Difference**: Tesserax brings the "low-level, total-control" philosophy of TikZ into **Python 3.12**. You get coordinate-invariant precision and semantic anchoring while using Python’s loops, logic, and types. We are building from the bottom up: starting with geometric atoms and moving toward high-level scientific abstractions (like automated neural network architectures or commutative diagrams) that maintain the ability to "drop down" and tweak a single pixel.
-
-### The SVG Advantage
-
-While TikZ is the gold standard for LaTeX-based PDF generation, it belongs to a "print-first" era. Tesserax leverages **SVG (Scalable Vector Graphics)** as its native format, offering a portability that TikZ cannot match without significant friction.
-
-* **Native Web Rendering**: Tesserax figures are native SVGs. They render instantly in any browser, remain crisp at any zoom level, and can be embedded directly into HTML or Markdown (via Quarto) without conversion.
-* **WYSIWYG Portability**: Converting TikZ to SVG for blog posts or online journals often results in broken fonts or misaligned elements. Because Tesserax *starts* with SVG, what you see in your development notebook is exactly what appears in your final PDF and your website.
-* **Accessibility & Interaction**: Unlike static PDFs, Tesserax SVGs can include metadata and ARIA labels for screen readers. Since they are part of the DOM, they can also be styled with CSS or even animated for interactive educational content.
-* **Perfect Print**: SVG is fully convertible to high-quality, vector-perfect PDF, meeting the highest standards for academic journals and book publishing.
+**TikZ** is the industry standard for academic figures but uses a cryptic macro language. Tesserax brings that same "total-control" philosophy to **Python 3.12**, giving you coordinate-invariant precision with the power of Python's loops and types.
 
 ## Contribution
 
