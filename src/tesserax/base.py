@@ -86,7 +86,6 @@ class Square(Visual):
         return f'<rect x="{-self.size/2}" y="{-self.size/2}" width="{self.size}" height="{self.size}" stroke="{self.stroke}" fill="{self.fill}" />'
 
 
-
 class Circle(Visual):
     """A circle, ideal for nodes in trees or states in automata."""
 

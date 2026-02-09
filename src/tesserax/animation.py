@@ -460,6 +460,7 @@ class NumericAnimation(Animation):
     """
     Animates any float/int attribute on an object.
     """
+
     def __init__(self, target: object, attribute: str, value: float, **kwargs):
         super().__init__(**kwargs)
         self.target_obj = target
@@ -473,7 +474,9 @@ class NumericAnimation(Animation):
             val = getattr(self.target_obj, self.attribute)
             self.start = float(val)
         except AttributeError:
-            raise AttributeError(f"Object {self.target_obj} has no attribute '{self.attribute}'")
+            raise AttributeError(
+                f"Object {self.target_obj} has no attribute '{self.attribute}'"
+            )
 
     def _update(self, t: float):
         # Lerp: start + (end - start) * t
@@ -484,7 +487,7 @@ class NumericAnimation(Animation):
 
 
 class FunctionalAnimation(Animation):
-    def __init__(self, obj:IShape, func: Callable):
+    def __init__(self, obj: IShape, func: Callable):
         super().__init__()
         self.func = func
         self.obj = obj
@@ -536,10 +539,12 @@ class Animator[TShape: IShape]:
         Magic method: shape.animate.foo(100) -> animates 'foo' to 100.
         Returns a callable that creates the animation.
         """
+
         def proxy(target: float):
             return NumericAnimation(self.shape, name, target)
 
         return proxy
+
 
 class StyledAnimator[TShape: IVisual](Animator[TShape]):
     def __init__(self, shape: TShape):
