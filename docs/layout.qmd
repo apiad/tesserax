@@ -31,7 +31,7 @@ with Canvas() as c:
 c.fit(10).display()
 ```
 
-## Manual Layouts: Align and Distribute
+### Manual Layouts: Align and Distribute
 
 Before reaching for a full layout engine, you can often get what you need using the procedural API on `Group`.
 
@@ -56,6 +56,24 @@ with Canvas() as c:
     g.translated(50, 50)
 
 c.fit(10).display()
+```
+
+### Visualizing Groups
+
+Sometimes you want a group of shapes to also have a bounding frame. While you can build this easily with existing tools, Tesserax also provides a ready-made `Container` shape that automates this process.
+
+```{python}
+from tesserax import Container
+
+with Canvas() as canvas:
+    with Container(padding=10, stroke=Colors.Gray, width=2) as c:
+        Rect(30, 20, fill=Colors.Red)
+        Circle(15, fill=Colors.Green)
+        Square(25, fill=Colors.Blue)
+
+    c.distribute("horizontal", gap=10)
+
+canvas.fit().display()
 ```
 
 ## Standard Layouts

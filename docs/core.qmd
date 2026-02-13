@@ -256,3 +256,23 @@ with Canvas() as c:
 
 c.fit(10).display()
 ```
+
+## Sketchy Drawings
+
+And since mathematical drawings are incomplete without an XKCD-style sketchy mode, Tesserax also provides a (still kinda ugly) implementation for sketches. You can use it just as a regular group, but everything drawn inside will be sketched (if possible).
+
+```{python}
+from tesserax.sketch import Sketch
+
+with Canvas() as canvas:
+    with Sketch() as g:
+        r = Rect(50, 100, stroke=Colors.Red, width=2)
+        c = Circle(50, stroke=Colors.Green, width=2)
+        q = Square(75, stroke=Colors.Blue, width=2)
+
+    g.distribute("horizontal", gap=25)
+
+canvas.fit(10).display()
+```
+
+Not all Tesserax primitives can be sketched. For this to work, we need to be able to compute `Path`s for a given shape, which is not possible for non-procedural shapes like `Text` and `Sprite`. Also, curved shapes like `Arrow` are not supported yet, but you can subsititute those with custom `Polyline` with end markers. Also, sketches currently don't work with fill colors.

@@ -51,6 +51,19 @@ class Rect(Visual):
         super().__init__(fill=fill, stroke=stroke, width=width)
         self.w, self.h = w, h
 
+    def trace(self) -> Path:
+        # A rectangle is a closed path of 4 lines
+        # We start top-left (relative to center 0,0)
+        hw, hh = self.w / 2, self.h / 2
+        return (
+            Path(fill=self.fill, stroke=self.stroke, width=self.width)
+            .jump_to(-hw, -hh)
+            .line_to(hw, -hh)
+            .line_to(hw, hh)
+            .line_to(-hw, hh)
+            .close()
+        )
+
     def local(self) -> Bounds:
         # Returns bounds centered at 0,0
         hw, hh = self.w / 2, self.h / 2
@@ -74,6 +87,19 @@ class Square(Visual):
     ) -> None:
         super().__init__(fill=fill, stroke=stroke, width=width)
         self.size = size
+
+    def trace(self) -> Path:
+        # A rectangle is a closed path of 4 lines
+        # We start top-left (relative to center 0,0)
+        hw, hh = self.size / 2, self.size / 2
+        return (
+            Path(fill=self.fill, stroke=self.stroke, width=self.width)
+            .jump_to(-hw, -hh)
+            .line_to(hw, -hh)
+            .line_to(hw, hh)
+            .line_to(-hw, hh)
+            .close()
+        )
 
     def local(self) -> Bounds:
         # Returns bounds centered at 0,0
@@ -99,6 +125,23 @@ class Circle(Visual):
         super().__init__(fill=fill, stroke=stroke, width=width)
         self.r = r
 
+    def trace(self) -> Path:
+        # Approximation of a circle using 4 cubic bezier curves
+        # Kappa is the magic number for bezier circles
+        kappa = 0.552284749831
+        r = self.r
+        k = r * kappa
+
+        return (
+            Path(fill=self.fill, stroke=self.stroke, width=self.width)
+            .jump_to(r, 0)
+            .cubic_to(r, k, k, r, 0, r)
+            .cubic_to(-k, r, -r, k, -r, 0)
+            .cubic_to(-r, -k, -k, -r, 0, -r)
+            .cubic_to(k, -r, r, -k, r, 0)
+            .close()
+        )
+
     def local(self) -> Bounds:
         return Bounds(-self.r, -self.r, self.r * 2, self.r * 2)
 
@@ -120,6 +163,23 @@ class Ellipse(Visual):
     ) -> None:
         super().__init__(fill=fill, stroke=stroke, width=width)
         self.rx, self.ry = rx, ry
+
+    def trace(self) -> Path:
+        # Kappa is the magic constant for approximating a quarter-circle/ellipse with a cubic Bezier
+        kappa = 0.552284749831
+        kx = self.rx * kappa
+        ky = self.ry * kappa
+        rx, ry = self.rx, self.ry
+
+        return (
+            Path(fill=self.fill, stroke=self.stroke, width=self.width)
+            .jump_to(rx, 0)
+            .cubic_to(rx, ky, kx, ry, 0, ry)  # Bottom-Right quadrant (0 to 90 deg)
+            .cubic_to(-kx, ry, -rx, ky, -rx, 0)  # Bottom-Left quadrant (90 to 180 deg)
+            .cubic_to(-rx, -ky, -kx, -ry, 0, -ry)  # Top-Left quadrant (180 to 270 deg)
+            .cubic_to(kx, -ry, rx, -ky, rx, 0)  # Top-Right quadrant (270 to 360 deg)
+            .close()
+        )
 
     def local(self) -> Bounds:
         return Bounds(-self.rx, -self.ry, self.rx * 2, self.ry * 2)
@@ -391,6 +451,21 @@ class Path(Visual):
         self._max_x: float = float("-inf")
         self._max_y: float = float("-inf")
 
+    def _trace(self) -> Path:
+        # Path is already a Path, return a clone to be safe
+        # We need to copy commands and style
+        new_p = Path(
+            fill=self.fill,
+            stroke=self.stroke,
+            width=self.width,
+            marker_start=self.marker_start,
+            marker_end=self.marker_end,
+        )
+        new_p._commands = list(self._commands)
+        new_p._cursor = self._cursor
+        # Copy bounds cache if needed, or let it recompute
+        return new_p
+
     def local(self) -> Bounds:
         if not self._commands:
             return Bounds(0, 0, 0, 0)
@@ -613,6 +688,9 @@ class Polyline(Component, IVisual):
         self.points = [func(p) for p in self.points]
         return self
 
+    def _trace(self) -> Path:
+        return cast(Path, self._build())
+
     def _build(self) -> Shape:
         shape = Path(**self._kwargs)
         s = max(0.0, min(1.0, self.smoothness))
@@ -753,6 +831,9 @@ class Line(Component):
         p2 = self.p2() if callable(self.p2) else self.p2
         return p1, p2
 
+    def _trace(self) -> Path:
+        return cast(Path, self._build())
+
     def _build(self) -> Shape:
         shape = Path(**self._kwargs)
         start, end = self._resolve()
@@ -799,4 +880,73 @@ class Arrow(Line):
             width,
             marker_start=marker_start,
             marker_end=marker_end,
+        )
+
+
+class Container(Group, Visual):
+    """
+    A Group that renders a background box around its children.
+    Automatically calculates its bounds based on children + padding.
+    """
+
+    def __init__(
+        self,
+        shapes: list[Shape] | None = None,
+        padding: float = 0.0,
+        corner_radius: float = 0.0,
+        fill: Color = Colors.Transparent,
+        stroke: Color = Colors.Black,
+        width: float = 1.0,
+    ) -> None:
+        Group.__init__(self, shapes)
+        Visual.__init__(self, fill=fill, stroke=stroke, width=width)
+
+        self.padding = padding
+        self.corner_radius = corner_radius
+
+    def local(self) -> Bounds:
+        # The bounds of the container includes the padding around the children
+        b = super().local()
+        return b.padded(self.padding)
+
+    def _render(self) -> str:
+        # 1. Render the background Rect
+        if not self.shapes:
+            return ""
+
+        # Use Group.local() to get children bounds without padding
+        content_b = Group.local(self)
+        bg_b = content_b.padded(self.padding)
+
+        rx = self.corner_radius
+        ry = self.corner_radius
+
+        bg_svg = (
+            f'<rect x="{bg_b.x}" y="{bg_b.y}" '
+            f'width="{bg_b.width}" height="{bg_b.height}" '
+            f'rx="{rx}" ry="{ry}" '
+            f'fill="{self.fill}" stroke="{self.stroke}" stroke-width="{self.width}" />'
+        )
+
+        # 2. Render children on top
+        children_svg = super()._render()
+
+        return f"{bg_svg}\n{children_svg}"
+
+    def trace(self) -> Path:
+        # For the Sketch renderer, the Container traces as its border rectangle.
+        b = self.local()
+
+        # Helper to create a Rect path around these bounds
+        hw, hh = b.width / 2, b.height / 2
+        # Center of bounds relative to local (which is usually aligned to children)
+        cx, cy = b.center.x, b.center.y
+
+        return (
+            Path(fill=self.fill, stroke=self.stroke, width=self.width)
+            .jump_to(cx - hw, cy - hh)
+            .line_to(cx + hw, cy - hh)
+            .line_to(cx + hw, cy + hh)
+            .line_to(cx - hw, cy + hh)
+            .close()
         )

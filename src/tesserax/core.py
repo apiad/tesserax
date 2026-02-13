@@ -7,7 +7,7 @@ from typing import Literal, Protocol, Self, TYPE_CHECKING
 from .color import Color, Colors
 
 if TYPE_CHECKING:
-    from .base import Group
+    from .base import Group, Path
     from .animation import Animator
 
 type Anchor = Literal[
@@ -67,6 +67,9 @@ class Point:
         num = abs(dy * p.x - dx * p.y + end.x * start.y - end.y * start.x)
         den = math.sqrt(dy**2 + dx**2)
         return num / den
+
+    def distance(self, other: Point) -> float:
+        return (other - self).magnitude()
 
     def apply(self, tx=0.0, ty=0.0, r=0.0, s=1.0) -> Point:
         rad = math.radians(r)
@@ -300,7 +303,6 @@ class Shape(ABC):
         self,
     ) -> None:
         from .base import Group
-        from .animation import Animator
 
         self.transform = Transform.identity()
         self.parent: Group | None = None
@@ -310,6 +312,14 @@ class Shape(ABC):
             gp.append(self)
 
         self._animator: Animator | None = None
+
+    def trace(self) -> Path:
+        p = self._trace()
+        p.transform = self.transform.copy()
+        return p
+
+    def _trace(self) -> Path:
+        raise NotImplemented
 
     def detach(self) -> Self:
         if self.parent:
