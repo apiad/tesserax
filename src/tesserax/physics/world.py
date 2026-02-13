@@ -1,8 +1,17 @@
 from tesserax.animation import Animation, Parallel, KeyframeAnimation
+from tesserax.core import Bounds
 from .core import Body
 from .forces import Field
 from .constraints import Constraint
 from .collisions import Collision
+
+
+class PhysicsAnimation(Parallel):
+    def __init__(
+        self, *animations: Animation, bounds: Bounds | None = None, **kwargs
+    ) -> None:
+        super().__init__(*animations, **kwargs)
+        self.bounds = bounds
 
 
 class World:
@@ -20,7 +29,7 @@ class World:
         self.constraints.append(c)
         return c
 
-    def simulate(self, duration: float, dt: float = 0.01) -> Animation:
+    def simulate(self, duration: float, dt: float = 0.01) -> PhysicsAnimation:
         steps = int(duration / dt)
 
         # Tracks now include 'rotation'
@@ -40,8 +49,10 @@ class World:
             self._step(dt)
             time += dt
 
-        # 3. Bake
+        # 3. Bake and Compute Bounds
         anims = []
+        all_bounds = []
+
         for b, props in tracks.items():
             anims.append(
                 KeyframeAnimation(
@@ -52,7 +63,30 @@ class World:
                 )
             )
 
-        return Parallel(*anims)
+            # Compute approximate bounds for this body over the entire simulation
+            # We assume the AABB of the shape + the min/max translations
+            local = b.shape.local()
+            tx_values = props["tx"].values()
+            ty_values = props["ty"].values()
+
+            if tx_values and ty_values:
+                min_tx, max_tx = min(tx_values), max(tx_values)
+                min_ty, max_ty = min(ty_values), max(ty_values)
+
+                # Union of the shape at its min position and max position
+                # This is a safe approximation for "camera fitting" purposes
+                # (width/height remain constant in local space)
+                b_bounds = Bounds(
+                    x=min_tx + local.x,
+                    y=min_ty + local.y,
+                    width=(max_tx - min_tx) + local.width,
+                    height=(max_ty - min_ty) + local.height,
+                )
+                all_bounds.append(b_bounds)
+
+        total_bounds = Bounds.union(*all_bounds) if all_bounds else None
+
+        return PhysicsAnimation(*anims, bounds=total_bounds)
 
     def _step(self, dt: float):
         # 1. Apply Fields (Gravity, Drag)

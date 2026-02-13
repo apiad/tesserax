@@ -53,13 +53,21 @@ class Canvas(Group):
 
         display(SVG(self._build_svg()))
 
-    def fit(self, padding: float = 0, crop: bool = True) -> Canvas:
+    def fit(
+        self, padding: float = 0, *, crop: bool = True, bounds: Bounds | None = None
+    ) -> Canvas:
         """
         Reduces the viewBox to perfectly fit all added shapes.
         If crop is True (default), the width and height will also be adjusted.
+        If bounds is provided, it fits to that specific area instead of the shapes.
         """
-        all_bounds = [s.bounds() for s in self.shapes]
-        tight_bounds = Bounds.union(*all_bounds).padded(padding)
+        if bounds is None:
+            all_bounds = [s.bounds() for s in self.shapes]
+            if not all_bounds:
+                return self
+            tight_bounds = Bounds.union(*all_bounds).padded(padding)
+        else:
+            tight_bounds = bounds.padded(padding)
 
         self._viewbox = (
             tight_bounds.x,

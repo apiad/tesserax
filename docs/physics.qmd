@@ -43,14 +43,14 @@ world.add(
 )
 
 simulation = world.simulate(duration=3.0)
+canvas.fit(10, bounds=simulation.bounds)
 ```
 
-Finally, we run the animation as normal. Notice we can simulate at some fixed framerate and render at a completely different rate.
+Finally, we run the animation as normal. Notice we can simulate at some fixed framerate and render at a completely different rate. The property `simulation.bounds` has a precomputed approximate bounding box of the entire simulation so we can fit to it.
 
 ```{python}
 from tesserax.animation import Scene
 
-canvas.fit(10)
 scene = Scene(canvas)
 scene.play(simulation, duration=3.0)
 scene.display()
@@ -68,8 +68,6 @@ from tesserax.physics import World, Gravity, Material
 from tesserax.physics.constraints import Spring, Rod
 
 with Canvas() as canvas:
-    back = Rect(200, 150, fill="white", stroke="none").translated(100, 50)
-
     r1 = Rect(20, 20, fill="steelblue").translated(50, 0)
     ball = Circle(15, fill="orange").translated(100, 0)
     r2 = Rect(20, 20, fill="green").translated(150, 0)
@@ -86,8 +84,6 @@ with Canvas() as canvas:
         stroke="gray",
         width=3,
     )
-
-canvas.fit(10)
 
 world = World()
 world.fields.append(Gravity())
@@ -108,6 +104,7 @@ world.constraint(Spring(body_ball, body_r2, length=30, k=50))
 
 # 3. Bake
 simulation = world.simulate(duration=4.0)
+canvas.fit(10, bounds=simulation.bounds)
 
 # 4. Play
 scene = Scene(canvas)
