@@ -1,9 +1,13 @@
 from __future__ import annotations
 from pathlib import Path
-from typing import Self
+from typing import Self, TYPE_CHECKING, cast
 from .core import Shape, Bounds
 from .base import Group
 from .color import Colors
+
+
+if TYPE_CHECKING:
+    from .animation import CameraAnimator
 
 
 class Canvas(Group):
@@ -148,3 +152,33 @@ class Canvas(Group):
 
     def __str__(self) -> str:
         return self._build_svg()
+
+
+class Camera(Shape):
+    def __init__(self, width: float, height: float, active: bool = False) -> None:
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.active = active
+
+    def local(self) -> Bounds:
+        # Camera is centered on its transform position
+        return Bounds(-self.width / 2, -self.height / 2, self.width, self.height)
+
+    def _render(self) -> str:
+        # If active and attached to a Canvas, force the viewbox
+        if self.active and self.parent and isinstance(self.parent, Canvas):
+            # We fit the canvas to the camera's current world bounds.
+            # crop=True ensures the output SVG size matches the camera size.
+            self.parent.fit(bounds=self.bounds(), crop=True)
+
+        return ""  # Invisible
+
+    @property
+    def animate(self) -> CameraAnimator:
+        from .animation import CameraAnimator
+
+        if self._animator is None:
+            self._animator = CameraAnimator(self)
+
+        return cast(CameraAnimator, self._animator)

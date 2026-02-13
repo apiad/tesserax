@@ -581,6 +581,26 @@ class KeyframeAnimation(Animation):
             setattr(target, name, current)
 
 
+class TrackAnimation(Animation):
+    """
+    Makes a camera (or any shape) strictly follow another shape's transform.
+    """
+
+    def __init__(self, camera: IShape, target: IShape, rotation: bool = False, **kwargs):
+        super().__init__(**kwargs)
+        self.camera = camera
+        self.target = target
+        self.rotation = rotation
+
+    def _update(self, t: float):
+        # Tracking is continuous; we snap the camera to the target's position at every frame
+        self.camera.transform.tx = self.target.transform.tx
+        self.camera.transform.ty = self.target.transform.ty
+
+        if self.rotation:
+            self.camera.transform.rotation = self.target.transform.rotation
+
+
 # --- Factory Class ---
 
 
@@ -632,6 +652,14 @@ class Animator[TShape: IShape]:
 
     def keyframes(self, **tracks) -> Animation:
         return KeyframeAnimation(self.shape, **tracks)
+
+
+class CameraAnimator(Animator):
+    def track(self, obj: Shape, rotation: bool = False) -> Animation:
+        """
+        Locks the camera to the target object's position (and optionally rotation).
+        """
+        return TrackAnimation(self.shape, obj, rotation=rotation)
 
 
 class StyledAnimator[TShape: IVisual](Animator[TShape]):

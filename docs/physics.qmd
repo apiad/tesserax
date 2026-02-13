@@ -42,8 +42,7 @@ world.add(
     collider=CircleCollider(ball.r),
 )
 
-simulation = world.simulate(duration=3.0)
-canvas.fit(10, bounds=simulation.bounds)
+simulation = world.simulate(duration=5.0)
 ```
 
 Finally, we run the animation as normal. Notice we can simulate at some fixed framerate and render at a completely different rate. The property `simulation.bounds` has a precomputed approximate bounding box of the entire simulation so we can fit to it.
@@ -51,8 +50,9 @@ Finally, we run the animation as normal. Notice we can simulate at some fixed fr
 ```{python}
 from tesserax.animation import Scene
 
+canvas.fit(10, bounds=simulation.bounds)
 scene = Scene(canvas)
-scene.play(simulation, duration=3.0)
+scene.play(simulation, duration=5.0)
 scene.display()
 
 ```
@@ -103,11 +103,11 @@ world.constraint(Spring(body_r1, body_ball, length=30, k=50))
 world.constraint(Spring(body_ball, body_r2, length=30, k=50))
 
 # 3. Bake
-simulation = world.simulate(duration=4.0)
+simulation = world.simulate(duration=5.0)
 canvas.fit(10, bounds=simulation.bounds)
 
 # 4. Play
 scene = Scene(canvas)
-scene.play(simulation, duration=4.0)
+scene.play(simulation, duration=5.0)
 scene.display()
 ```
