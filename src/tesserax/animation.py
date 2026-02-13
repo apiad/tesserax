@@ -586,7 +586,9 @@ class TrackAnimation(Animation):
     Makes a camera (or any shape) strictly follow another shape's transform.
     """
 
-    def __init__(self, camera: IShape, target: IShape, rotation: bool = False, **kwargs):
+    def __init__(
+        self, camera: IShape, target: IShape, rotation: bool = False, **kwargs
+    ):
         super().__init__(**kwargs)
         self.camera = camera
         self.target = target

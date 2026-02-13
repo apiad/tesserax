@@ -5,7 +5,6 @@ from .core import Shape, Bounds
 from .base import Group
 from .color import Colors
 
-
 if TYPE_CHECKING:
     from .animation import CameraAnimator
 

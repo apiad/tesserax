@@ -20,7 +20,7 @@ class SimpleField(Field):
 
 
 class InverseDistanceField(SimpleField):
-    def __init__(self, intensity: float, center=Point(0,0), exponent:int=2) -> None:
+    def __init__(self, intensity: float, center=Point(0, 0), exponent: int = 2) -> None:
         self.intensity = intensity
         self.center = center
         self.exponent = exponent
