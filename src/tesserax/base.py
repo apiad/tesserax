@@ -593,15 +593,15 @@ class Polyline(Component, IVisual):
 
     def append(self, p: Point) -> Self:
         self.points.append(p)
-        return self.refresh()
+        return self
 
     def prepend(self, p: Point) -> Self:
         self.points.insert(0, p)
-        return self.refresh()
+        return self
 
     def extend(self, points: list[Point]) -> Self:
         self.points.extend(points)
-        return self.refresh()
+        return self
 
     def center(self) -> Self:
         """
@@ -650,7 +650,7 @@ class Polyline(Component, IVisual):
             if not self.closed:
                 new_pts.append(self.points[-1])
             self.points = new_pts
-        return self.refresh()
+        return self
 
     def simplify(self, tolerance: float = 1e-2) -> Self:
         """
@@ -682,7 +682,7 @@ class Polyline(Component, IVisual):
         # (Omitted for brevity, but essentially check points[0] vs points[-1] and points[1])
 
         self.points = new_points
-        return self.refresh()
+        return self
 
     def apply(self, func: Callable[[Point], Point]) -> Self:
         self.points = [func(p) for p in self.points]
@@ -790,7 +790,7 @@ class Polyline(Component, IVisual):
                 new_points.append(p * scale_factor)
 
         self.points = new_points
-        return self.refresh()
+        return self
 
     def contract(self, delta: float) -> Self:
         """

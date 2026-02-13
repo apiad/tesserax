@@ -457,7 +457,6 @@ class Component(Shape):
     def __init__(self, **kwargs) -> None:
         super().__init__()
         self._primitive: Shape | None = None
-        self._dynamic = False
         self._kwargs = kwargs
 
     @abstractmethod
@@ -468,17 +467,9 @@ class Component(Shape):
         """
         pass
 
-    def refresh(self) -> Self:
-        """Invalidates the cache, forcing a rebuild on next use."""
-        self._primitive = None
-        return self
-
     @property
     def _shape(self) -> Shape:
-        if self._primitive is None or self._dynamic:
-            self._primitive = self._build().detach()
-
-        return self._primitive
+        return self._build().detach()
 
     def local(self) -> Bounds:
         return self._shape.bounds()

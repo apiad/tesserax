@@ -208,3 +208,157 @@ with Canvas() as canvas:
 
 canvas.fit(padding=40).display()
 ```
+
+## The Physics Blob
+
+This example demonstrates how to create a custom **Composite Shape**. We build a `ConvexHull` component that wraps a set of physics bodies. By connecting the bodies with springs and wrapping them in a smooth hull, we create a soft-body "Jelly" simulation.
+
+First, we implement the geometry logic. This component takes a list of shapes, collects their vertices, and uses the **Graham Scan** algorithm to compute the convex hull.
+
+```{python}
+import math
+from functools import reduce
+from tesserax import Group, Polyline, Point, Colors
+
+class ConvexHull(Group):
+    def __init__(self, shapes=None, fill=Colors.Transparent, stroke=Colors.Black, **kwargs):
+        super().__init__(shapes)
+        # The visual representation of the hull
+        self.hull = Polyline([], closed=True, fill=fill, stroke=stroke, **kwargs)
+
+    def _graham_scan(self, points: list[Point]) -> list[Point]:
+        """Computes the Convex Hull of a set of points."""
+        if len(points) < 3: return points
+
+        # 1. Find the bottom-most point (and left-most if ties)
+        p0 = min(points, key=lambda p: (p.y, p.x))
+
+        # 2. Sort by polar angle with respect to p0
+        def polar_angle(p):
+            return math.atan2(p.y - p0.y, p.x - p0.x)
+
+        # Sort by angle, then distance
+        sorted_points = sorted(points, key=lambda p: (polar_angle(p), p.distance(p0)))
+
+        # 3. Build the hull
+        stack = []
+        for p in sorted_points:
+            while len(stack) > 1:
+                # Cross product to check for left turn
+                a = stack[-2]
+                b = stack[-1]
+                c = p
+                cross = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)
+                if cross <= 0: # Non-left turn
+                    stack.pop()
+                else:
+                    break
+            stack.append(p)
+
+        return stack
+
+    def _render(self) -> str:
+        # 1. Collect all "corners" from child shapes
+        # For better blobs, we could sample points from circles, but bounds corners works for high N
+        cloud = []
+        for s in self.shapes:
+            b = s.bounds()
+            cloud.extend([
+                Point(b.x, b.y),
+                Point(b.x + b.width, b.y),
+                Point(b.x + b.width, b.y + b.height),
+                Point(b.x, b.y + b.height)
+            ])
+
+        # 2. Compute Hull
+        if cloud:
+            self.hull.points = self._graham_scan(cloud)
+
+        # 3. Render the Hull instead of the children
+        # (We assume the children are invisible physics particles)
+        return self.hull.render()
+
+```
+
+Now we simulate the "Jelly." We create a central particle connected to a ring of outer particles using springs.
+
+```{python}
+import random
+from tesserax import Canvas, Circle, Rect
+from tesserax.physics import World, Body, Gravity, CircleCollider, Material
+from tesserax.physics.constraints import Spring
+from tesserax.animation import Scene
+
+canvas = Canvas()
+world = World()
+
+# Parameters
+center_x, center_y = 300, 100
+radius = 60
+num_points = 30
+
+# 1. Create Particles
+particles = []
+
+# Center particle
+center_shape = Circle(20).translated(center_x, center_y)
+center_body = world.add(
+    center_shape,
+    mass=1.0,
+    collider=CircleCollider(20),
+    material=Material(restitution=0.8),
+)
+
+# Ring particles
+for i in range(num_points):
+    angle = (2 * math.pi * i) / num_points
+    px = center_x + math.cos(angle) * radius
+    py = center_y + math.sin(angle) * radius
+
+    # Tiny circle particles (invisible inside the blob)
+    s = Circle(10).translated(px, py)
+    b = world.add(
+        s, mass=0.5, collider=CircleCollider(10), material=Material(restitution=0.8)
+    )
+    particles.append(b)
+
+    # Connect to center (Spokes)
+    # Stiffness 0.5 makes it wobbly
+    world.constraint(Spring(center_body, b, length=radius, k=100))
+
+# Connect ring neighbors (Perimeter)
+for i in range(num_points):
+    b1 = particles[i]
+    b2 = particles[(i + 1) % num_points]
+    dist = 2 * radius * math.sin(math.pi / num_points)
+    world.constraint(Spring(b1, b2, length=dist, k=100))
+
+# 2. Wrap in the Hull
+# smoothness=0.5 makes the polyline rounded (Catmull-Rom splines)
+blob_shapes = [p.shape for p in particles]
+blob = ConvexHull(
+    blob_shapes,
+    fill=Colors.Teal,
+    stroke=Colors.Black,
+    width=2,
+    smoothness=1,  # Essential for the "organic" look
+)
+canvas.add(blob)
+
+# Add a floor
+floor = Rect(600, 20, fill=Colors.Black).translated(300, 380)
+world.add(floor, static=True, material=Material(restitution=0.8))
+canvas.add(floor)
+
+# 3. Simulate
+# 5 seconds of dropping and bouncing
+world.fields.append(Gravity())
+anim = world.simulate(duration=5.0)
+
+# Camera fitting
+scene = Scene(canvas)
+scene.canvas.fit(bounds=anim.bounds, padding=10)
+scene.play(anim, duration=10)
+
+scene.display()
+```
