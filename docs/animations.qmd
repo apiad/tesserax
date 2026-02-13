@@ -217,20 +217,22 @@ scene.display()
 
 For even cleaner code, the animator supports **dynamic property access**. If you try to call a method on `.animate` that doesn't exist (e.g., `.radius(...)`), Tesserax assumes you want to animate the property of that name.
 
+And since *any* property can be animated (as long as the underlying value supports scalar arithmetics), you can funny things like animating the smoothness of a `Polyline`.
+
 ```{python}
-from tesserax import Square
+from tesserax import Polyline
 
 with Canvas() as c:
     # Square defined by 'size'
-    box = Square(20, fill=Colors.Blue)
+    line = Polyline.poly(5, 50)
 
-c.fit(25)
+c.fit(10)
 scene = Scene(c)
 
 scene.play(
-    # 'size' is not a built-in animation method,
-    # so this automatically animates box.size -> 100
-    box.animate.size(40).looping(),
+    line.animate.width(5).looping(),
+    line.animate.smoothness(1).looping(),
+    line.animate.rotate(deg(360/5)).smoothed(),
     duration=1.0
 )
 scene.display()

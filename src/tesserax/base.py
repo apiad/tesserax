@@ -441,9 +441,9 @@ class Path(Visual):
         super().__init__(fill=fill, stroke=stroke, width=width)
         self.marker_start = marker_start
         self.marker_end = marker_end
-        self._reset()
+        self.reset()
 
-    def _reset(self):
+    def reset(self):
         self._commands: list[str] = []
         self._cursor: tuple[float, float] = (0.0, 0.0)
         self._min_x: float = float("inf")
@@ -692,7 +692,7 @@ class Polyline(Component, IVisual):
         return cast(Path, self._build())
 
     def _build(self) -> Shape:
-        shape = Path(**self._kwargs)
+        shape = Path(**self.kwargs)
         s = max(0.0, min(1.0, self.smoothness))
 
         # TODO: Refactor both parts
@@ -835,7 +835,7 @@ class Line(Component):
         return cast(Path, self._build())
 
     def _build(self) -> Shape:
-        shape = Path(**self._kwargs)
+        shape = Path(**self.kwargs)
         start, end = self._resolve()
 
         shape.jump_to(start.x, start.y)

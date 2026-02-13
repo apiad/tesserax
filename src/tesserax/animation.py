@@ -387,7 +387,6 @@ class Morphed(Animation):
             new_pts.append(self._Point(nx, ny))
 
         self.shape.points = new_pts
-        self.shape.refresh()
 
 
 class Following(Animation):
@@ -450,10 +449,6 @@ class Warped(Animation):
 
         # Map the original points through the function at the current time t
         self.shape.points = [self.func(p, t) for p in self.start_points]
-
-        # If the shape is a Component (like Polyline), it may need to rebuild its path
-        if hasattr(self.shape, "refresh"):
-            self.shape.refresh()
 
 
 class NumericAnimation(Animation):

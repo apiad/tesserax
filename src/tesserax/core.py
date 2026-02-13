@@ -456,8 +456,14 @@ class Component(Shape):
 
     def __init__(self, **kwargs) -> None:
         super().__init__()
-        self._primitive: Shape | None = None
-        self._kwargs = kwargs
+        self.__kwargs = list(kwargs)
+
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+    @property
+    def kwargs(self):
+        return {k: getattr(self, k) for k in self.__kwargs}
 
     @abstractmethod
     def _build(self) -> Shape:
