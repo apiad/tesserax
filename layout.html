@@ -167,8 +167,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#grouping-objects" id="toc-grouping-objects" class="nav-link active" data-scroll-target="#grouping-objects">Grouping Objects</a>
   <ul class="collapse">
   <li><a href="#the-context-manager-pattern" id="toc-the-context-manager-pattern" class="nav-link" data-scroll-target="#the-context-manager-pattern">The Context Manager Pattern</a></li>
-  </ul></li>
   <li><a href="#manual-layouts-align-and-distribute" id="toc-manual-layouts-align-and-distribute" class="nav-link" data-scroll-target="#manual-layouts-align-and-distribute">Manual Layouts: Align and Distribute</a></li>
+  <li><a href="#visualizing-groups" id="toc-visualizing-groups" class="nav-link" data-scroll-target="#visualizing-groups">Visualizing Groups</a></li>
+  </ul></li>
   <li><a href="#standard-layouts" id="toc-standard-layouts" class="nav-link" data-scroll-target="#standard-layouts">Standard Layouts</a>
   <ul class="collapse">
   <li><a href="#row-and-column" id="toc-row-and-column" class="nav-link" data-scroll-target="#row-and-column">Row and Column</a></li>
@@ -211,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-context-manager-pattern" class="level3">
 <h3 class="anchored" data-anchor-id="the-context-manager-pattern">The Context Manager Pattern</h3>
 <p>The most idiomatic way to create a group is with the <code>with</code> statement.</p>
-<div id="8757dd18" class="cell" data-execution_count="1">
+<div id="d8a1fed3" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Group, Rect, Circle, Text</span>
@@ -242,15 +243,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-</section>
-<section id="manual-layouts-align-and-distribute" class="level2">
-<h2 class="anchored" data-anchor-id="manual-layouts-align-and-distribute">Manual Layouts: Align and Distribute</h2>
+<section id="manual-layouts-align-and-distribute" class="level3">
+<h3 class="anchored" data-anchor-id="manual-layouts-align-and-distribute">Manual Layouts: Align and Distribute</h3>
 <p>Before reaching for a full layout engine, you can often get what you need using the procedural API on <code>Group</code>.</p>
 <ul>
 <li><code>.align(axis, anchor)</code>: Aligns all children along an axis relative to the <strong>first</strong> child.</li>
 <li><code>.distribute(axis, gap, mode)</code>: Spaces children out evenly.</li>
 </ul>
-<div id="b3250893" class="cell" data-execution_count="2">
+<div id="7912c45e" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Square</span>
@@ -280,31 +280,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="standard-layouts" class="level2">
-<h2 class="anchored" data-anchor-id="standard-layouts">Standard Layouts</h2>
-<p>Standard layouts like <code>Row</code> and <code>Column</code> are specialized Groups that automatically apply alignment and distribution logic when they are closed.</p>
-<section id="row-and-column" class="level3">
-<h3 class="anchored" data-anchor-id="row-and-column">Row and Column</h3>
-<p>These layouts are perfect for linear arrangements. They can be nested arbitrarily.</p>
-<div id="79baad40" class="cell" data-execution_count="3">
+<section id="visualizing-groups" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-groups">Visualizing Groups</h3>
+<p>Sometimes you want a group of shapes to also have a bounding frame. While you can build this easily with existing tools, Tesserax also provides a ready-made <code>Container</code> shape that automates this process.</p>
+<div id="5f4cbfcc" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout, ColumnLayout</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Container</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A Row automatically distributes horizontally</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> RowLayout(gap<span class="op">=</span><span class="dv">10</span>, align<span class="op">=</span><span class="st">"middle"</span>) <span class="im">as</span> row:</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">20</span>, <span class="dv">40</span>, fill<span class="op">=</span>Colors.LightGray)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        Circle(<span class="dv">15</span>, fill<span class="op">=</span>Colors.MistyRose)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">20</span>, <span class="dv">20</span>, fill<span class="op">=</span>Colors.LightCoral)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A Column automatically distributes vertically</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Notice we can nest layouts</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> ColumnLayout(gap<span class="op">=</span><span class="dv">10</span>, align<span class="op">=</span><span class="st">"middle"</span>) <span class="im">as</span> col:</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            Rect(<span class="dv">40</span>, <span class="dv">20</span>, fill<span class="op">=</span>Colors.PowderBlue)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            Circle(<span class="dv">15</span>, fill<span class="op">=</span>Colors.Thistle)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> canvas:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> Container(padding<span class="op">=</span><span class="dv">10</span>, stroke<span class="op">=</span>Colors.Gray, width<span class="op">=</span><span class="dv">2</span>) <span class="im">as</span> c:</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">30</span>, <span class="dv">20</span>, fill<span class="op">=</span>Colors.Red)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        Circle(<span class="dv">15</span>, fill<span class="op">=</span>Colors.Green)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        Square(<span class="dv">25</span>, fill<span class="op">=</span>Colors.Blue)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    c.distribute(<span class="st">"horizontal"</span>, gap<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>canvas.fit().display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -315,31 +307,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="the-grid-layout" class="level3">
-<h3 class="anchored" data-anchor-id="the-grid-layout">The Grid Layout</h3>
-<p>The <code>Grid</code> layout provides a powerful 2D arrangement system. Unlike a simple HTML table, the Tesserax <code>Grid</code> allows for spanning and alignment control per cell.</p>
-<div id="132d7dec" class="cell" data-execution_count="4">
+</section>
+<section id="standard-layouts" class="level2">
+<h2 class="anchored" data-anchor-id="standard-layouts">Standard Layouts</h2>
+<p>Standard layouts like <code>Row</code> and <code>Column</code> are specialized Groups that automatically apply alignment and distribution logic when they are closed.</p>
+<section id="row-and-column" class="level3">
+<h3 class="anchored" data-anchor-id="row-and-column">Row and Column</h3>
+<p>These layouts are perfect for linear arrangements. They can be nested arbitrarily.</p>
+<div id="f198bb50" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> GridLayout</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout, ColumnLayout</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2 columns, automatic rows</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> GridLayout(cols<span class="op">=</span><span class="dv">2</span>, gap<span class="op">=</span><span class="dv">10</span>) <span class="im">as</span> grid:</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">50</span>, <span class="dv">50</span>, fill<span class="op">=</span>Colors.LightCyan)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">50</span>, <span class="dv">50</span>, fill<span class="op">=</span>Colors.LightCyan)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># This will wrap to the next row</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">110</span>, <span class="dv">50</span>, fill<span class="op">=</span>Colors.LightYellow) <span class="co"># Span visually if wide</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">50</span>, <span class="dv">50</span>, fill<span class="op">=</span>Colors.LightCyan)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A Row automatically distributes horizontally</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> RowLayout(gap<span class="op">=</span><span class="dv">10</span>, align<span class="op">=</span><span class="st">"middle"</span>) <span class="im">as</span> row:</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">20</span>, <span class="dv">40</span>, fill<span class="op">=</span>Colors.LightGray)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        Circle(<span class="dv">15</span>, fill<span class="op">=</span>Colors.MistyRose)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">20</span>, <span class="dv">20</span>, fill<span class="op">=</span>Colors.LightCoral)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A Column automatically distributes vertically</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Notice we can nest layouts</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> ColumnLayout(gap<span class="op">=</span><span class="dv">10</span>, align<span class="op">=</span><span class="st">"middle"</span>) <span class="im">as</span> col:</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            Rect(<span class="dv">40</span>, <span class="dv">20</span>, fill<span class="op">=</span>Colors.PowderBlue)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            Circle(<span class="dv">15</span>, fill<span class="op">=</span>Colors.Thistle)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="layout_files/figure-html/cell-5-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-grid-layout" class="level3">
+<h3 class="anchored" data-anchor-id="the-grid-layout">The Grid Layout</h3>
+<p>The <code>Grid</code> layout provides a powerful 2D arrangement system. Unlike a simple HTML table, the Tesserax <code>Grid</code> allows for spanning and alignment control per cell.</p>
+<div id="be21472d" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> GridLayout</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2 columns, automatic rows</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> GridLayout(cols<span class="op">=</span><span class="dv">2</span>, gap<span class="op">=</span><span class="dv">10</span>) <span class="im">as</span> grid:</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">50</span>, <span class="dv">50</span>, fill<span class="op">=</span>Colors.LightCyan)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">50</span>, <span class="dv">50</span>, fill<span class="op">=</span>Colors.LightCyan)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># This will wrap to the next row</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">110</span>, <span class="dv">50</span>, fill<span class="op">=</span>Colors.LightYellow) <span class="co"># Span visually if wide</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        Rect(<span class="dv">50</span>, <span class="dv">50</span>, fill<span class="op">=</span>Colors.LightCyan)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="layout_files/figure-html/cell-6-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -352,38 +380,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="hierarchical-layout-trees-dags" class="level3">
 <h3 class="anchored" data-anchor-id="hierarchical-layout-trees-dags">Hierarchical Layout (Trees &amp; DAGs)</h3>
 <p>The <code>HierarchicalLayout</code> is designed for directed acyclic graphs and trees. It automatically calculates levels and minimizes edge crossings.</p>
-<div id="c57938e7" class="cell" data-execution_count="5">
+<div id="97601906" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> HierarchicalLayout</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Arrow</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> HierarchicalLayout(orientation<span class="op">=</span><span class="st">"vertical"</span>) <span class="im">as</span> tree:</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        root <span class="op">=</span> Circle(<span class="dv">20</span>, fill<span class="op">=</span>Colors.Gold)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        l <span class="op">=</span> Circle(<span class="dv">15</span>, fill<span class="op">=</span>Colors.LightBlue)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> Circle(<span class="dv">15</span>, fill<span class="op">=</span>Colors.LightBlue)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        ll <span class="op">=</span> Circle(<span class="dv">10</span>, fill<span class="op">=</span>Colors.LightGreen)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        lr <span class="op">=</span> Circle(<span class="dv">10</span>, fill<span class="op">=</span>Colors.LightGreen)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        tree.root(root)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        tree.<span class="ex">connect</span>(root, l)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        tree.<span class="ex">connect</span>(root, r)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        tree.<span class="ex">connect</span>(l, ll)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        tree.<span class="ex">connect</span>(l, lr)</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define connections (Layout will position nodes, you draw edges)</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    Arrow(root.anchor(<span class="st">"bottom"</span>), l.anchor(<span class="st">"top"</span>))</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    Arrow(root.anchor(<span class="st">"bottom"</span>), r.anchor(<span class="st">"top"</span>))</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    Arrow(l.anchor(<span class="st">"bottom"</span>), ll.anchor(<span class="st">"top"</span>))</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    Arrow(l.anchor(<span class="st">"bottom"</span>), lr.anchor(<span class="st">"top"</span>))</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> HierarchicalLayout</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Arrow</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> HierarchicalLayout(orientation<span class="op">=</span><span class="st">"vertical"</span>) <span class="im">as</span> tree:</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        root <span class="op">=</span> Circle(<span class="dv">20</span>, fill<span class="op">=</span>Colors.Gold)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        l <span class="op">=</span> Circle(<span class="dv">15</span>, fill<span class="op">=</span>Colors.LightBlue)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> Circle(<span class="dv">15</span>, fill<span class="op">=</span>Colors.LightBlue)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        ll <span class="op">=</span> Circle(<span class="dv">10</span>, fill<span class="op">=</span>Colors.LightGreen)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        lr <span class="op">=</span> Circle(<span class="dv">10</span>, fill<span class="op">=</span>Colors.LightGreen)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        tree.root(root)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        tree.<span class="ex">connect</span>(root, l)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        tree.<span class="ex">connect</span>(root, r)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        tree.<span class="ex">connect</span>(l, ll)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        tree.<span class="ex">connect</span>(l, lr)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define connections (Layout will position nodes, you draw edges)</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    Arrow(root.anchor(<span class="st">"bottom"</span>), l.anchor(<span class="st">"top"</span>))</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    Arrow(root.anchor(<span class="st">"bottom"</span>), r.anchor(<span class="st">"top"</span>))</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    Arrow(l.anchor(<span class="st">"bottom"</span>), ll.anchor(<span class="st">"top"</span>))</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    Arrow(l.anchor(<span class="st">"bottom"</span>), lr.anchor(<span class="st">"top"</span>))</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="layout_files/figure-html/cell-6-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="layout_files/figure-html/cell-7-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -393,44 +421,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="force-directed-layout">Force-Directed Layout</h3>
 <p>The <code>ForceLayout</code> uses a physics simulation (Fruchterman-Reingold) to position nodes. This is ideal for arbitrary network graphs where structure is emergent.</p>
 <p>The layout requires you to define <strong>nodes</strong> and <strong>links</strong> (edges).</p>
-<div id="12bbc157" class="cell" data-execution_count="6">
+<div id="72b41a2d" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> ForceLayout</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Line, Shape</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    nodes: <span class="bu">list</span>[Shape] <span class="op">=</span> []</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Initialize Layout</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> ForceLayout() <span class="im">as</span> layout:</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 2. Add Nodes (they are just shapes)</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>            n <span class="op">=</span> Circle(<span class="dv">10</span>, fill<span class="op">=</span>Colors.Orange)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>            nodes.append(n)</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            layout.add(n)</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 3. Add Constraints (links)</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        layout.<span class="ex">connect</span>(nodes[<span class="dv">0</span>], nodes[<span class="dv">1</span>])</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        layout.<span class="ex">connect</span>(nodes[<span class="dv">1</span>], nodes[<span class="dv">2</span>])</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        layout.<span class="ex">connect</span>(nodes[<span class="dv">2</span>], nodes[<span class="dv">0</span>]) <span class="co"># Triangle</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        layout.<span class="ex">connect</span>(nodes[<span class="dv">2</span>], nodes[<span class="dv">3</span>])</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        layout.<span class="ex">connect</span>(nodes[<span class="dv">3</span>], nodes[<span class="dv">4</span>])</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 5. Draw Edges based on computed positions</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (We draw edges *after* compute so anchors are correct)</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    Line(nodes[<span class="dv">0</span>].anchor(<span class="st">"center"</span>), nodes[<span class="dv">1</span>].anchor(<span class="st">"center"</span>))</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    Line(nodes[<span class="dv">1</span>].anchor(<span class="st">"center"</span>), nodes[<span class="dv">2</span>].anchor(<span class="st">"center"</span>))</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    Line(nodes[<span class="dv">2</span>].anchor(<span class="st">"center"</span>), nodes[<span class="dv">0</span>].anchor(<span class="st">"center"</span>))</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    Line(nodes[<span class="dv">2</span>].anchor(<span class="st">"center"</span>), nodes[<span class="dv">3</span>].anchor(<span class="st">"center"</span>))</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    Line(nodes[<span class="dv">3</span>].anchor(<span class="st">"center"</span>), nodes[<span class="dv">4</span>].anchor(<span class="st">"center"</span>))</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> ForceLayout</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Line, Shape</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Canvas() <span class="im">as</span> c:</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    nodes: <span class="bu">list</span>[Shape] <span class="op">=</span> []</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Initialize Layout</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> ForceLayout() <span class="im">as</span> layout:</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 2. Add Nodes (they are just shapes)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>            n <span class="op">=</span> Circle(<span class="dv">10</span>, fill<span class="op">=</span>Colors.Orange)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>            nodes.append(n)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>            layout.add(n)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 3. Add Constraints (links)</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        layout.<span class="ex">connect</span>(nodes[<span class="dv">0</span>], nodes[<span class="dv">1</span>])</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        layout.<span class="ex">connect</span>(nodes[<span class="dv">1</span>], nodes[<span class="dv">2</span>])</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        layout.<span class="ex">connect</span>(nodes[<span class="dv">2</span>], nodes[<span class="dv">0</span>]) <span class="co"># Triangle</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        layout.<span class="ex">connect</span>(nodes[<span class="dv">2</span>], nodes[<span class="dv">3</span>])</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        layout.<span class="ex">connect</span>(nodes[<span class="dv">3</span>], nodes[<span class="dv">4</span>])</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 5. Draw Edges based on computed positions</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (We draw edges *after* compute so anchors are correct)</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    Line(nodes[<span class="dv">0</span>].anchor(<span class="st">"center"</span>), nodes[<span class="dv">1</span>].anchor(<span class="st">"center"</span>))</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    Line(nodes[<span class="dv">1</span>].anchor(<span class="st">"center"</span>), nodes[<span class="dv">2</span>].anchor(<span class="st">"center"</span>))</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    Line(nodes[<span class="dv">2</span>].anchor(<span class="st">"center"</span>), nodes[<span class="dv">0</span>].anchor(<span class="st">"center"</span>))</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    Line(nodes[<span class="dv">2</span>].anchor(<span class="st">"center"</span>), nodes[<span class="dv">3</span>].anchor(<span class="st">"center"</span>))</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    Line(nodes[<span class="dv">3</span>].anchor(<span class="st">"center"</span>), nodes[<span class="dv">4</span>].anchor(<span class="st">"center"</span>))</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>c.fit(<span class="dv">10</span>).display()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="layout_files/figure-html/cell-7-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="layout_files/figure-html/cell-8-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>

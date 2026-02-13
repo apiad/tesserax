@@ -1,20 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="160.0" height="80.0" viewBox="-10.0 -40.0 160.0 80.0">
+<svg xmlns="http://www.w3.org/2000/svg" width="125.0" height="50.0" viewBox="-10.0 -25.0 125.0 50.0">
   <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
-  <g transform="translate(10.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-10.0" y="-20.0" width="20" height="40" stroke="rgba(0,0,0,1.0)" fill="rgba(211,211,211,1.0)"/>
+  <rect x="-10.0" y="-25.0" width="125.0" height="50.0" rx="0.0" ry="0.0" fill="rgba(0,0,0,0.0)" stroke="rgba(128,128,128,1.0)" stroke-width="2"/>
+<g transform="translate(15.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-15.0" y="-10.0" width="30" height="20" stroke="rgba(0,0,0,1.0)" fill="rgba(255,0,0,1.0)"/>
 </g>
-<g transform="translate(45.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<circle cx="0" cy="0" r="15" stroke="rgba(0,0,0,1.0)" fill="rgba(255,228,225,1.0)"/>
+<g transform="translate(55.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="15" stroke="rgba(0,0,0,1.0)" fill="rgba(0,128,0,1.0)"/>
 </g>
-<g transform="translate(80.0 0.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-10.0" y="-10.0" width="20" height="20" stroke="rgba(0,0,0,1.0)" fill="rgba(240,128,128,1.0)"/>
-</g>
-<g transform="translate(120.0 -30.0) rotate(0.0) scale(1.0 1.0)">
-<g transform="translate(0.0 10.0) rotate(0.0) scale(1.0 1.0)">
-<rect x="-20.0" y="-10.0" width="40" height="20" stroke="rgba(0,0,0,1.0)" fill="rgba(176,224,230,1.0)"/>
-</g>
-<g transform="translate(0.0 45.0) rotate(0.0) scale(1.0 1.0)">
-<circle cx="0" cy="0" r="15" stroke="rgba(0,0,0,1.0)" fill="rgba(216,191,216,1.0)"/>
-</g>
+<g transform="translate(92.5 0.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-12.5" y="-12.5" width="25" height="25" stroke="rgba(0,0,0,1.0)" fill="rgba(0,0,255,1.0)"/>
 </g>
 </svg>
