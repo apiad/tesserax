@@ -24,8 +24,8 @@ from tesserax import Canvas, Circle, Rect
 
 # 1. Setup the Scene
 with Canvas() as canvas:
-    floor = Rect(600, 50, fill="#333").translated(300, 380)
-    ball = Circle(20, fill="#ff0055").translated(300, 50)
+    floor = Rect(100, 20, fill="#333").translated(0, 200)
+    ball = Circle(20, fill="#ff0055").translated(00, 0)
 ```
 
 Next, we define the physical world. This involves wrapping the existing shapes that will undergo physical simulation as `Body`s and place them in a `World`. Once set up, we bake the physics animation with `world.simulate(...)`.
@@ -35,14 +35,14 @@ from tesserax.physics import World, Gravity, Material, CircleCollider
 
 world = World()
 world.fields.append(Gravity())  # Downward acceleration (pixels/s^2)
-world.add(floor, static=True)
+world.add(floor, static=True, material=Material(restitution=0.8))
 world.add(
     ball,
     material=Material(restitution=0.8, friction=0.5),
     collider=CircleCollider(ball.r),
 )
 
-simulation = world.simulate(duration=3.0, dt=0.005)
+simulation = world.simulate(duration=3.0)
 ```
 
 Finally, we run the animation as normal. Notice we can simulate at some fixed framerate and render at a completely different rate.
@@ -68,19 +68,21 @@ from tesserax.physics import World, Gravity, Material
 from tesserax.physics.constraints import Spring, Rod
 
 with Canvas() as canvas:
-    floor = Rect(600, 50, fill="#333").translated(300, 380)
-    box = Rect(50, 50, fill="steelblue").translated(200, 100)
-    ball = Circle(15, fill="orange").translated(300, 100)
-    ball2 = Rect(20, 20, fill="green").translated(400, 100)
+    back = Rect(200, 150, fill="white", stroke="none").translated(100, 50)
+
+    r1 = Rect(20, 20, fill="steelblue").translated(50, 0)
+    ball = Circle(15, fill="orange").translated(100, 0)
+    r2 = Rect(20, 20, fill="green").translated(150, 0)
+
     spring_line = Line(
-        lambda: box.anchor("center"),
+        lambda: r1.anchor("center"),
         lambda: ball.anchor("center"),
         stroke="gray",
         width=3,
     )
     rod_line = Line(
         lambda: ball.anchor("center"),
-        lambda: ball2.anchor("center"),
+        lambda: r2.anchor("center"),
         stroke="gray",
         width=3,
     )
@@ -89,20 +91,20 @@ canvas.fit(10)
 
 world = World()
 world.fields.append(Gravity())
-world.add(floor, static=True)
 
-body_box = world.add(box, material=Material(restitution=0.6))
-body_box.angular_vel = 5.0  # Radians/sec
+body_r1 = world.add(r1)
 body_ball = world.add(
-    ball, material=Material(restitution=0.8), collider=CircleCollider(15)
+    ball,
+    material=Material(restitution=0.8),
+    collider=CircleCollider(15),
+    static=True,
 )
-body_ball2 = world.add(
-    ball2, material=Material(restitution=0.1), mass=2
-)
+body_r2 = world.add(r2)
+body_r2.angular_vel = 5.0  # Radians/sec
 
 # Physics Constraint
-world.constraint(Spring(body_box, body_ball, length=100, k=5.0))
-world.constraint(Rod(body_ball, body_ball2, length=100))
+world.constraint(Spring(body_r1, body_ball, length=30, k=50))
+world.constraint(Spring(body_ball, body_r2, length=30, k=50))
 
 # 3. Bake
 simulation = world.simulate(duration=4.0)
