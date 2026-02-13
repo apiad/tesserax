@@ -241,7 +241,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-1-the-canvas-and-text" class="level3">
 <h3 class="anchored" data-anchor-id="step-1-the-canvas-and-text">Step 1: The Canvas and Text</h3>
 <p>First, we initialize the <code>Canvas</code> and add the central <code>Text</code> element. The <code>Canvas</code> acts as our root container.</p>
-<div id="3d9dcc23" class="cell" data-execution_count="1">
+<div id="7c56c603" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Text</span>
@@ -270,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-2-adding-geometric-shapes" class="level3">
 <h3 class="anchored" data-anchor-id="step-2-adding-geometric-shapes">Step 2: Adding Geometric Shapes</h3>
 <p>Next, we add a <code>Square</code> and a <code>Circle</code>. At this stage, we create them without specific coordinates.</p>
-<div id="27700df9" class="cell" data-execution_count="2">
+<div id="459efa71" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Square, Circle</span>
@@ -294,7 +294,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-3-distribution-with-groups" class="level3">
 <h3 class="anchored" data-anchor-id="step-3-distribution-with-groups">Step 3: Distribution with Groups</h3>
 <p>We can arrange these elements more easily with a <code>Group</code>. Groups can reorganize their inner shapes with <code>align</code> and <code>distribute</code>.</p>
-<div id="9847afdf" class="cell" data-execution_count="3">
+<div id="91ac0a9a" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Group</span>
@@ -327,7 +327,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-3a-using-layouts" class="level3">
 <h3 class="anchored" data-anchor-id="step-3a-using-layouts">Step 3a: Using Layouts</h3>
 <p>An alternative is to use <code>Layout</code> subclasses like <code>RowLayout</code>, which automates this logic.</p>
-<div id="516e5317" class="cell" data-execution_count="4">
+<div id="9faba58d" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout</span>
@@ -358,7 +358,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-4-adding-the-underline" class="level3">
 <h3 class="anchored" data-anchor-id="step-4-adding-the-underline">Step 4: Adding the Underline</h3>
 <p>We use the <strong>semantic anchor system</strong> to draw a <code>Polyline</code> connecting the shapes.</p>
-<div id="4cd22a9d" class="cell" data-execution_count="5">
+<div id="6942dbc9" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Polyline</span>
@@ -385,7 +385,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-5-making-a-squiggly-line" class="level3">
 <h3 class="anchored" data-anchor-id="step-5-making-a-squiggly-line">Step 5: Making a Squiggly Line</h3>
 <p>We can use <code>subdivide</code> and <code>apply</code> on the <code>Polyline</code> to creating a procedurally generated curve.</p>
-<div id="8e7ded53" class="cell" data-execution_count="6">
+<div id="284dd3f5" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
@@ -408,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-6-animating-the-logo" class="level3">
 <h3 class="anchored" data-anchor-id="step-6-animating-the-logo">Step 6: Animating the Logo</h3>
 <p>Finally, we use a <code>Scene</code> to animate the logo using the declarative fluent API.</p>
-<div id="652ccf3b" class="cell" data-execution_count="7">
+<div id="22d1d46a" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.animation <span class="im">import</span> Scene</span>

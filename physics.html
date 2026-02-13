@@ -211,7 +211,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Play the animation in your <code>Scene</code>.</li>
 </ol>
 <p>Here is a complete example of a ball falling under gravity and bouncing on a static floor. First we will create the scene.</p>
-<div id="42e51d14" class="cell" data-execution_count="1">
+<div id="4d031c50" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Circle, Rect</span>
@@ -223,7 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Next, we define the physical world. This involves wrapping the existing shapes that will undergo physical simulation as <code>Body</code>s and place them in a <code>World</code>. Once set up, we bake the physics animation with <code>world.simulate(...)</code>.</p>
-<div id="fbccd3a6" class="cell" data-execution_count="2">
+<div id="946fdd14" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.physics <span class="im">import</span> World, Gravity, Material, CircleCollider</span>
@@ -241,7 +241,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Finally, we run the animation as normal. Notice we can simulate at some fixed framerate and render at a completely different rate. The property <code>simulation.bounds</code> has a precomputed approximate bounding box of the entire simulation so we can fit to it.</p>
-<div id="7d1a6063" class="cell" data-execution_count="3">
+<div id="caecfd95" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.animation <span class="im">import</span> Scene</span>
@@ -259,7 +259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="constraints" class="level2">
 <h2 class="anchored" data-anchor-id="constraints">Constraints</h2>
 <p>Tesserax physics engine also supports some simple constraints like <code>Spring</code>s (soft constraints) and <code>Rod</code>s (hard constraints). These work by applying forces and corrections to bodies during simulation.</p>
-<div id="5b477cfd" class="cell" data-execution_count="4">
+<div id="ff4c0a52" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Circle, Line, Point</span>
