@@ -1,4 +1,5 @@
 from __future__ import annotations
+from abc import ABC, abstractmethod
 from typing import Any, Literal, Self, Sequence
 from .core import Component, Shape, Point
 from .base import Group, Rect, Circle, Visual
@@ -90,6 +91,115 @@ class ColorScale:
         return self.PALETTE[idx % len(self.PALETTE)]
 
 
+class Mark(ABC):
+    """
+    Base class for geometric representations of data.
+    Subclasses define how a single data row maps to a Shape.
+    """
+
+    def __init__(self, **params: Any) -> None:
+        self.params = params
+
+    @abstractmethod
+    def build(
+        self,
+        row: dict[str, Any],
+        encoding: dict[str, str],
+        scales: dict[str, Scale | ColorScale],
+        chart_height: float,
+    ) -> Shape | None:
+        """Produces a Shape for a single data row."""
+        pass
+
+
+class BarMark(Mark):
+    """Represents data as rectangular bars."""
+
+    def build(
+        self,
+        row: dict[str, Any],
+        encoding: dict[str, str],
+        scales: dict[str, Scale | ColorScale],
+        chart_height: float,
+    ) -> Shape | None:
+        x_field = encoding.get("x")
+        y_field = encoding.get("y")
+        color_field = encoding.get("color")
+
+        if not x_field or not y_field:
+            return None
+
+        x_scale = scales.get("x")
+        y_scale = scales.get("y")
+        color_scale = scales.get("color")
+
+        if not isinstance(x_scale, BandScale) or not isinstance(y_scale, Scale):
+            return None
+
+        xv = row[x_field]
+        yv = row[y_field]
+
+        bw = x_scale.bandwidth
+        bh = y_scale.map(yv)
+        bx = x_scale.map(xv)
+        by = 0
+
+        color = Colors.SteelBlue
+        if color_field and color_scale:
+            color = color_scale.map(row[color_field])
+
+        rect = Rect(bw, bh, fill=color, stroke=Colors.White, width=0.5)
+        # Flip Y for SVG (Chart Space Y=0 is bottom)
+        svg_y = chart_height - (by + bh / 2)
+        rect.move_to(Point(bx + bw / 2, svg_y))
+        return rect
+
+
+class PointMark(Mark):
+    """Represents data as circles/points."""
+
+    def build(
+        self,
+        row: dict[str, Any],
+        encoding: dict[str, str],
+        scales: dict[str, Scale | ColorScale],
+        chart_height: float,
+    ) -> Shape | None:
+        x_field = encoding.get("x")
+        y_field = encoding.get("y")
+        color_field = encoding.get("color")
+
+        if not x_field or not y_field:
+            return None
+
+        x_scale = scales.get("x")
+        y_scale = scales.get("y")
+        color_scale = scales.get("color")
+
+        if not isinstance(x_scale, Scale) or not isinstance(y_scale, Scale):
+            return None
+
+        xv = row[x_field]
+        yv = row[y_field]
+
+        px = (
+            x_scale.center(xv)
+            if isinstance(x_scale, BandScale)
+            else x_scale.map(xv)
+        )
+        py = y_scale.map(yv)
+        size = self.params.get("size", 5.0)
+
+        color = Colors.SteelBlue
+        if color_field and color_scale:
+            color = color_scale.map(row[color_field])
+
+        dot = Circle(size, fill=color, stroke=Colors.White, width=0.5)
+        # Flip Y for SVG
+        dot.move_to(Point(px, chart_height - py))
+        return dot
+
+
 class Chart(Component):
     """
     A grammar-of-graphics component for building visualizations.
@@ -103,18 +213,15 @@ class Chart(Component):
         self.data = data
         self.w = width
         self.h = height
-        self._mark: Literal["bar", "point"] = "bar"
+        self._mark: Mark = BarMark()
         self._encoding: dict[str, str] = {}
-        self._mark_params: dict[str, Any] = {}
 
     def mark_bar(self, padding: float = 0.1, **kwargs) -> Self:
-        self._mark = "bar"
-        self._mark_params = {"padding": padding, **kwargs}
+        self._mark = BarMark(padding=padding, **kwargs)
         return self
 
     def mark_point(self, size: float = 5.0, **kwargs) -> Self:
-        self._mark = "point"
-        self._mark_params = {"size": size, **kwargs}
+        self._mark = PointMark(size=size, **kwargs)
         return self
 
     def encode(self, **channels: str) -> Self:
@@ -126,7 +233,6 @@ class Chart(Component):
         return [d[field] for d in self.data]
 
     def _is_quantitative(self, field: str) -> bool:
-        # Simple heuristic: if the first value is a number, it's quantitative
         if not self.data:
             return False
         val = self.data[0].get(field)
@@ -146,70 +252,38 @@ class Chart(Component):
         if not x_field or not y_field:
             return chart_group
 
+        scales: dict[str, Scale | ColorScale] = {}
+
         # X Scale
         x_domain = self._get_domain(x_field)
-        if self._is_quantitative(x_field) and self._mark != "bar":
-            x_scale = LinearScale((min(x_domain), max(x_domain)), (0, self.w))
+        # Bars almost always use BandScale for X
+        if self._is_quantitative(x_field) and not isinstance(self._mark, BarMark):
+            scales["x"] = LinearScale((min(x_domain), max(x_domain)), (0, self.w))
         else:
-            # Bars almost always use BandScale for X
-            x_scale = BandScale(
+            scales["x"] = BandScale(
                 list(dict.fromkeys(x_domain)),
                 (0, self.w),
-                padding=self._mark_params.get("padding", 0.1),
+                padding=self._mark.params.get("padding", 0.1),
             )
 
         # Y Scale
         y_domain = self._get_domain(y_field)
         if self._is_quantitative(y_field):
-            # For charts, we usually want the Y axis to start at 0
-            # unless the user explicitly requests otherwise.
-            y_scale = LinearScale((0, max(y_domain)), (0, self.h))
+            scales["y"] = LinearScale((0, max(y_domain)), (0, self.h))
         else:
-            y_scale = BandScale(list(dict.fromkeys(y_domain)), (0, self.h))
+            scales["y"] = BandScale(list(dict.fromkeys(y_domain)), (0, self.h))
 
         # Color Scale
-        color_scale = None
         if color_field:
-            color_scale = ColorScale(list(dict.fromkeys(self._get_domain(color_field))))
+            scales["color"] = ColorScale(
+                list(dict.fromkeys(self._get_domain(color_field)))
+            )
 
         # 2. Generate Marks
         for row in self.data:
-            xv = row[x_field]
-            yv = row[y_field]
-            color = Colors.SteelBlue  # Default
-            if color_scale:
-                color = color_scale.map(row[color_field])
+            shape = self._mark.build(row, self._encoding, scales, self.h)
 
-            if self._mark == "bar":
-                bw = x_scale.bandwidth
-                bh = y_scale.map(yv)
-                # Bottom-left of the bar in Chart Space
-                bx = x_scale.map(xv)
-                by = 0
-
-                # Convert to Tesserax Shape (Rect is centered at 0,0)
-                # We want the bottom of the rect at 'by', so we shift it up by bh/2
-                rect = Rect(bw, bh, fill=color, stroke=Colors.White, width=0.5)
-                # Placement: bx + bw/2 (center x), by + bh/2 (center y)
-                # BUT: we need to flip Y for SVG.
-                # Chart Space Y=0 is bottom (SVG Y=height)
-                # Chart Space Y=bh is top (SVG Y=height-bh)
-                svg_y = self.h - (by + bh / 2)
-                rect.move_to(Point(bx + bw / 2, svg_y))
-                chart_group.add(rect)
-
-            elif self._mark == "point":
-                px = (
-                    x_scale.center(xv)
-                    if isinstance(x_scale, BandScale)
-                    else x_scale.map(xv)
-                )
-                py = y_scale.map(yv)
-                size = self._mark_params.get("size", 5.0)
-
-                dot = Circle(size, fill=color, stroke=Colors.White, width=0.5)
-                # Flip Y for SVG
-                dot.move_to(Point(px, self.h - py))
-                chart_group.add(dot)
+            if shape:
+                chart_group.add(shape)
 
         return chart_group
