@@ -1,0 +1,91 @@
+# Statistical Visualizations (Altair-lite)
+
+While **Tesserax** is primarily a geometric engine, it includes a high-level `Chart` component for building statistical visualizations. Inspired by the **Grammar of Graphics** (and the [Altair](https://altair-viz.github.io/) library), this API allows you to map data fields to visual channels like `x`, `y`, and `color`.
+
+## The Charting Philosophy
+
+Unlike traditional plotting libraries that require complex configuration for axes and legends, the Tesserax `Chart` focuses on the **Mapping**:
+1.  **Data**: A list of dictionaries.
+2.  **Mark**: The geometric shape used to represent data (e.g., `bar`, `point`).
+3.  **Encoding**: The connection between a data field and a visual property.
+
+## Basic Bar Charts
+
+To create a bar chart, you define your data, initialize a `Chart`, and chain the `.mark_bar()` and `.encode()` methods.
+
+**Note on Coordinates:** The `Chart` component uses a "Chart Space" internally, where $(0,0)$ is at the **bottom-left**. Tesserax automatically handles the flip to SVG coordinates for you.
+
+```{python}
+from tesserax import Canvas, Chart, Colors
+
+data = [
+    {"category": "A", "value": 45},
+    {"category": "B", "value": 90},
+    {"category": "C", "value": 65},
+    {"category": "D", "value": 30},
+]
+
+with Canvas() as canvas:
+    # Initialize a chart with dimensions
+    chart = Chart(data, width=300, height=150)
+
+    # Configure the mark and the encoding
+    chart.mark_bar(padding=0.2).encode(
+        x="category",
+        y="value",
+        color="category"
+    )
+
+canvas.fit(10).display()
+```
+
+## Scatter Plots (Point Marks)
+
+By switching to `.mark_point()`, you can create scatter plots or dot plots. You can control the size of the points via the mark parameters.
+
+```{python}
+import random
+
+# Generate some random data
+points = [{"idx": i, "val": random.uniform(10, 100)} for i in range(10)]
+
+with Canvas() as canvas:
+    Chart(points, width=300, height=100).mark_point(size=4).encode(
+        x="idx", y="val"
+    )
+
+canvas.fit(10).display()
+```
+
+## Composability
+
+Because a `Chart` is just another Tesserax `Component`, it can be transformed, rotated, or placed inside layouts just like a `Rect` or a `Circle`.
+
+```{python}
+from tesserax import deg
+from tesserax.layout import RowLayout
+
+with Canvas() as canvas:
+    with RowLayout(gap=50):
+        # Chart 1: Bars
+        Chart(data, width=150, height=100).mark_bar().encode(
+            x="category", y="value"
+        )
+
+        # Chart 2: Points (Rotated!)
+        Chart(data, width=150, height=100).mark_point(size=5).encode(
+            x="category", y="value"
+        ).rotated(deg(45))
+
+canvas.fit(20).display()
+```
+
+## How Scales Work Internally
+
+Tesserax automatically selects the appropriate **Scale** based on the data:
+
+*   **LinearScale**: Used for quantitative data (numbers) to map values to pixels.
+*   **BandScale**: Used for categorical data (strings) to distribute items evenly with padding.
+*   **ColorScale**: Automatically assigns distinct colors from a professional palette when the `color` channel is encoded.
+
+Currently, the `Chart` component is "slim" by design—it does not render axes or grid lines automatically. This keeps the output clean for use as icons, small multiples, or components within larger, custom-drawn diagrams.

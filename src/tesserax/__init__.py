@@ -13,6 +13,7 @@ from .base import (
     Text,
     Container,
 )
+from .chart import Chart
 from .color import Color, Colors
 
 import tesserax.physics as physics
