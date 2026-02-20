@@ -319,7 +319,7 @@ class Shape(ABC):
         return p
 
     def _trace(self) -> Path:
-        raise NotImplemented
+        raise NotImplementedError
 
     def detach(self) -> Self:
         if self.parent:
