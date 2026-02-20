@@ -325,6 +325,60 @@ class TestGroups:
         with pytest.raises(RuntimeError):
             g2.add(r, mode="strict")
 
+        # Loose mode should work
+        g2.add(r, mode="loose")
+        assert r.parent == g2
+        assert r not in g1.shapes
+
+    def test_group_with_springs(self):
+        g = Group()
+        r1 = Rect(10, 10)
+        s1 = Spring(flex=1.0)
+        r2 = Rect(10, 10)
+        g.add(r1, s1, r2)
+
+        # Total size 100. r1.w=10, r2.w=10. Total rigid=20. Remaining=80.
+        # Spring should take 80 units.
+        g.distribute(axis="horizontal", size=100)
+        assert s1._size == 80.0
+        assert math.isclose(r2.bounds().x, 90.0)
+
+
+def test_path_relative_commands():
+    p = Path()
+    p.jump_to(10, 10).jump_by(10, 10).line_by(10, 10)
+    # Should be at (30, 30)
+    assert p._cursor == (30.0, 30.0)
+
+
+def test_polyline_smoothing_branches():
+    # Open polyline with smoothness
+    p = Polyline([Point(0, 0), Point(10, 10), Point(20, 0)], smoothness=0.5)
+    svg = p._render()
+    assert "Q" in svg
+
+    # Closed polyline with smoothness
+    p2 = Polyline(
+        [Point(0, 0), Point(10, 10), Point(20, 0)], smoothness=0.5, closed=True
+    )
+    svg2 = p2._render()
+    assert "Q" in svg2
+    assert "Z" in svg2
+
+
+def test_polyline_empty_center():
+    p = Polyline([])
+    p.center()
+    assert len(p.points) == 0
+
+
+def test_visual_identity_render():
+    # Test render with identity transform and opacity 1.0
+    r = Rect(10, 10)
+    assert "<rect" in r.render()
+    # Identity means no <g> tag usually
+    assert "<g" not in r.render()
+
 
 # --- Polyline Invariants ---
 

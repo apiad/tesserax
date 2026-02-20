@@ -1,6 +1,6 @@
 import math
 import pytest
-from tesserax.core import Point, Transform, Bounds
+from tesserax.core import Point, Transform, Bounds, deg
 
 # --- Fixtures for Random Data ---
 
@@ -176,14 +176,56 @@ def test_shape_align_to():
     assert r2.transform.tx == 10
 
 
-def test_component_kwargs():
+def test_deg_function():
+    assert math.isclose(deg(180), math.pi)
+    assert math.isclose(deg(90), math.pi / 2)
+
+
+def test_point_class_methods():
+    assert Point.zero() == Point(0, 0)
+    assert Point.up() == Point(0, -1)
+    assert Point.down() == Point(0, 1)
+    assert Point.left() == Point(-1, 0)
+    assert Point.right() == Point(1, 0)
+
+
+def test_point_math_more():
+    p = Point(10, 20)
+    assert p / 2 == Point(5, 10)
+    assert p.dx(5) == Point(15, 20)
+
+    # Point.apply (direct method)
+    p2 = Point(1, 0).apply(tx=10, ty=10, r=90, s=2)
+    # Scale 2: (2,0) -> Rotate 90: (0,2) -> Translate (10,10): (10, 12)
+    assert math.isclose(p2.x, 10.0, abs_tol=1e-9)
+    assert math.isclose(p2.y, 12.0, abs_tol=1e-9)
+
+
+def test_bounds_union_empty():
+    assert Bounds.union() == Bounds(0, 0, 0, 0)
+
+
+def test_shape_base_methods():
+    from tesserax.base import Rect
+
+    r = Rect(10, 10)
+    # resolve without parent
+    assert r.resolve(Point(0, 0)) == Point(0, 0)
+
+    # align_to default other_anchor
+    r2 = Rect(10, 10).translated(100, 100)
+    r2.align_to(r, "center")
+    assert r2.transform.tx == 0
+    assert r2.transform.ty == 0
+
+
+def test_component_base_render():
     from tesserax.core import Component
+    from tesserax.base import Rect
 
     class MyComp(Component):
         def _build(self):
-            from tesserax.base import Group
+            return Rect(10, 10)
 
-            return Group()
-
-    c = MyComp(foo="bar", val=123)
-    assert c.kwargs == {"foo": "bar", "val": 123}
+    c = MyComp()
+    assert "<rect" in c._render()

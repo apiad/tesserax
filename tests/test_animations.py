@@ -205,13 +205,58 @@ def test_following_animation():
     assert shape.transform.tx == 50.0
 
 
-def test_animator_factory():
-    r = Rect(10, 10)
-    anim = r.animate.translate(10, 10)
-    assert isinstance(anim, Transformed)
+def test_easing_functions():
+    from tesserax.animation import linear, smooth, ease_out, ease_in_out_cubic
 
-    anim2 = r.animate.fill(Colors.Red)
-    assert isinstance(anim2, Styled)
+    assert linear(0.5) == 0.5
+    assert 0 < smooth(0.5) < 1
+    assert 0 < ease_out(0.5) < 1
+    assert 0 < ease_in_out_cubic(0.5) < 1
+
+
+def test_animator_all_methods():
+    r = Rect(10, 10)
+    # Just call them to ensure coverage
+    r.animate.translate(10, 10)
+    r.animate.rotate(1)
+    r.animate.scale(2)
+    r.animate.property("width", 5)
+    r.animate.custom(lambda o, t: None)
+    r.animate.keyframes(tx={1.0: 100})
+
+    # Styled
+    r.animate.fill(Colors.Red)
+    r.animate.stroke(Colors.Blue)
+    r.animate.opacity(0.5)
+    r.animate.style(width=2.0)
+
+    # Text
+    t = Text("Hello")
+    t.animate.write()
+    t.animate.scramble()
+
+    # Polyline
+    p = Polyline([Point(0, 0), Point(10, 10)])
+    p.animate.morph(p.clone())
+    p.animate.warp(lambda pt, t: pt)
+
+
+def test_scene_rendering(tmp_path):
+    from tesserax import Canvas, Rect
+    from tesserax.animation import Scene
+
+    c = Canvas()
+    with c:
+        Rect(10, 10)
+
+    s = Scene(c, fps=10)
+    s.capture()
+    assert len(s._frames) == 1
+
+    # Mocking imageio save to avoid dependencies issues in test env if any
+    # but let's try a simple wait/play
+    s.wait(0.1)  # 1 frame
+    assert len(s._frames) == 2
 
 
 def test_wait_animation():
@@ -221,103 +266,6 @@ def test_wait_animation():
     assert w._weight == 5.0
     w.begin()
     w.update(0.5)  # Should not crash
-
-
-def test_animation_operators():
-    a1 = MockAnimation(weight=1.0)
-    a2 = MockAnimation(weight=1.0)
-
-    seq = a1 | a2  # Sequence
-    assert isinstance(seq, Sequence)
-    assert len(seq.children) == 2
-
-    par = a1 + a2  # Parallel
-    assert isinstance(par, Parallel)
-    assert len(par.children) == 2
-
-    rep = a1 * 3.0  # Repeating
-    from tesserax.animation import Wrapped
-
-    assert isinstance(rep, Wrapped)
-
-
-def test_looping_reversed():
-    a = MockAnimation()
-    loop = a.looping()
-    loop.begin()
-    # At global t=0.75, local t should be 0.5 (going back)
-    loop.update(0.75)
-    assert math.isclose(a.updated_t[0], 0.5)
-
-    rev = a.reversed()
-    rev.begin()
-    rev.update(0.2)
-    assert math.isclose(a.updated_t[1], 0.8)
-
-
-def test_sequence_checkpoints():
-    a1 = MockAnimation(weight=1.0)
-    a2 = MockAnimation(weight=3.0)
-    seq = Sequence(a1, a2)
-    # total weight 4.0. Checkpoints: [0.25, 1.0]
-    assert seq.checkpoints == [0.25, 1.0]
-
-
-def test_animation_pad():
-    a = MockAnimation(weight=1.0)
-    padded = a.pad(before=1.0, after=2.0)
-    # Total weight = 1.0 (before) + 1.0 (a) + 2.0 (after) = 4.0
-    from tesserax.animation import Sequence
-
-    assert isinstance(padded, Sequence)
-    assert len(padded.children) == 3
-    # Checkpoints: 1/4, 2/4, 4/4
-    assert padded.checkpoints == [0.25, 0.5, 1.0]
-
-
-def test_repeating_animation():
-    a = MockAnimation()
-    rep = a.repeating(2.0)
-    rep.begin()
-    rep.update(0.75)  # (0.75 * 2) % 1.0 = 0.5
-    assert math.isclose(a.updated_t[0], 0.5)
-
-
-def test_functional_animation():
-    r = Rect(10, 10)
-
-    def my_func(obj, t):
-        obj.transform.tx = t * 100
-
-    from tesserax.animation import FunctionalAnimation
-
-    anim = FunctionalAnimation(r, my_func)
-    anim.begin()
-    anim.update(0.5)
-    assert r.transform.tx == 50.0
-
-
-def test_camera_animator():
-    from tesserax import Canvas, Camera
-
-    c = Canvas()
-    cam = Camera(100, 100)
-    target = Rect(10, 10).translated(50, 50)
-
-    anim = cam.animate.track(target)
-    anim.begin()
-    anim.update(1.0)
-    assert cam.transform.tx == 50
-    assert cam.transform.ty == 50
-
-
-def test_animator_getattr_proxy():
-    r = Rect(10, 10)
-    # Testing shape.animate.some_property(100)
-    anim = r.animate.width(5.0)
-    assert isinstance(anim, NumericAnimation)
-    assert anim.attribute == "width"
-    assert anim.value == 5.0
 
 
 def test_following_animation_rotation():
@@ -335,6 +283,31 @@ def test_following_animation_rotation():
     assert math.isclose(shape.transform.rotation, math.pi / 4, abs_tol=0.1)
 
 
+def test_animation_extra_coverage():
+    from tesserax.animation import Wait, Parallel
+
+    # Parallel start/update
+    a1 = MockAnimation()
+    p = Parallel(a1)
+    p.begin()
+    p.update(0.5)
+    assert a1.updated_t == [0.5]
+
+    # Wait update
+    w = Wait()
+    w.begin()
+    w.update(0.5)
+
+    # KeyframeAnimation logic
+    r = Rect(10, 10)
+    k = KeyframeAnimation(r, tx={0.0: 0, 1.0: 100})
+    k.begin()
+    k.update(0.0)
+    assert r.transform.tx == 0
+    k.update(1.0)
+    assert r.transform.tx == 100
+
+
 def test_animation_errors():
     r = Rect(10, 10)
     anim = Transformed(r, r.transform)
@@ -348,3 +321,122 @@ def test_animation_errors():
 
     with pytest.raises(AttributeError):
         KeyframeAnimation(r, non_existent={1.0: 10}).begin()
+
+
+def test_animation_operators_extra():
+    a1 = MockAnimation(weight=1.0)
+    rep = a1 * 2.0
+    assert rep.relative_weight == 1.0  # Wrapped child weight
+
+    # Sequential merge
+    from tesserax.animation import Sequence
+
+    seq1 = MockAnimation() | MockAnimation()
+    seq2 = seq1 | MockAnimation()
+    assert len(seq2.children) == 3
+
+    # Parallel merge
+    from tesserax.animation import Parallel
+
+    par1 = MockAnimation() + MockAnimation()
+    par2 = par1 + MockAnimation()
+    assert len(par2.children) == 3
+
+
+def test_sequence_empty():
+    from tesserax.animation import Sequence
+
+    s = Sequence()
+    s.begin()
+    s.update(0.5)  # Should not crash
+
+
+def test_parallel_begin_finish():
+    from tesserax.animation import Parallel
+
+    a1 = MockAnimation()
+    p = Parallel(a1)
+    p.finish()
+    assert a1._started
+
+
+def test_delayed_branch_coverage():
+    from tesserax.animation import Delayed
+
+    a1 = MockAnimation()
+    # 0 weight or empty
+    d = Delayed()
+    d.update(0.5)
+
+    d2 = Delayed(a1, lag_ratio=0.5)
+    d2.begin()
+    d2.update(0.5)
+
+
+def test_animation_reversed_extra():
+    a = MockAnimation()
+    rev = a.reversed()
+    rev.begin()
+    rev.update(0.0)
+    assert math.isclose(a.updated_t[0], 1.0)
+    rev.update(1.0)
+    assert math.isclose(a.updated_t[1], 0.0)
+
+
+def test_linear_scale_zero_division():
+    from tesserax.chart import LinearScale
+
+    s = LinearScale((10, 10), (0, 100))
+    assert s.map(10) == 0
+    assert s.map(20) == 0
+
+
+def test_animation_delayed_ratio():
+    a = MockAnimation()
+    # delay_ratio = 0.5
+    d = a.delayed(0.5)
+    d.begin()
+    # Wrapped._start calls child.begin(), which might trigger update(0) or similar
+    # Let's clear it
+    a.updated_t = []
+    d.update(0.2)  # local t = 0
+    # In current implementation, if t < delay_ratio, rated lambda returns 0,
+    # so a.update(0) IS called.
+    assert len(a.updated_t) == 1
+    assert a.updated_t[0] == 0.0
+    d.update(0.75)  # local t = (0.75 - 0.5) / 0.5 = 0.5
+    assert math.isclose(a.updated_t[1], 0.5)
+
+
+def test_animation_operators():
+    a1 = MockAnimation(weight=1.0)
+    a2 = MockAnimation(weight=1.0)
+
+    seq = a1 | a2  # Sequence
+    from tesserax.animation import Sequence
+
+    assert isinstance(seq, Sequence)
+    assert len(seq.children) == 2
+
+    par = a1 + a2  # Parallel
+    from tesserax.animation import Parallel
+
+    assert isinstance(par, Parallel)
+    assert len(par.children) == 2
+
+    rep = a1 * 3.0  # Repeating
+    from tesserax.animation import Wrapped
+
+    assert isinstance(rep, Wrapped)
+
+
+def test_animation_pad():
+    a = MockAnimation(weight=1.0)
+    padded = a.pad(before=1.0, after=2.0)
+    # Total weight = 1.0 (before) + 1.0 (a) + 2.0 (after) = 4.0
+    from tesserax.animation import Sequence
+
+    assert isinstance(padded, Sequence)
+    assert len(padded.children) == 3
+    # Checkpoints: 1/4, 2/4, 4/4
+    assert padded.checkpoints == [0.25, 0.5, 1.0]

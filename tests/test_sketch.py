@@ -1,5 +1,5 @@
 import pytest
-from tesserax import Rect, Circle, Group, Canvas
+from tesserax import Rect, Circle, Group, Canvas, Point
 from tesserax.sketch import Sketch
 
 
@@ -56,3 +56,28 @@ def test_sketch_parameters():
 
     # With same seed, should be identical
     assert svg1 == svg2
+
+
+def test_sketch_bezier():
+    # Circle.trace() uses Cubic Beziers (C commands)
+    s = Sketch()
+    with s:
+        Circle(10)
+
+    svg = s._render()
+    assert "C" in svg
+    assert "<circle" not in svg
+
+
+def test_sketch_very_short_line():
+    # Force a very short line to trigger early return in _draw_curve_pass
+    from tesserax.base import Polyline
+
+    p = Polyline([Point(0, 0), Point(0.01, 0.01)])
+    s = Sketch()
+    with s:
+        p
+
+    svg = s._render()
+    # Should not crash, and might be empty if all passes are too short
+    assert isinstance(svg, str)
