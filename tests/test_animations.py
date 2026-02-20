@@ -262,6 +262,16 @@ def test_sequence_checkpoints():
     # total weight 4.0. Checkpoints: [0.25, 1.0]
     assert seq.checkpoints == [0.25, 1.0]
 
+def test_animation_pad():
+    a = MockAnimation(weight=1.0)
+    padded = a.pad(before=1.0, after=2.0)
+    # Total weight = 1.0 (before) + 1.0 (a) + 2.0 (after) = 4.0
+    from tesserax.animation import Sequence
+    assert isinstance(padded, Sequence)
+    assert len(padded.children) == 3
+    # Checkpoints: 1/4, 2/4, 4/4
+    assert padded.checkpoints == [0.25, 0.5, 1.0]
+
 
 def test_repeating_animation():
     a = MockAnimation()

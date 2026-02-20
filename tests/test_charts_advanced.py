@@ -86,25 +86,105 @@ def test_chart_quantitative_detection():
     data = [{"v": 10}, {"v": "A"}]
     chart = Chart(data)
     chart.encode(x="v")
-    assert chart._is_quantitative("x") == True
-
+    assert chart._is_quantitative(chart.data, "x") == True
+    
     data2 = [{"v": "A"}]
     chart2 = Chart(data2)
     chart2.encode(x="v")
-    assert chart2._is_quantitative("x") == False
-
+    assert chart2._is_quantitative(chart2.data, "x") == False
 
 def test_scale_edge_cases():
     # Linear scale with same min/max
     s = LinearScale((10, 10), (0, 100))
     assert s.map(10) == 0
-
+    
     # Band scale with missing value
     bs = BandScale(["A", "B"], (0, 100))
     assert bs.map("C") == 0
-
+    
     # Color scale fallback
     from tesserax.chart import ColorScale
-
     cs = ColorScale(["A", "B"])
     assert cs.map("C") == Colors.Gray
+
+def test_animation_then_callback():
+    from tesserax import Rect
+    r = Rect(10, 10)
+    anim = r.animate.translate(10, 10)
+    
+    finished = False
+    def callback(a):
+        nonlocal finished
+        finished = True
+        
+    anim.then(callback)
+    anim.finish()
+    assert finished == True
+
+def test_chart_animate_data_diff():
+    data1 = [{"id": 1, "v": 10}]
+    data2 = [{"id": 2, "v": 20}] # 1 exits, 2 enters
+    
+    chart = Chart(data1, width=100, height=100).bar().encode(x="id", y="v")
+    chart._build() # initial
+    
+    anim = chart.animate.data(data2)
+    from tesserax.animation import Sequence
+    assert isinstance(anim, Sequence)
+    # 2 stages: exit 1, then enter 2 (no updates)
+    assert len(anim.children) == 2
+
+def test_chart_point_mark_animations():
+    data1 = [{"id": 1, "v": 10}]
+    data2 = [{"id": 1, "v": 20}] # 1 updates
+    
+    chart = Chart(data1, width=100, height=100).point().encode(x="id", y="v")
+    chart._build()
+    
+    anim = chart.animate.data(data2)
+    assert len(anim.children) == 1
+
+def test_chart_animate_enter_logic():
+    data1 = []
+    data2 = [{"id": "A", "v": 10}]
+    
+    chart = Chart(data1, width=100, height=100).bar().encode(x="id", y="v")
+    chart._build()
+    
+    # This should not crash and should add shape to plot_group
+    anim = chart.animate.data(data2)
+    assert "A" in chart._marks
+    assert chart._marks["A"] in chart._plot_group.shapes
+
+def test_chart_axis_transitions():
+    data1 = [{"id": 1, "v": 10}]
+    data2 = [{"id": 2, "v": 20}] # 1 exits, 2 enters
+    
+    chart = Chart(data1).bar().encode(x="id", y="v").axis("x").axis("y")
+    chart._shape # force build
+    
+    anim = chart.animate.data(data2)
+    from tesserax.animation import Sequence
+    assert isinstance(anim, Sequence)
+    # Stage 1: Exit (mark 1 + axis ticks for 1)
+    # Stage 2: Enter (mark 2 + axis ticks for 2)
+    assert len(anim.children) == 2
+    
+    exit_stage = anim.children[0]
+    # exit_stage is a Parallel. We need to check its children.
+    # Depending on how it's built, it might be nested.
+    from tesserax.animation import Parallel
+    assert isinstance(exit_stage, Parallel)
+    assert len(exit_stage.children) >= 1
+
+def test_chart_color_encoding():
+    data = [{"cat": "A", "v": 10}, {"cat": "B", "v": 20}]
+    chart = Chart(data).bar().encode(x="cat", y="v", color="cat")
+    main_group = chart._shape
+    plot_group = main_group.shapes[0]
+    
+    # Check that bars have different colors
+    bar1 = plot_group.shapes[0]
+    bar2 = plot_group.shapes[1]
+    assert bar1.fill != bar2.fill
+

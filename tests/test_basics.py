@@ -90,18 +90,26 @@ class TestPrimitives:
         assert e.local().height == 40
         assert "<ellipse" in e._render()
 
-    def test_text(self):
-        t = Text("Hello World", size=20, font="Arial")
-        assert t.content == "Hello World"
-        assert t.size == 20
-        assert t.font == "Arial"
-        assert "<text" in t._render()
-        assert "Hello World" in t._render()
-
-        # Default middle/middle
-        b = t.local()
-        assert b.x < 0
-        assert b.width > 0
+        def test_text(self):
+            t = Text("Hello World", size=20, font="Arial")
+            assert t.content == "Hello World"
+            assert t.size == 20
+            assert t.font == "Arial"
+            assert "<text" in t._render()
+            assert "Hello World" in t._render()
+            
+            # Default middle/middle
+            b = t.local()
+            assert b.x < 0
+            assert b.width > 0
+            
+            # start anchor
+            t2 = Text("Start", anchor="start")
+            assert t2.local().x == 0
+            
+        # end anchor
+        t3 = Text("End", anchor="end")
+        assert math.isclose(t3.local().x + t3.local().width, 0, abs_tol=1e-5)
 
     def test_path_manual(self):
         p = Path()
