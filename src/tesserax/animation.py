@@ -244,7 +244,11 @@ class Delayed(Animation):
             if local_t > 0 and not anim._started:
                 anim.begin()
 
-            anim.update(local_t)
+            if anim._started:
+                anim.update(local_t)
+
+    def _update(self, t: float):
+        pass
 
 
 class Wait(Animation):
@@ -403,7 +407,7 @@ class Following(Animation):
         if not hasattr(self.path, "point_at"):
             return
 
-        target_point = self.path.point_at(alpha)
+        target_point = self.path.point_at(t)
 
         # Set position directly (Global coordinates)
         self.shape.transform.tx = target_point.x
