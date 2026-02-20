@@ -97,7 +97,7 @@ class Color:
 
     def blueshift(self, percent: float) -> Color:
         _, l, s = hls(self)
-        target = hls(1, l, s)
+        target = hls(2 / 3, l, s)
         return self.lerp(target, percent, space="rgb")
 
     def lerp(self, other: Color, percent: float, *, space="hls") -> Color:
