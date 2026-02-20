@@ -45,12 +45,12 @@ class Visual(Shape, IVisual):
             return ""
 
         t = self.transform
-        
+
         # Build style string
         style_parts = []
         if self.opacity < 1.0:
             style_parts.append(f"opacity: {self.opacity};")
-        
+
         style_attr = f' style="{" ".join(style_parts)}"' if style_parts else ""
 
         # Optimization: Return raw render if transform is identity
