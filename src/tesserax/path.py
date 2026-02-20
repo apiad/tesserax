@@ -43,12 +43,15 @@ class Grid:
 
         # Save bounds with generous padding (e.g., 10 cells)
         pad = 10
-        self.bounds_idx = (
-            int(min_gx - pad),
-            int(min_gy - pad),
-            int(max_gx + pad),
-            int(max_gy + pad),
-        )
+        if not self.occupied:
+            self.bounds_idx = (-pad, -pad, pad, pad)
+        else:
+            self.bounds_idx = (
+                int(min_gx - pad),
+                int(min_gy - pad),
+                int(max_gx + pad),
+                int(max_gy + pad),
+            )
 
     def _snap_to_free(
         self, gx: int, gy: int, target_gx: int, target_gy: int
