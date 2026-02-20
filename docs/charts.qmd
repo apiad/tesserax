@@ -88,4 +88,43 @@ Tesserax automatically selects the appropriate **Scale** based on the data:
 *   **BandScale**: Used for categorical data (strings) to distribute items evenly with padding.
 *   **ColorScale**: Automatically assigns distinct colors from a professional palette when the `color` channel is encoded.
 
-Currently, the `Chart` component is "slim" by design—it does not render axes or grid lines automatically. This keeps the output clean for use as icons, small multiples, or components within larger, custom-drawn diagrams.
+currently doesn't work with fill colors.
+
+## Axes and Gridlines
+
+Tesserax charts can automatically generate axes, labels, and gridlines. You can configure these using a simple shorthand or a more powerful structured encoding.
+
+### Basic Axes
+
+The `.axis()` method allows you to quickly add titles and toggle features like gridlines.
+
+```{python}
+with Canvas() as canvas:
+    Chart(data, width=300, height=180) \
+        .mark_bar() \
+        .encode(x="category", y="value") \
+        .axis("x", title="Category Name") \
+        .axis("y", title="Sales ($)", grid=True)
+
+canvas.fit(10).display()
+```
+
+### Structured Encodings
+
+For more control, you can use the `X` and `Y` classes within the `.encode()` method. This is more consistent with the Altair/Vega-Lite philosophy and allows for fine-grained configuration of the `Axis` object.
+
+```{python}
+from tesserax.chart import X, Y, Axis
+
+with Canvas() as canvas:
+    Chart(data, width=300, height=180) \
+        .mark_point(size=6) \
+        .encode(
+            x=X("category", axis=Axis(title="City")),
+            y=Y("value", axis=Axis(title="Population", grid=True))
+        )
+
+canvas.fit(10).display()
+```
+
+When axes are enabled, Tesserax automatically calculates margins to ensure labels and titles have enough space within the component's bounding box.
