@@ -198,11 +198,11 @@ class ForceLayout(Layout):
         diameter: int = 100,
         k: float | None = None,
     ) -> None:
-        super().__init__(shapes)
         self.connections: list[tuple[Shape, Shape]] = []
         self.iterations = iterations
         self.diameter = diameter
         self.k = k
+        super().__init__(shapes)
 
     def connect(self, u: Shape, v: Shape) -> Self:
         """
@@ -293,13 +293,13 @@ class HierarchicalLayout(Layout):
         node_sep: float = 20.0,
         orientation: Literal["vertical", "horizontal"] = "vertical",
     ) -> None:
-        super().__init__(shapes)
         self.rank_sep = rank_sep
         self.node_sep = node_sep
         self.orientation = orientation
         self.roots = set(roots or [])
         self.adj: dict[Shape, list[Shape]] = defaultdict(list)
         self.rev_adj: dict[Shape, list[Shape]] = defaultdict(list)
+        super().__init__(shapes)
 
     def root(self, n: Shape) -> Self:
         self.roots.add(n)
