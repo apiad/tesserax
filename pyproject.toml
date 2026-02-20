@@ -1,6 +1,6 @@
 [project]
 name = "tesserax"
-version = "0.9.2"
+version = "0.9.3"
 description = "A pure-Python library for rendering professional CS graphics."
 readme = "README.md"
 authors = [
