@@ -45,6 +45,7 @@ class Animation(ABC):
         self.rate = linear
         self._weight = 1.0
         self._started = False
+        self._on_finish: list[Callable[[Animation], None]] = []
 
     def begin(self) -> None:
         """Capture initial state. Only run once per playback."""
@@ -68,13 +69,20 @@ class Animation(ABC):
         pass
 
     def finish(self) -> None:
-        """Force final state."""
+        """Force final state and trigger callbacks."""
         if not self._started:
             self.begin()
 
         self.update(1.0)
+        for cb in self._on_finish:
+            cb(self)
 
     # --- Fluent API Modifiers ---
+
+    def then(self, callback: Callable[[Animation], None]) -> Self:
+        """Adds a callback to be executed when the animation finishes."""
+        self._on_finish.append(callback)
+        return self
 
     def weight(self, w: float) -> Self:
         self._weight = w
@@ -97,6 +105,19 @@ class Animation(ABC):
 
     def looping(self) -> Animation:
         return Wrapped(self).rated(lambda t: 2 * t if t < 0.5 else 2 - 2 * t)
+
+    def pad(self, before: float = 0.0, after: float = 0.0) -> Animation:
+        """Returns a Sequence with Wait periods before and after this animation."""
+        steps = []
+        if before > 0:
+            steps.append(Wait(weight=before))
+        steps.append(self)
+        if after > 0:
+            steps.append(Wait(weight=after))
+
+        if len(steps) == 1:
+            return self
+        return Sequence(*steps)
 
     def reversed(self) -> Animation:
         return Wrapped(self).rated(lambda t: 1.0 - t)
@@ -174,14 +195,16 @@ class Sequence(Animation):
 
         local_t = (t - start_t) / duration if duration > 1e-9 else 1.0
 
-        # Catch up previous
+        # Catch up previous and trigger finish()
         for i in range(idx):
             child = self.children[i]
 
             if not child._started:
                 child.begin()
 
-            child.update(1.0)
+            if not getattr(child, "_finished", False):
+                child.finish()
+                child._finished = True
 
         # Update active
         active = self.children[idx]
@@ -204,6 +227,12 @@ class Parallel(Animation):
     def _update(self, t: float):
         for anim in self.children:
             anim.update(t)
+
+    def finish(self) -> None:
+        """Trigger finish on all children."""
+        for anim in self.children:
+            anim.finish()
+        super().finish()
 
 
 class Delayed(Animation):
@@ -282,27 +311,32 @@ class Transformed(Animation):
 
 
 class Styled(Animation):
-    def __init__(self, shape: IVisual, fill=None, stroke=None, width=None, **kwargs):
+    def __init__(
+        self, shape: IVisual, fill=None, stroke=None, width=None, opacity=None, **kwargs
+    ):
         super().__init__(**kwargs)
         self.shape = shape
         self.target_fill = fill
         self.target_stroke = stroke
         self.target_width = width
+        self.target_opacity = opacity
         self.start_fill = None
         self.start_stroke = None
         self.start_width = None
+        self.start_opacity = None
 
     def _start(self):
         self.start_fill = self.shape.fill
         self.start_stroke = self.shape.stroke
         self.start_width = self.shape.width
+        self.start_opacity = self.shape.opacity
 
     def _update(self, t: float):
-
         if (
             self.start_fill is None
             or self.start_stroke is None
             or self.start_width is None
+            or self.start_opacity is None
         ):
             raise TypeError("You need to call begin() first.")
 
@@ -314,6 +348,10 @@ class Styled(Animation):
             self.shape.fill = self.start_fill.lerp(self.target_fill, t)
         if self.target_stroke is not None:
             self.shape.stroke = self.start_stroke.lerp(self.target_stroke, t)
+        if self.target_opacity is not None:
+            self.shape.opacity = (
+                self.start_opacity + (self.target_opacity - self.start_opacity) * t
+            )
 
 
 # --- Specialized Animations ---
@@ -673,6 +711,9 @@ class StyledAnimator[TShape: IVisual](Animator[TShape]):
 
     def stroke(self, color: str) -> Animation:
         return Styled(self.shape, stroke=color)
+
+    def opacity(self, value: float) -> Animation:
+        return Styled(self.shape, opacity=value)
 
     def style(self, **kwargs) -> Animation:
         return Styled(self.shape, **kwargs)
