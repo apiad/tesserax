@@ -182,11 +182,7 @@ class PointMark(Mark):
         xv = row[x_field]
         yv = row[y_field]
 
-        px = (
-            x_scale.center(xv)
-            if isinstance(x_scale, BandScale)
-            else x_scale.map(xv)
-        )
+        px = x_scale.center(xv) if isinstance(x_scale, BandScale) else x_scale.map(xv)
         py = y_scale.map(yv)
         size = self.params.get("size", 5.0)
 
