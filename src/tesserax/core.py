@@ -294,6 +294,7 @@ class Bounds:
 
 class IShape(Protocol):
     transform: Transform
+    opacity: float
 
     def render(self) -> str: ...
 
@@ -307,6 +308,7 @@ class Shape(ABC):
         self.transform = Transform.identity()
         self.parent: Group | None = None
         self.hidden: bool = False
+        self.opacity: float = 1.0
 
         if (gp := Group.current()) is not None:
             gp.append(self)
@@ -373,22 +375,35 @@ class Shape(ABC):
         pass
 
     def render(self) -> str:
-        """Generates the SVG expression for this shape, including transformation."""
+        """Generates the SVG expression for this shape, including transformation and opacity."""
         if self.hidden:
             return ""
 
         t = self.transform
 
-        # Optimization: Return raw render if transform is identity
-        # (This avoids nested <g> tags for shapes that haven't moved)
-        if t.tx == 0 and t.ty == 0 and t.rotation == 0 and t.sx == 1 and t.sy == 1:
+        # Build style string
+        style_parts = []
+        if self.opacity < 1.0:
+            style_parts.append(f"opacity: {self.opacity};")
+
+        style_attr = f' style="{" ".join(style_parts)}"' if style_parts else ""
+
+        # Optimization: Return raw render if transform is identity and no opacity
+        if (
+            t.tx == 0
+            and t.ty == 0
+            and t.rotation == 0
+            and t.sx == 1
+            and t.sy == 1
+            and not style_parts
+        ):
             return self._render()
 
-        # Fix: SVG rotate expects degrees, but Transform stores radians
+        # SVG rotate expects degrees, but Transform stores radians
         deg = math.degrees(t.rotation)
 
         ts = f' transform="translate({t.tx} {t.ty}) rotate({deg}) scale({t.sx} {t.sy})"'
-        return f"<g{ts}>\n{self._render()}\n</g>"
+        return f"<g{ts}{style_attr}>\n{self._render()}\n</g>"
 
     def resolve(self, p: Point) -> Point:
         world_p = self.transform.map(p)
@@ -451,7 +466,8 @@ class Shape(ABC):
 class Component(Shape):
     """
     A Shape that is composed of other Shapes.
-    Subclasses must implement build() which returns the geometric representation.
+    Subclasses must implement _build() which returns the geometric representation.
+    By default, Components rebuild their representation every time they are accessed.
     """
 
     def __init__(self, **kwargs) -> None:
@@ -482,6 +498,27 @@ class Component(Shape):
 
     def _render(self) -> str:
         # Render the built primitive.
-        # Note: The primitive's own transform is applied inside its .render()
-        # The Component's transform is applied by the caller (Shape.render)
         return self._shape.render()
+
+
+class StatefulComponent(Component):
+    """
+    A Component that caches its built representation.
+    Useful for complex components (like Charts) that manage internal state
+    across multiple frames or render cycles.
+    """
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self._cached_shape: Shape | None = None
+
+    def invalidate(self) -> Self:
+        """Force a rebuild of the component on next access."""
+        self._cached_shape = None
+        return self
+
+    @property
+    def _shape(self) -> Shape:
+        if self._cached_shape is None:
+            self._cached_shape = self._build().detach()
+        return self._cached_shape
