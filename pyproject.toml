@@ -7,6 +7,17 @@ authors = [
     { name = "Alejandro Piad", email = "apiad@apiad.net" }
 ]
 requires-python = ">=3.12"
+keywords = ["visualization", "svg", "graphics", "diagrams", "animation", "physics", "charts"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Graphics :: Presentation",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
 
 [build-system]
 requires = ["hatchling"]
