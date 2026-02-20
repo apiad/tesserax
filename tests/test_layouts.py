@@ -2,6 +2,7 @@ import math
 import pytest
 from tesserax.core import Point, Bounds
 from tesserax.base import Rect, Circle, Group
+from tesserax.layout import RowLayout, ColumnLayout, GridLayout, ForceLayout, HierarchicalLayout
 
 # --- Fixtures ---
 
@@ -116,3 +117,71 @@ def test_group_translation_preserves_relative_layout(sizes_group: Group):
     # Relative distance must be identical
     dist_after = sizes_group.shapes[1].bounds().x - sizes_group.shapes[0].bounds().x
     assert math.isclose(dist_before, dist_after, abs_tol=1e-9)
+
+
+# --- Layout Subclasses ---
+
+
+def test_row_layout():
+    r1 = Rect(10, 10)
+    r2 = Rect(20, 20)
+    rl = RowLayout(shapes=[r1, r2], gap=10, align="start")
+
+    # r1 at 0,0 (local centered means bounds.x = -5, bounds.y = -5)
+    # distribute horizontal: r1.x = 0 - (-5) = 5. ty = 0 (reset).
+    # r1.bounds() at (0, -5, 10, 10)
+    # r2.x = 0 + 10 (r1.w) + 10 (gap) - (-10) = 30.
+    assert math.isclose(r2.bounds().x, 20.0, abs_tol=1e-5)
+    assert math.isclose(r1.bounds().y, r2.bounds().y, abs_tol=1e-5)
+
+
+def test_column_layout():
+    r1 = Rect(10, 10)
+    r2 = Rect(20, 20)
+    cl = ColumnLayout(shapes=[r1, r2], gap=10, align="start")
+
+    # r1 at 0,0. r2 starts at r1.bottom + gap
+    assert math.isclose(r2.bounds().y, 20.0, abs_tol=1e-5)
+    assert math.isclose(r1.bounds().x, r2.bounds().x, abs_tol=1e-5)
+
+
+def test_grid_layout():
+    shapes = [Rect(10, 10) for _ in range(4)]
+    gl = GridLayout(shapes=shapes, cols=2, gap=10)
+
+    # Row 0: S0, S1. Row 1: S2, S3
+    assert math.isclose(shapes[1].bounds().x, 20.0, abs_tol=1e-5)
+    assert math.isclose(shapes[2].bounds().y, 20.0, abs_tol=1e-5)
+    assert math.isclose(shapes[3].bounds().x, 20.0, abs_tol=1e-5)
+    assert math.isclose(shapes[3].bounds().y, 20.0, abs_tol=1e-5)
+
+
+def test_force_layout_smoke():
+    shapes = [Circle(5) for _ in range(5)]
+    fl = ForceLayout(shapes=shapes, iterations=10)
+    fl.connect(shapes[0], shapes[1])
+    fl.do_layout()
+    # Check that they moved from origin
+    for s in shapes:
+        assert s.transform.tx != 0 or s.transform.ty != 0
+
+
+def test_hierarchical_layout_smoke():
+    s1, s2, s3 = Rect(10, 10), Rect(10, 10), Rect(10, 10)
+    hl = HierarchicalLayout(shapes=[s1, s2, s3])
+    hl.connect(s1, s2)
+    hl.connect(s2, s3)
+    hl.do_layout()
+
+    # Should be in different layers
+    assert s1.transform.ty != s2.transform.ty
+    assert s2.transform.ty != s3.transform.ty
+
+
+def test_layout_add_triggers_do_layout():
+    rl = RowLayout(gap=10)
+    r1 = Rect(10, 10)
+    r2 = Rect(10, 10)
+    rl.add(r1)
+    rl.add(r2)
+    assert math.isclose(r2.bounds().x, 20.0, abs_tol=1e-5)

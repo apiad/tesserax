@@ -22,17 +22,22 @@ def test_band_scale():
 def test_chart_bar_logic():
     data = [{"x": "A", "y": 10}, {"x": "B", "y": 20}]
     chart = Chart(data, width=200, height=100).bar().encode(x="x", y="y")
-    shape = chart._build()
+    main_group = chart._build()
 
-    assert len(shape.shapes) == 2
-    # First bar: y=10 maps to bh=50 (since max_y=20, height=100)
-    # Center y in chart space is 25.
-    # Center y in SVG space is 100 - 25 = 75.
-    bar1 = shape.shapes[0]
-    assert bar1.transform.ty == 75.0
+    # main_group contains the plot_group (and potentially axes)
+    # Since no axes are defined, plot_group is the only child.
+    plot_group = main_group.shapes[0]
+    assert len(plot_group.shapes) == 2
 
-    # Second bar: y=20 maps to bh=100
-    # Center y in chart space is 50.
-    # Center y in SVG space is 100 - 50 = 50.
-    bar2 = shape.shapes[1]
-    assert bar2.transform.ty == 50.0
+    # plot_h = 100 - 10 (bottom) - 20 (top) = 70
+    # y=10 maps to bh=35 (since max_y=20, plot_h=70)
+    # Center y in chart space is 17.5.
+    # Center y in plot space (SVG) is 70 - 17.5 = 52.5.
+    bar1 = plot_group.shapes[0]
+    assert bar1.transform.ty == 52.5
+
+    # Second bar: y=20 maps to bh=70
+    # Center y in chart space is 35.
+    # Center y in plot space (SVG) is 70 - 35 = 35.
+    bar2 = plot_group.shapes[1]
+    assert bar2.transform.ty == 35.0
