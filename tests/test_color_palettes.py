@@ -1,6 +1,7 @@
 import pytest
 from tesserax.color import Colors, Color
 
+
 def test_all_palettes():
     # Test that all static palette methods work and return colors
     palette_names = Colors.palettes()
@@ -9,10 +10,12 @@ def test_all_palettes():
         assert len(p) > 0
         assert all(isinstance(c, Color) for c in p)
 
+
 def test_all_colors_generator():
     all_colors = list(Colors.all())
-    assert len(all_colors) > 100 # Should be many colors
+    assert len(all_colors) > 100  # Should be many colors
     assert all(isinstance(c, Color) for c in all_colors)
+
 
 def test_specific_palettes():
     # Smoke tests for a few specific ones

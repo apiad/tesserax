@@ -2,7 +2,13 @@ import math
 import pytest
 from tesserax.core import Point, Bounds
 from tesserax.base import Rect, Circle, Group
-from tesserax.layout import RowLayout, ColumnLayout, GridLayout, ForceLayout, HierarchicalLayout
+from tesserax.layout import (
+    RowLayout,
+    ColumnLayout,
+    GridLayout,
+    ForceLayout,
+    HierarchicalLayout,
+)
 
 # --- Fixtures ---
 

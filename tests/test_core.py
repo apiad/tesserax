@@ -52,13 +52,14 @@ def test_lerp_boundaries():
     assert start.lerp(end, 1.0) == end
     assert start.lerp(end, 0.5) == Point(5, 5)
 
+
 def test_distance_to_segment():
     p = Point(5, 5)
     s1 = Point(0, 0)
     s2 = Point(10, 0)
     # distance to horizontal segment at y=0 is 5
     assert math.isclose(Point.distance_to_segment(p, s1, s2), 5.0)
-    
+
     # distance to a point (degenerate segment)
     assert math.isclose(Point.distance_to_segment(p, s1, s1), p.magnitude())
 
@@ -140,15 +141,17 @@ def test_padding_invariant():
     assert padded.width == b.width + 10
     assert padded.height == b.height + 10
 
+
 def test_transform_reset_and_lerp():
     t = Transform(tx=10, ty=20, rotation=1, sx=2, sy=2)
     t.reset()
     assert t.tx == 0 and t.ty == 0 and t.rotation == 0 and t.sx == 1 and t.sy == 1
-    
+
     t1 = Transform(tx=0)
     t2 = Transform(tx=100)
     t3 = t1.lerp(t2, 0.5)
     assert t3.tx == 50
+
 
 def test_transform_fluent_mutators():
     t = Transform()
@@ -159,23 +162,28 @@ def test_transform_fluent_mutators():
     assert t.sx == 2
     assert t.sy == 3
 
+
 def test_shape_align_to():
     from tesserax.base import Rect
+
     r1 = Rect(10, 10).translated(0, 0)
     r2 = Rect(10, 10).translated(100, 100)
-    
+
     r2.align_to(r1, "left", "right")
     # r1 right is at x=5
     # r2 left is at x=5
     # r2 width is 10, so r2 center tx should be 10
     assert r2.transform.tx == 10
 
+
 def test_component_kwargs():
     from tesserax.core import Component
+
     class MyComp(Component):
         def _build(self):
             from tesserax.base import Group
+
             return Group()
-            
+
     c = MyComp(foo="bar", val=123)
     assert c.kwargs == {"foo": "bar", "val": 123}

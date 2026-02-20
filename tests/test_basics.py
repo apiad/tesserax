@@ -2,8 +2,20 @@ import math
 import pytest
 from tesserax.core import Point, Bounds
 from tesserax.base import (
-    Rect, Square, Circle, Ellipse, Group, Polyline, Text, Path, 
-    Line, Arrow, Container, Spacer, Ghost, Spring
+    Rect,
+    Square,
+    Circle,
+    Ellipse,
+    Group,
+    Polyline,
+    Text,
+    Path,
+    Line,
+    Arrow,
+    Container,
+    Spacer,
+    Ghost,
+    Spring,
 )
 from tesserax.color import Colors
 
@@ -85,7 +97,7 @@ class TestPrimitives:
         assert t.font == "Arial"
         assert "<text" in t._render()
         assert "Hello World" in t._render()
-        
+
         # Default middle/middle
         b = t.local()
         assert b.x < 0
@@ -100,26 +112,26 @@ class TestPrimitives:
 
     def test_polyline_simplify(self):
         # Line with collinear point
-        p = Polyline([Point(0,0), Point(5,0), Point(10,0)])
+        p = Polyline([Point(0, 0), Point(5, 0), Point(10, 0)])
         assert len(p.points) == 3
         p.simplify(tolerance=0.1)
         assert len(p.points) == 2
-        assert p.points[0] == Point(0,0)
-        assert p.points[1] == Point(10,0)
+        assert p.points[0] == Point(0, 0)
+        assert p.points[1] == Point(10, 0)
 
     def test_polyline_manipulation(self):
-        p = Polyline([Point(0,0)])
-        p.append(Point(10,10))
-        p.prepend(Point(-10,-10))
-        p.extend([Point(20,20), Point(30,30)])
+        p = Polyline([Point(0, 0)])
+        p.append(Point(10, 10))
+        p.prepend(Point(-10, -10))
+        p.extend([Point(20, 20), Point(30, 30)])
         assert len(p.points) == 5
-        assert p.points[0] == Point(-10,-10)
-        
+        assert p.points[0] == Point(-10, -10)
+
         p.apply(lambda pt: pt.d(1, 1))
         assert p.points[0] == Point(-9, -9)
 
     def test_polyline_subdivide_multi(self):
-        p = Polyline([Point(0,0), Point(10,0)])
+        p = Polyline([Point(0, 0), Point(10, 0)])
         p.subdivide(2)
         # 1st: (0,0), (5,0), (10,0) -> 3 pts
         # 2nd: (0,0), (2.5,0), (5,0), (7.5,0), (10,0) -> 5 pts
@@ -127,47 +139,47 @@ class TestPrimitives:
 
     def test_path_arc_quad(self):
         p = Path()
-        p.jump_to(0,0).arc(10, 10, 0, 0, 1, 10, 10).quadratic_to(20, 0, 30, 0)
+        p.jump_to(0, 0).arc(10, 10, 0, 0, 1, 10, 10).quadratic_to(20, 0, 30, 0)
         svg = p._render()
         assert "A 10 10 0 0 1 10 10" in svg
         assert "Q 20 0, 30 0" in svg
 
     def test_polyline_expand_contract(self):
-        p = Polyline.poly(n=4, radius=10) # Square
+        p = Polyline.poly(n=4, radius=10)  # Square
         p.center()
         initial_mag = p.points[0].magnitude()
         p.expand(5)
         assert math.isclose(p.points[0].magnitude(), initial_mag + 5)
         p.contract(2)
         assert math.isclose(p.points[0].magnitude(), initial_mag + 3)
-        
+
         # Custom orientation
         p2 = Polyline.poly(n=4, radius=10, orientation=Point(1, 0))
         # Point(1,0) is 0 degrees. Points: (10,0), (0,10), (-10,0), (0,-10)
         assert math.isclose(p2.points[0].x, 10.0)
-        
+
         # Error case
         with pytest.raises(ValueError):
             Polyline.poly(n=2, radius=10)
 
     def test_line_and_arrow(self):
-        p1, p2 = Point(0,0), Point(100, 100)
+        p1, p2 = Point(0, 0), Point(100, 100)
         l = Line(p1, p2)
         assert "<path" in l.render()
-        
+
         # Curved line
         l2 = Line(p1, p2, curvature=0.5)
         assert "A" in l2.render()
-        
+
         a = Arrow(p1, p2)
         assert 'marker-end="url(#arrow)"' in a.render()
 
     def test_group_manipulation(self):
         g = Group()
         r1 = Rect(10, 10)
-        g += r1 # __iadd__
+        g += r1  # __iadd__
         assert r1 in g.shapes
-        
+
         g.remove(r1)
         assert r1 not in g.shapes
         assert r1.parent is None
@@ -177,12 +189,12 @@ class TestPrimitives:
         r1 = Rect(10, 10)
         r2 = Rect(10, 10)
         g.add(r1, r2)
-        
+
         # space-between
         # size 100. r1.w=10, r2.w=10. Total rigid=20. Remaining=80. Gap=80.
         g.distribute(axis="horizontal", size=100, mode="space-between")
         assert math.isclose(r2.bounds().x, 90.0)
-        
+
         # space-around
         # size 100. r1.w=10, r2.w=10. Gap = 80 / 2 = 40. Start offset = 20.
         # r1 at 20. r2 at 20 + 10 + 40 = 70.
@@ -194,27 +206,27 @@ class TestPrimitives:
     def test_container(self):
         r = Rect(50, 50)
         c = Container(shapes=[r], padding=10)
-        
+
         # Rect bounds (-25, -25, 50, 50)
         # Container bounds should be (-35, -35, 70, 70)
         b = c.local()
         assert b.width == 70
         assert b.height == 70
-        assert "<rect" in c._render() # Background rect
+        assert "<rect" in c._render()  # Background rect
 
     def test_spacer_ghost_spring(self):
         s = Spacer(10, 20)
         assert s.local().width == 10
         assert s._render() == ""
-        
+
         r = Rect(100, 100)
         g = Ghost(r)
         assert g.local() == r.local()
         assert g._render() == ""
-        
+
         sp = Spring(flex=2.0)
         assert sp.flex == 2.0
-        assert sp.local().width == 0.0 # Initially 0
+        assert sp.local().width == 0.0  # Initially 0
 
     def test_shape_traces(self):
         # Verify trace() returns a Path for each primitive
@@ -223,8 +235,8 @@ class TestPrimitives:
             Square(10),
             Circle(10),
             Ellipse(10, 5),
-            Polyline([Point(0,0), Point(10,10)]),
-            Container(padding=10)
+            Polyline([Point(0, 0), Point(10, 10)]),
+            Container(padding=10),
         ]
         for s in shapes:
             p = s.trace()
@@ -235,7 +247,7 @@ class TestPrimitives:
         with Group() as g:
             r = Rect(10, 10)
             c = Circle(5)
-        
+
         assert r.parent == g
         assert c.parent == g
         assert len(g.shapes) == 2
@@ -244,19 +256,19 @@ class TestPrimitives:
         g = Group()
         r = Rect(10, 10)
         g.add(r)
-        
+
         r.detach()
         assert r.parent is None
         assert r not in g.shapes
-        
+
         with g:
             r.attach()
         assert r.parent == g
-        
+
         r.hide()
         assert r.hidden == True
         assert r.render() == ""
-        
+
         r.show()
         assert r.hidden == False
         assert r.render() != ""
