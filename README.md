@@ -1,5 +1,12 @@
 # Tesserax: A Lightweight SVG Rendering Library
 
+[![PyPI version](https://img.shields.io/pypi/v/tesserax.svg)](https://pypi.org/project/tesserax/)
+[![Python versions](https://img.shields.io/pypi/pyversions/tesserax.svg)](https://pypi.org/project/tesserax/)
+[![Tests](https://github.com/apiad/tesserax/actions/workflows/tests.yaml/badge.svg)](https://github.com/apiad/tesserax/actions/workflows/tests.yaml)
+[![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)](#)
+[![Downloads](https://pepy.tech/badge/tesserax)](https://pepy.tech/project/tesserax)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Tesserax is a modern Python 3.12 library designed for programmatic SVG generation with a focus on ease of use, layout management, and flexible geometric primitives. It is particularly well-suited for visualizing data structures, algorithms, and technical diagrams.
 
 Beyond static diagrams, Tesserax now includes a **deterministic physics engine** and a **cinematic animation system**, making it a complete toolkit for scientific communication.
