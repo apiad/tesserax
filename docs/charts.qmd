@@ -5,13 +5,14 @@ While **Tesserax** is primarily a geometric engine, it includes a high-level `Ch
 ## The Charting Philosophy
 
 Unlike traditional plotting libraries that require complex configuration for axes and legends, the Tesserax `Chart` focuses on the **Mapping**:
+
 1.  **Data**: A list of dictionaries.
 2.  **Mark**: The geometric shape used to represent data (e.g., `bar`, `point`).
 3.  **Encoding**: The connection between a data field and a visual property.
 
 ## Basic Bar Charts
 
-To create a bar chart, you define your data, initialize a `Chart`, and chain the `.mark_bar()` and `.encode()` methods.
+To create a bar chart, you define your data, initialize a `Chart`, and chain the `.bar()` and `.encode()` methods.
 
 **Note on Coordinates:** The `Chart` component uses a "Chart Space" internally, where $(0,0)$ is at the **bottom-left**. Tesserax automatically handles the flip to SVG coordinates for you.
 
@@ -30,7 +31,7 @@ with Canvas() as canvas:
     chart = Chart(data, width=300, height=150)
 
     # Configure the mark and the encoding
-    chart.mark_bar(padding=0.2).encode(
+    chart.bar(padding=0.2).encode(
         x="category",
         y="value",
         color="category"
@@ -41,7 +42,7 @@ canvas.fit(10).display()
 
 ## Scatter Plots (Point Marks)
 
-By switching to `.mark_point()`, you can create scatter plots or dot plots. You can control the size of the points via the mark parameters.
+By switching to `.point()`, you can create scatter plots or dot plots. You can control the size of the points via the mark parameters.
 
 ```{python}
 import random
@@ -50,9 +51,7 @@ import random
 points = [{"idx": i, "val": random.uniform(10, 100)} for i in range(10)]
 
 with Canvas() as canvas:
-    Chart(points, width=300, height=100).mark_point(size=4).encode(
-        x="idx", y="val"
-    )
+    Chart(points, width=300, height=100).point(size=4).encode(x="idx", y="val")
 
 canvas.fit(10).display()
 ```
@@ -68,12 +67,12 @@ from tesserax.layout import RowLayout
 with Canvas() as canvas:
     with RowLayout(gap=50):
         # Chart 1: Bars
-        Chart(data, width=150, height=100).mark_bar().encode(
+        Chart(data, width=150, height=100).bar().encode(
             x="category", y="value"
         )
 
         # Chart 2: Points (Rotated!)
-        Chart(data, width=150, height=100).mark_point(size=5).encode(
+        Chart(data, width=150, height=100).point(size=5).encode(
             x="category", y="value"
         ).rotated(deg(45))
 
@@ -101,7 +100,7 @@ The `.axis()` method allows you to quickly add titles and toggle features like g
 ```{python}
 with Canvas() as canvas:
     Chart(data, width=300, height=180) \
-        .mark_bar() \
+        .bar() \
         .encode(x="category", y="value") \
         .axis("x", title="Category Name") \
         .axis("y", title="Sales ($)", grid=True)
@@ -118,7 +117,7 @@ from tesserax.chart import X, Y, Axis
 
 with Canvas() as canvas:
     Chart(data, width=300, height=180) \
-        .mark_point(size=6) \
+        .point(size=6) \
         .encode(
             x=X("category", axis=Axis(title="City")),
             y=Y("value", axis=Axis(title="Population", grid=True))

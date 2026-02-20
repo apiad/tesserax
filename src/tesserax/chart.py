@@ -370,12 +370,15 @@ class Chart(Component):
         self._encoding: dict[str, str | Channel] = {}
         self._axes: dict[str, Axis] = {}
 
-    def mark_bar(self, padding: float = 0.1, **kwargs) -> Self:
-        self._mark = BarMark(padding=padding, **kwargs)
-        return self
+    def bar(self, padding: float = 0.1, **kwargs) -> Self:
+        return self.mark(BarMark(padding=padding, **kwargs))
 
-    def mark_point(self, size: float = 5.0, **kwargs) -> Self:
-        self._mark = PointMark(size=size, **kwargs)
+    def point(self, size: float = 5.0, **kwargs) -> Self:
+        return self.mark(PointMark(size=size, **kwargs))
+
+    def mark(self, mark: Mark) -> Self:
+        """Set a custom mark implementation."""
+        self._mark = mark
         return self
 
     def encode(self, **channels: str | Channel) -> Self:

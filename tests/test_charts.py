@@ -21,7 +21,7 @@ def test_band_scale():
 
 def test_chart_bar_logic():
     data = [{"x": "A", "y": 10}, {"x": "B", "y": 20}]
-    chart = Chart(data, width=200, height=100).mark_bar().encode(x="x", y="y")
+    chart = Chart(data, width=200, height=100).bar().encode(x="x", y="y")
     shape = chart._build()
 
     assert len(shape.shapes) == 2

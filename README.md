@@ -12,6 +12,7 @@ Beyond static diagrams, Tesserax now includes a **deterministic physics engine**
 * **Anchor System**: Connect shapes using semantic anchors like `top`, `bottom`, `left`, `right`, and `center`.
 * **Cinematic Animations**: Create complex motion graphics using a declarative, code-first API that supports keyframes, morphing, and warping.
 * **Physics Simulation**: Bake high-precision rigid body simulations directly into your animations using the built-in `World` and `Body` primitives.
+* **Statistical Visualization**: Build data-driven graphics with an Altair-inspired API that decouples marks and encodings.
 
 ## Installation
 
@@ -117,6 +118,14 @@ Tesserax includes a **baked physics engine** for high-precision rigid body simul
 * **Deterministic**: Define a `World`, add `Body` objects, and apply `Field`s like Gravity or Drag.
 * **Baked Playback**: The simulation is calculated upfront and converted into standard keyframes, allowing high-resolution physics (e.g., 1000 steps/sec) to play back smoothly at any framerate.
 * **Interoperable**: Physics animations can be mixed and matched with standard tweens.
+
+### Statistical Visualization
+
+Bridging the gap between diagrams and plots, Tesserax offers a grammar-of-graphics charting API.
+
+* **Altair-lite API**: Define a `Chart`, select a `Mark` (bar, point), and `encode` visual channels like `x`, `y`, and `color`.
+* **Automated Scales**: Includes built-in `Linear`, `Band`, and `Color` scales that automatically map data values to pixels and palettes.
+* **Integrated Axes**: Effortlessly add titles, ticks, and gridlines with smart coordinate management.
 
 ## Why Tesserax?
 
