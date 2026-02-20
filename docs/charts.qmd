@@ -85,11 +85,10 @@ Tesserax automatically selects the appropriate **Scale** based on the data:
 
 *   **LinearScale**: Used for quantitative data (numbers) to map values to pixels.
 *   **BandScale**: Used for categorical data (strings) to distribute items evenly with padding.
-*   **ColorScale**: Automatically assigns distinct colors from a professional palette when the `color` channel is encoded.
-
-currently doesn't work with fill colors.
+* **ColorScale**: Automatically assigns distinct colors from a professional palette when the `color` channel is encoded.
 
 ## Axes and Gridlines
+
 
 Tesserax charts can automatically generate axes, labels, and gridlines. You can configure these using a simple shorthand or a more powerful structured encoding.
 
