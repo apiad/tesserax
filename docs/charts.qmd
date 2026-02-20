@@ -126,3 +126,55 @@ canvas.fit(10).display()
 ```
 
 When axes are enabled, Tesserax automatically calculates margins to ensure labels and titles have enough space within the component's bounding box.
+
+## Chart Animations (Enter-Update-Exit)
+
+Tesserax supports **reactive animations**. When your data changes, the chart can automatically transition existing marks, animate new ones coming in, and gracefully remove old ones.
+
+This follows the **Enter-Update-Exit** pattern:
+
+*   **Enter**: New data points (identified by a unique `id` or index) are created and animated into view.
+*   **Update**: Existing points move to their new positions and sizes.
+*   **Exit**: Removed data points animate out before being detached from the scene.
+
+To animate a chart, you use the `chart.animate.data()` method within a `Scene`.
+
+```{python}
+from tesserax.animation import Scene
+
+# Dataset 1: Initial state
+data_v1 = [
+    {"city": "New York", "sales": 40, "cat": "East"},
+    {"city": "Chicago", "sales": 60, "cat": "Central"},
+    {"city": "Los Angeles", "sales": 50, "cat": "West"},
+]
+
+# Dataset 2: Chicago grows, LA moves to a new category,
+# NY is removed, and Houston enters.
+data_v2 = [
+    {"city": "Chicago", "sales": 90, "cat": "Central"},
+    {"city": "Los Angeles", "sales": 50, "cat": "West"}, # Category changed!
+    {"city": "Houston", "sales": 45, "cat": "East"},     # New entry
+]
+
+with Canvas() as canvas:
+    # We define the chart with 'city' as the natural ID
+    chart = Chart(data_v1, width=400, height=200) \
+        .bar() \
+        .encode(x="city", y="sales", color="cat") \
+        .axis("x", title="City") \
+        .axis("y", title="Sales", grid=True)
+
+scene = Scene(canvas.fit(10))
+scene.play(chart.animate.data(data_v2).pad(0.2, 0.5), duration=2)
+
+scene.display()
+```
+
+### How Identity Works
+
+Tesserax needs to know which data point corresponds to which visual mark to animate them correctly. It determines identity in this order:
+
+1.  Checking for an explicit `_id` or `id` field in the row.
+2.  Checking the field encoded to the `x` channel (if it's a string or integer).
+3.  Falling back to the row index in the list.
