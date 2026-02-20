@@ -13,6 +13,7 @@ class IVisual(IShape):
     fill: Color
     stroke: Color
     width: float
+    opacity: float
 
 
 class Visual(Shape, IVisual):
@@ -21,11 +22,13 @@ class Visual(Shape, IVisual):
         fill: Color = Colors.Transparent,
         stroke: Color = Colors.Black,
         width: float = 1.0,
+        opacity: float = 1.0,
     ) -> None:
         super().__init__()
         self.fill = fill
         self.stroke = stroke
         self.width = width
+        self.opacity = opacity
 
     @property
     def animate(self) -> StyledAnimator:
@@ -35,6 +38,32 @@ class Visual(Shape, IVisual):
             self._animator = StyledAnimator(self)
 
         return cast(StyledAnimator, self._animator)
+
+    def render(self) -> str:
+        """Generates the SVG expression for this shape, including transformation and opacity."""
+        if self.hidden:
+            return ""
+
+        t = self.transform
+        
+        # Build style string
+        style_parts = []
+        if self.opacity < 1.0:
+            style_parts.append(f"opacity: {self.opacity};")
+        
+        style_attr = f' style="{" ".join(style_parts)}"' if style_parts else ""
+
+        # Optimization: Return raw render if transform is identity
+        if t.tx == 0 and t.ty == 0 and t.rotation == 0 and t.sx == 1 and t.sy == 1:
+            if not style_parts:
+                return self._render()
+            return f"<g{style_attr}>\n{self._render()}\n</g>"
+
+        # SVG rotate expects degrees, but Transform stores radians
+        deg = math.degrees(t.rotation)
+
+        ts = f' transform="translate({t.tx} {t.ty}) rotate({deg}) scale({t.sx} {t.sy})"'
+        return f"<g{ts}{style_attr}>\n{self._render()}\n</g>"
 
 
 class Rect(Visual):
