@@ -18,4 +18,4 @@ from .color import Color, Colors
 
 import tesserax.physics as physics
 
-__version__ = "0.10.0"
+__version__ = "0.10.1"
