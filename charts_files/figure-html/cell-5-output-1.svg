@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="286.0" height="176.0" viewBox="4.0 5.0 286.0 176.0">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
+  <g transform="translate(60.0 20.0) rotate(0.0) scale(1.0 1.0)">
+<g transform="translate(25.384615384615383 82.5) rotate(0.0) scale(1.0 1.0)">
+<rect x="-25.384615384615383" y="-27.5" width="50.76923076923077" height="55.0" stroke="rgba(255,255,255,1.0)" fill="rgba(70,130,180,1.0)"/>
+</g>
+<g transform="translate(81.7948717948718 55.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-25.384615384615383" y="-55.0" width="50.76923076923077" height="110.0" stroke="rgba(255,255,255,1.0)" fill="rgba(70,130,180,1.0)"/>
+</g>
+<g transform="translate(138.2051282051282 70.27777777777777) rotate(0.0) scale(1.0 1.0)">
+<rect x="-25.384615384615383" y="-39.72222222222222" width="50.76923076923077" height="79.44444444444444" stroke="rgba(255,255,255,1.0)" fill="rgba(70,130,180,1.0)"/>
+</g>
+<g transform="translate(194.6153846153846 91.66666666666667) rotate(0.0) scale(1.0 1.0)">
+<rect x="-25.384615384615383" y="-18.333333333333332" width="50.76923076923077" height="36.666666666666664" stroke="rgba(255,255,255,1.0)" fill="rgba(70,130,180,1.0)"/>
+</g>
+</g>
+<g transform="translate(60.0 130.0) rotate(0.0) scale(1.0 1.0)">
+<path d="M 0 0 L 220 0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<path d="M 25.384615384615383 0 L 25.384615384615383 5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(25.384615384615383 15.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">A</text>
+</g>
+<path d="M 81.7948717948718 0 L 81.7948717948718 5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(81.7948717948718 15.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">B</text>
+</g>
+<path d="M 138.2051282051282 0 L 138.2051282051282 5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(138.2051282051282 15.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">C</text>
+</g>
+<path d="M 194.6153846153846 0 L 194.6153846153846 5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(194.6153846153846 15.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">D</text>
+</g>
+<g transform="translate(110.0 35.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">Category Name</text>
+</g>
+</g>
+<g transform="translate(60.0 130.0) rotate(0.0) scale(1.0 1.0)">
+<path d="M 0 0 L 0 -110" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<path d="M 0 -0.0 L -5 -0.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(-10.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="middle">0</text>
+</g>
+<path d="M 0 -0.0 L 220 -0.0" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="0.5"/>
+<path d="M 0 -27.5 L -5 -27.5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(-10.0 -27.5) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="middle">22.5</text>
+</g>
+<path d="M 0 -27.5 L 220 -27.5" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="0.5"/>
+<path d="M 0 -55.0 L -5 -55.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(-10.0 -55.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="middle">45</text>
+</g>
+<path d="M 0 -55.0 L 220 -55.0" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="0.5"/>
+<path d="M 0 -82.5 L -5 -82.5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(-10.0 -82.5) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="middle">67.5</text>
+</g>
+<path d="M 0 -82.5 L 220 -82.5" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="0.5"/>
+<path d="M 0 -110.0 L -5 -110.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(-10.0 -110.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="middle">90</text>
+</g>
+<path d="M 0 -110.0 L 220 -110.0" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="0.5"/>
+<g transform="translate(-40.0 -55.0) rotate(-90.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">Sales ($)</text>
+</g>
+</g>
+</svg>

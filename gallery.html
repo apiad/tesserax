@@ -144,6 +144,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Animations</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./charts.html"> 
+<span class="menu-text">Charts</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./physics.html"> 
 <span class="menu-text">Physics</span></a>
   </li>  
@@ -200,7 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The following examples are a bit more involved and showcase the kind of drawings that can be done with Tesserax in the academic domain.</p>
 <section id="sorting" class="level2">
 <h2 class="anchored" data-anchor-id="sorting">Sorting</h2>
-<div id="42676e2a" class="cell" data-execution_count="1">
+<div id="41a38050" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Square, Arrow, Group, Shape</span>
@@ -260,7 +264,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="automaton" class="level2">
 <h2 class="anchored" data-anchor-id="automaton">Automaton</h2>
 <p>This example uses a force layout to draw a simple graph that represents an automaton.</p>
-<div id="295b64c0" class="cell" data-execution_count="2">
+<div id="37f7cb1e" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
@@ -334,7 +338,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="stack" class="level2">
 <h2 class="anchored" data-anchor-id="stack">Stack</h2>
 <p>A simple illustration of a call stack.</p>
-<div id="9be8e127" class="cell" data-execution_count="3">
+<div id="029efbb5" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># examples/stack.py</span></span>
@@ -370,7 +374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="neural-networks" class="level2">
 <h2 class="anchored" data-anchor-id="neural-networks">Neural Networks</h2>
 <p>The following is a more complicated example showing how to visualize typical neural network operations like a convolution.</p>
-<div id="529dbfc8" class="cell" data-execution_count="4">
+<div id="9b73f2a3" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Square, Text, Arrow, Group, Shape</span>
@@ -446,7 +450,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="the-physics-blob">The Physics Blob</h2>
 <p>This example demonstrates how to create a custom <strong>Composite Shape</strong>. We build a <code>ConvexHull</code> component that wraps a set of physics bodies. By connecting the bodies with springs and wrapping them in a smooth hull, we create a soft-body “Jelly” simulation.</p>
 <p>First, we implement the geometry logic. This component takes a list of shapes, collects their vertices, and uses the <strong>Graham Scan</strong> algorithm to compute the convex hull.</p>
-<div id="c67f2ecf" class="cell" data-execution_count="5">
+<div id="473ccf3e" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
@@ -513,7 +517,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Now we simulate the “Jelly.” We create a central particle connected to a ring of outer particles using springs.</p>
-<div id="aa519ba0" class="cell" data-execution_count="6">
+<div id="67e15aac" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>

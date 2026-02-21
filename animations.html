@@ -173,6 +173,10 @@ window.Quarto = {
 <span class="menu-text">Animations</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./charts.html"> 
+<span class="menu-text">Charts</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./physics.html"> 
 <span class="menu-text">Physics</span></a>
   </li>  
@@ -250,7 +254,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="the-scene-object">The <code>Scene</code> Object</h2>
 <p>The <code>Scene</code> is the director of your animation. It wraps a <code>Canvas</code> and manages the render loop, frame capture, and file export.</p>
 <p>At its lowest level, you can animate simply by changing shapes in a loop and calling <code>scene.capture()</code>. This gives you total control over every frame.</p>
-<div id="915616e0" class="cell" data-execution_count="1">
+<div id="38a85b28" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Square, deg</span>
@@ -288,7 +292,7 @@ window.Quarto = {
 <li><strong>Sequential</strong>: Animations added with <code>a + b</code> run <strong>one after another</strong>.</li>
 </ul>
 <p>We use the <code>.animate</code> property on shapes to quickly generate these objects.</p>
-<div id="4ad902b3" class="cell" data-execution_count="2">
+<div id="24d8c2b2" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Circle</span>
@@ -323,7 +327,7 @@ window.Quarto = {
 <li><code>.delayed(t)</code>: Waits for <code>t</code> (0.0 to 1.0) before starting.</li>
 <li><code>.smoothed()</code>: Applies an ease-in-out curve (default is linear).</li>
 </ul>
-<div id="72d1e670" class="cell" data-execution_count="3">
+<div id="599d0b8b" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Shape</span>
@@ -364,7 +368,7 @@ window.Quarto = {
 <section id="morphing" class="level3">
 <h3 class="anchored" data-anchor-id="morphing">Morphing</h3>
 <p>The <code>.morph(target)</code> animation smoothly interpolates the points of one shape into another.</p>
-<div id="c9be835c" class="cell" data-execution_count="4">
+<div id="da2aeb5a" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Polyline</span>
@@ -393,7 +397,7 @@ window.Quarto = {
 <section id="warping" class="level3">
 <h3 class="anchored" data-anchor-id="warping">Warping</h3>
 <p>The <code>.warp(func)</code> animation allows you to apply a function to every point in a shape over time. This is perfect for wave effects.</p>
-<div id="f2bcf083" class="cell" data-execution_count="5">
+<div id="3872cc68" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
@@ -432,7 +436,7 @@ window.Quarto = {
 <section id="text-effects" class="level2">
 <h2 class="anchored" data-anchor-id="text-effects">Text Effects</h2>
 <p>Text objects have their own special animator with effects like <code>write</code> (typewriter style) and <code>scramble</code> (hacker style).</p>
-<div id="5e5a8a92" class="cell" data-execution_count="6">
+<div id="91ec9459" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Text</span>
@@ -464,7 +468,7 @@ window.Quarto = {
 <section id="the-property-method" class="level3">
 <h3 class="anchored" data-anchor-id="the-property-method">The <code>property</code> Method</h3>
 <p>The <code>animator.property(name, value)</code> method allows you to interpolate <strong>any numeric attribute</strong> on the shape from its current value to a target value.</p>
-<div id="7b7ddcfa" class="cell" data-execution_count="7">
+<div id="cd473972" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Circle</span>
@@ -492,7 +496,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="magic-property-access">Magic Property Access</h3>
 <p>For even cleaner code, the animator supports <strong>dynamic property access</strong>. If you try to call a method on <code>.animate</code> that doesn’t exist (e.g., <code>.radius(...)</code>), Tesserax assumes you want to animate the property of that name.</p>
 <p>And since <em>any</em> property can be animated (as long as the underlying value supports scalar arithmetics), you can funny things like animating the smoothness of a <code>Polyline</code>.</p>
-<div id="1f00542e" class="cell" data-execution_count="8">
+<div id="612574eb" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Polyline</span>
@@ -522,7 +526,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="custom-animation-logic">Custom Animation Logic</h2>
 <p>When standard interpolation isn’t enough, the <code>.custom()</code> method gives you a direct hook into the animation loop. You provide a callback function that receives the <strong>shape</strong> and the <strong>time</strong> (from 0 to 1), and you can do whatever you want.</p>
 <p>This is perfect for complex math, interdependent properties, or non-linear behaviors. The fun part is that you add <code>.looping()</code> or <code>.smoothed()</code> or any other standard <code>Animation</code> modifier even to these custom animations.</p>
-<div id="30d62cfd" class="cell" data-execution_count="9">
+<div id="41f37070" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
@@ -569,7 +573,7 @@ window.Quarto = {
 <li>If <span class="math inline">\(0.0\)</span> is missing, Tesserax infers it from the current state.</li>
 <li>Tesserax automatically detects if the property belongs to the <code>Shape</code> (like <code>fill</code>) or its <code>Transform</code> (like <code>tx</code>, <code>rotation</code>).</li>
 </ul>
-<div id="44a6ed63" class="cell" data-execution_count="10">
+<div id="dc77f2fb" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.animation <span class="im">import</span> ease_out, ease_in_out_cubic, linear</span>

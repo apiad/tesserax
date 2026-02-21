@@ -170,6 +170,10 @@ window.Quarto = {
 <span class="menu-text">Animations</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./charts.html"> 
+<span class="menu-text">Charts</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./physics.html"> 
 <span class="menu-text">Physics</span></a>
   </li>  
@@ -258,7 +262,7 @@ window.Quarto = {
 <li>The <strong>Y-axis</strong> points down (<span class="math inline">\(+y\)</span>).</li>
 </ul>
 <p>This is crucial to remember when applying rotations. A positive rotation (counter-clockwise) moves the <span class="math inline">\(+x\)</span> axis towards the <span class="math inline">\(+y\)</span> axis (downwards on the screen).</p>
-<div id="6127ffce" class="cell" data-execution_count="1">
+<div id="7b078926" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Text</span>
@@ -298,7 +302,7 @@ window.Quarto = {
 <li><code>Circle(r)</code>: Defined by radius. <strong>Centered</strong> at .</li>
 <li><code>Ellipse(rx, ry)</code>: Defined by horizontal and vertical radii.</li>
 </ul>
-<div id="c6026f33" class="cell" data-execution_count="2">
+<div id="2c4bd8b0" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, Square, Circle, Ellipse</span>
@@ -329,7 +333,7 @@ window.Quarto = {
 <li><code>anchor</code>: Horizontal alignment (<code>"start"</code>, <code>"middle"</code>, <code>"end"</code>).</li>
 <li><code>baseline</code>: Vertical alignment (<code>"top"</code>, <code>"middle"</code>, <code>"bottom"</code>).</li>
 </ul>
-<div id="1403c333" class="cell" data-execution_count="3">
+<div id="0d02bed3" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Text, Line, Point</span>
@@ -368,7 +372,7 @@ window.Quarto = {
 <li><strong>Translate</strong>: The object is moved to its final position.</li>
 </ol>
 <p>Tesserax provides a fluent API to chain these operations:</p>
-<div id="e021e235" class="cell" data-execution_count="4">
+<div id="63218483" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Rect, deg</span>
@@ -401,7 +405,7 @@ window.Quarto = {
 <p>One of Tesserax’s most powerful features is semantic anchoring. Because shapes are often nested inside Groups or transformed heavily, calculating the exact coordinate of “the top-right corner of that rotated rectangle” is mathematically tedious.</p>
 <p>The <code>.anchor(name)</code> method solves this by resolving the local coordinate through the entire transformation stack.</p>
 <p>Available anchors: <code>center</code>, <code>top</code>, <code>bottom</code>, <code>left</code>, <code>right</code>, <code>topleft</code>, <code>topright</code>, <code>bottomleft</code>, <code>bottomright</code>.</p>
-<div id="8f5c2662" class="cell" data-execution_count="5">
+<div id="9ac5f894" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Arrow</span>
@@ -436,7 +440,7 @@ window.Quarto = {
 <section id="the-low-level-path" class="level3">
 <h3 class="anchored" data-anchor-id="the-low-level-path">The Low-Level <code>Path</code></h3>
 <p>The <code>Path</code> class maps directly to SVG commands (<code>M</code>, <code>L</code>, <code>C</code>, <code>Q</code>, <code>Z</code>).</p>
-<div id="ab0b69fd" class="cell" data-execution_count="6">
+<div id="62895d97" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Path</span>
@@ -461,7 +465,7 @@ window.Quarto = {
 <section id="lines-and-arrows" class="level3">
 <h3 class="anchored" data-anchor-id="lines-and-arrows">Lines and Arrows</h3>
 <p><code>Line</code> and <code>Arrow</code> are specialized paths that connect two points. They support a <code>curvature</code> parameter to create arcs without manually calculating Bezier control points.</p>
-<div id="5bd04486" class="cell" data-execution_count="7">
+<div id="9e86a632" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Line</span>
@@ -491,7 +495,7 @@ window.Quarto = {
 <section id="smoothing-and-rounding" class="level3">
 <h3 class="anchored" data-anchor-id="smoothing-and-rounding">Smoothing and Rounding</h3>
 <p>The <code>smoothness</code> parameter (<span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span>) automatically converts sharp vertices into rounded corners using quadratic Bezier interpolation.</p>
-<div id="18acec1d" class="cell" data-execution_count="8">
+<div id="67c20379" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Polyline</span>
@@ -529,7 +533,7 @@ window.Quarto = {
 <li><code>.expand(delta)</code>: Pushes points away from the origin (inflation).</li>
 <li><code>.apply(func)</code>: Maps a function over every point.</li>
 </ul>
-<div id="48085064" class="cell" data-execution_count="9">
+<div id="d29ef129" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
@@ -579,7 +583,7 @@ window.Quarto = {
 <section id="sketchy-drawings" class="level2">
 <h2 class="anchored" data-anchor-id="sketchy-drawings">Sketchy Drawings</h2>
 <p>And since mathematical drawings are incomplete without an XKCD-style sketchy mode, Tesserax also provides a (still kinda ugly) implementation for sketches. You can use it just as a regular group, but everything drawn inside will be sketched (if possible).</p>
-<div id="a7bc63e8" class="cell" data-execution_count="10">
+<div id="6834f8e1" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.sketch <span class="im">import</span> Sketch</span>

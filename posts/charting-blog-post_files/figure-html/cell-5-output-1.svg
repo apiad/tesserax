@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="406.0" height="321.0" viewBox="-6.0 -10.0 406.0 321.0">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
+  <g transform="translate(60.0 20.0) rotate(0.0) scale(1.0 1.0)">
+<g transform="translate(36.92307692307693 115.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="10" stroke="rgba(255,255,255,1.0)" fill="rgba(0,0,128,1.0)"/>
+</g>
+<g transform="translate(118.97435897435898 0.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="10" stroke="rgba(255,255,255,1.0)" fill="rgba(139,0,0,1.0)"/>
+</g>
+<g transform="translate(201.02564102564105 63.888888888888886) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="10" stroke="rgba(255,255,255,1.0)" fill="rgba(0,0,128,1.0)"/>
+</g>
+<g transform="translate(283.0769230769231 166.11111111111111) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="10" stroke="rgba(255,255,255,1.0)" fill="rgba(0,100,0,1.0)"/>
+</g>
+</g>
+<g transform="translate(60.0 250.0) rotate(0.0) scale(1.0 1.0)">
+<path d="M 0 0 L 320 0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<path d="M 36.92307692307693 0 L 36.92307692307693 5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(36.92307692307693 15.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">A</text>
+</g>
+<path d="M 118.97435897435898 0 L 118.97435897435898 5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(118.97435897435898 15.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">B</text>
+</g>
+<path d="M 201.02564102564105 0 L 201.02564102564105 5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(201.02564102564105 15.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">C</text>
+</g>
+<path d="M 283.0769230769231 0 L 283.0769230769231 5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(283.0769230769231 15.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">D</text>
+</g>
+<g transform="translate(160.0 35.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">Product Category</text>
+</g>
+</g>
+<g transform="translate(60.0 250.0) rotate(0.0) scale(1.0 1.0)">
+<path d="M 0 0 L 0 -230" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<path d="M 0 -0.0 L -5 -0.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(-10.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="middle">0</text>
+</g>
+<path d="M 0 -0.0 L 320 -0.0" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="0.5"/>
+<path d="M 0 -57.5 L -5 -57.5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(-10.0 -57.5) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="middle">22.5</text>
+</g>
+<path d="M 0 -57.5 L 320 -57.5" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="0.5"/>
+<path d="M 0 -115.0 L -5 -115.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(-10.0 -115.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="middle">45</text>
+</g>
+<path d="M 0 -115.0 L 320 -115.0" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="0.5"/>
+<path d="M 0 -172.5 L -5 -172.5" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(-10.0 -172.5) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="middle">67.5</text>
+</g>
+<path d="M 0 -172.5 L 320 -172.5" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="0.5"/>
+<path d="M 0 -230.0 L -5 -230.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0"/>
+<g transform="translate(-10.0 -230.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(0,0,0,1.0)" text-anchor="end" dominant-baseline="middle">90</text>
+</g>
+<path d="M 0 -230.0 L 320 -230.0" fill="rgba(0,0,0,0.0)" stroke="rgba(211,211,211,1.0)" stroke-width="0.5"/>
+<g transform="translate(-40.0 -115.0) rotate(-90.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">Sales Volume</text>
+</g>
+</g>
+</svg>

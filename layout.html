@@ -141,6 +141,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Animations</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./charts.html"> 
+<span class="menu-text">Charts</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./physics.html"> 
 <span class="menu-text">Physics</span></a>
   </li>  
@@ -212,7 +216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-context-manager-pattern" class="level3">
 <h3 class="anchored" data-anchor-id="the-context-manager-pattern">The Context Manager Pattern</h3>
 <p>The most idiomatic way to create a group is with the <code>with</code> statement.</p>
-<div id="a06f0ca2" class="cell" data-execution_count="1">
+<div id="52372b58" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Canvas, Group, Rect, Circle, Text</span>
@@ -250,7 +254,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>.align(axis, anchor)</code>: Aligns all children along an axis relative to the <strong>first</strong> child.</li>
 <li><code>.distribute(axis, gap, mode)</code>: Spaces children out evenly.</li>
 </ul>
-<div id="4fd43110" class="cell" data-execution_count="2">
+<div id="09a721b7" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Square</span>
@@ -283,7 +287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="visualizing-groups" class="level3">
 <h3 class="anchored" data-anchor-id="visualizing-groups">Visualizing Groups</h3>
 <p>Sometimes you want a group of shapes to also have a bounding frame. While you can build this easily with existing tools, Tesserax also provides a ready-made <code>Container</code> shape that automates this process.</p>
-<div id="360e5541" class="cell" data-execution_count="3">
+<div id="212cc0f3" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax <span class="im">import</span> Container</span>
@@ -314,7 +318,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="row-and-column" class="level3">
 <h3 class="anchored" data-anchor-id="row-and-column">Row and Column</h3>
 <p>These layouts are perfect for linear arrangements. They can be nested arbitrarily.</p>
-<div id="bfe68b8a" class="cell" data-execution_count="4">
+<div id="a24b4861" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> RowLayout, ColumnLayout</span>
@@ -346,7 +350,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-grid-layout" class="level3">
 <h3 class="anchored" data-anchor-id="the-grid-layout">The Grid Layout</h3>
 <p>The <code>Grid</code> layout provides a powerful 2D arrangement system. Unlike a simple HTML table, the Tesserax <code>Grid</code> allows for spanning and alignment control per cell.</p>
-<div id="e4679215" class="cell" data-execution_count="5">
+<div id="a1d19c69" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> GridLayout</span>
@@ -380,7 +384,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="hierarchical-layout-trees-dags" class="level3">
 <h3 class="anchored" data-anchor-id="hierarchical-layout-trees-dags">Hierarchical Layout (Trees &amp; DAGs)</h3>
 <p>The <code>HierarchicalLayout</code> is designed for directed acyclic graphs and trees. It automatically calculates levels and minimizes edge crossings.</p>
-<div id="430762c3" class="cell" data-execution_count="6">
+<div id="a95c0d8e" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> HierarchicalLayout</span>
@@ -421,7 +425,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="force-directed-layout">Force-Directed Layout</h3>
 <p>The <code>ForceLayout</code> uses a physics simulation (Fruchterman-Reingold) to position nodes. This is ideal for arbitrary network graphs where structure is emergent.</p>
 <p>The layout requires you to define <strong>nodes</strong> and <strong>links</strong> (edges).</p>
-<div id="c00926b8" class="cell" data-execution_count="7">
+<div id="c32c230f" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tesserax.layout <span class="im">import</span> ForceLayout</span>
