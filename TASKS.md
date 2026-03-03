@@ -9,8 +9,11 @@ Legend:
 ---
 
 ## Active Tasks
-- [ ] Initialize the project goals.
+- [x] Initialize the project goals.
+- [x] Overhaul animation rendering for high-fidelity SVG (See plan: plans/animation-rendering-overhaul.md) (@apiad)
 
 ---
 
- ## Archive
+## Roadmap
+- [ ] Implement data-driven chart components.
+- [ ] Expand physics engine with more colliders.

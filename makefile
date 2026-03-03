@@ -1,6 +1,15 @@
-.PHONY: all test lint format
+.PHONY: all test lint format docs
 
-all: test lint
+all: format lint test
 
 test:
-	@echo "Running tests..."
+	uv run pytest --cov=src/tesserax tests/
+
+lint:
+	uv run ruff check .
+
+format:
+	uv run ruff format .
+
+docs:
+	quarto publish gh-pages docs/

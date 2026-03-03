@@ -27,6 +27,8 @@ build-backend = "hatchling.build"
 export = [
     "imageio[ffmpeg]>=2.37.2",
     "cairosvg>=2.8.2",
+    "resvg-py>=0.2.0",
+    "pillow>=10.0.0",
 ]
 
 [dependency-groups]

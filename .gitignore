@@ -9,6 +9,5 @@ wheels/
 # Virtual environments
 .venv
 .coverage
-
-.gemini/
 gha-creds-*.json
+gemini.log

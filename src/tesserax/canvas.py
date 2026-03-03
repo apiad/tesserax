@@ -10,12 +10,26 @@ if TYPE_CHECKING:
 
 
 class Canvas(Group):
-    def __init__(self, width: float = 1000, height: float = 1000) -> None:
+    def __init__(
+        self,
+        width: float = 1000,
+        height: float = 1000,
+        quality: str | int = "standard",
+    ) -> None:
         super().__init__()
 
         self.width = width
         self.height = height
         self._defs: dict[str, Shape] = {}
+
+        # Quality settings for rasterization (supersampling)
+        # "draft" = 1x, "standard" = 2x, "retina" = 4x
+        if isinstance(quality, int):
+            self.quality_scale = quality
+        else:
+            self.quality_scale = {"draft": 1, "standard": 2, "retina": 4}.get(
+                quality.lower(), 2
+            )
 
         # Default viewbox is the full canvas size
         self._viewbox: tuple[float, float, float, float] = (0, 0, width, height)
@@ -115,37 +129,73 @@ class Canvas(Group):
 
     def save(self, path: str | Path, dpi: int = 300) -> None:
         """
-        Exports the canvas to a raster or vector format with a transparent background.
+        Exports the canvas to a raster or vector format with high fidelity.
 
         Supported formats: .png, .pdf, .svg, .ps.
-        Requires the 'export' extra (cairosvg).
+        Requires 'resvg-py' and 'pillow' for high-quality rasterization.
         """
 
-        svg_data = self._build_svg().encode("utf-8")
+        svg_data = self._build_svg()
         target = str(path)
         extension = Path(path).suffix.lower()
 
         if extension == ".svg":
-            with open(path, "wb") as fp:
+            with open(path, "w", encoding="utf-8") as fp:
                 fp.write(svg_data)
 
             return
 
         try:
-            import cairosvg
+            from resvg_py import svg_to_bytes as render
+            from PIL import Image
+            import io
         except ImportError:
             raise ImportError(
-                "Export requires 'cairosvg'. Install with: pip install tesserax[export]"
+                "High-quality export requires 'resvg-py' and 'pillow'. "
+                "Install with: pip install tesserax[export]"
             )
+
+        # We use the quality_scale for supersampling
+        # resvg-py uses a 'scale' parameter for the output size
+        render_scale = self.quality_scale
 
         match extension:
             case ".png":
-                # CairoSVG handles transparency by default if the SVG has no background rect
-                cairosvg.svg2png(bytestring=svg_data, write_to=target, dpi=dpi)
-            case ".pdf":
-                cairosvg.svg2pdf(bytestring=svg_data, write_to=target, dpi=dpi)
-            case ".ps":
-                cairosvg.svg2ps(bytestring=svg_data, write_to=target, dpi=dpi)
+                # 1. Render at high resolution (supersampling)
+                png_data = render(svg_data, zoom=render_scale)
+
+                # 2. If scale > 1, downsample using Lanczos for crisp edges
+                if render_scale > 1:
+                    img = Image.open(io.BytesIO(png_data))
+                    # Target size is the original width/height
+                    target_size = (int(self.width), int(self.height))
+                    img = img.resize(target_size, resample=Image.Resampling.LANCZOS)
+                    img.save(target, "PNG")
+                else:
+                    with open(target, "wb") as f:
+                        f.write(png_data)
+
+            case ".pdf" | ".ps":
+                # For vector formats like PDF/PS, we fall back to CairoSVG if available
+                try:
+                    import cairosvg
+
+                    if extension == ".pdf":
+                        cairosvg.svg2pdf(
+                            bytestring=svg_data.encode("utf-8"),
+                            write_to=target,
+                            dpi=dpi,
+                        )
+                    else:
+                        cairosvg.svg2ps(
+                            bytestring=svg_data.encode("utf-8"),
+                            write_to=target,
+                            dpi=dpi,
+                        )
+                except ImportError:
+                    raise ImportError(
+                        f"Exporting to {extension} requires 'cairosvg'."
+                    )
             case _:
                 raise ValueError(f"Unsupported export format: {extension}")
 

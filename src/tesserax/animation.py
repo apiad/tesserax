@@ -7,8 +7,8 @@ import random
 import string
 import io
 import base64
+from pathlib import Path
 import imageio
-import cairosvg
 
 
 from .base import IVisual, Text, Polyline
@@ -755,11 +755,38 @@ class Scene:
         self._frames: list[bytes] = []
 
     def capture(self):
-        svg = self.canvas._build_svg()
-        png = cairosvg.svg2png(
-            bytestring=svg.encode("utf-8"), background_color=self.background
-        )
-        self._frames.append(png)
+        """
+        Captures the current canvas state as a raster frame.
+        Uses supersampling (quality_scale) for high-fidelity edges.
+        """
+        svg_data = self.canvas._build_svg()
+
+        try:
+            from resvg_py import svg_to_bytes as render
+            from PIL import Image
+        except ImportError:
+            raise ImportError(
+                "Animation capture requires 'resvg-py' and 'pillow'. "
+                "Install with: pip install tesserax[export]"
+            )
+
+        # 1. Render at high resolution (supersampling)
+        render_scale = self.canvas.quality_scale
+        png_data = render(svg_data, zoom=render_scale)
+
+        # 2. If scale > 1, downsample using Lanczos for crisp edges
+        if render_scale > 1:
+            img = Image.open(io.BytesIO(png_data))
+            # Target size is the original width/height
+            target_size = (int(self.canvas.width), int(self.canvas.height))
+            img = img.resize(target_size, resample=Image.Resampling.LANCZOS)
+
+            # Store as raw PNG bytes for the assembly phase
+            buf = io.BytesIO()
+            img.save(buf, format="PNG")
+            self._frames.append(buf.getvalue())
+        else:
+            self._frames.append(png_data)
 
     def play(self, *animations: Animation, duration: float = 1.0):
         if not animations:
@@ -787,30 +814,60 @@ class Scene:
     def wait(self, duration: float):
         self.play(Wait(), duration=duration)
 
-    def save(self, dest, format=None):
+    def save(self, dest: str | Path | io.BytesIO, format: str | None = None, **kwargs):
+        """
+        Assembles captured frames into an animated file.
+        Supported formats: .gif, .webp, .apng, .mp4.
+        """
         if not self._frames:
             return
-        images = [imageio.imread(io.BytesIO(f)) for f in self._frames]
 
-        kwargs = {"fps": self.fps}
+        from PIL import Image
+
+        # Convert PNG bytes to Pillow images for ImageIO
+        images = [Image.open(io.BytesIO(f)) for f in self._frames]
+
+        # Determine format from destination extension if not provided
+        if format is None and not isinstance(dest, io.BytesIO):
+            ext = Path(dest).suffix.lower()
+            format = ext.lstrip(".")
+
+        # Normalize format names
+        format = (format or "gif").lower()
+        if format == "apng":
+            format = "png"  # ImageIO uses 'png' for APNG
+
+        # Assembly parameters
+        save_kwargs = {"fps": self.fps}
+        save_kwargs.update(kwargs)
+
         if format == "mp4":
-            kwargs["quality"] = 8
-        else:
-            kwargs["loop"] = 0
+            save_kwargs.setdefault("quality", 8)
+        elif format in ("gif", "webp", "png"):
+            save_kwargs.setdefault("loop", 0)
 
-        imageio.mimsave(dest, images, format=format or "gif", **kwargs)
+        imageio.mimsave(dest, images, format=format, **save_kwargs)
 
-    def display(self):
+    def display(self, format: str = "webp"):
+        """
+        Displays the animation in Jupyter/Quarto.
+        Defaults to WebP for high fidelity and transparency support.
+        """
         try:
             from IPython.display import display, HTML
         except ImportError:
             return
 
         buf = io.BytesIO()
-        self.save(buf, format="gif")
+        self.save(buf, format=format)
         b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+
+        mime_type = f"image/{format}"
+        if format == "apng":
+            mime_type = "image/png"
+
         display(
-            HTML(f'<img src="data:image/gif;base64,{b64}" style="max-width:100%"/>')
+            HTML(f'<img src="data:{mime_type};base64,{b64}" style="max-width:100%"/>')
         )
 
     def _ipython_display_(self):

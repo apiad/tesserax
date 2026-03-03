@@ -76,8 +76,9 @@ class Rect(Visual):
         fill: Color = Colors.Transparent,
         stroke: Color = Colors.Black,
         width: float = 1.0,
+        opacity: float = 1.0,
     ) -> None:
-        super().__init__(fill=fill, stroke=stroke, width=width)
+        super().__init__(fill=fill, stroke=stroke, width=width, opacity=opacity)
         self.w, self.h = w, h
 
     def trace(self) -> Path:
@@ -150,8 +151,9 @@ class Circle(Visual):
         fill: Color = Colors.Transparent,
         stroke: Color = Colors.Black,
         width: float = 1.0,
+        opacity: float = 1.0,
     ) -> None:
-        super().__init__(fill=fill, stroke=stroke, width=width)
+        super().__init__(fill=fill, stroke=stroke, width=width, opacity=opacity)
         self.r = r
 
     def trace(self) -> Path:
