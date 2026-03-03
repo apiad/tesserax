@@ -1,5 +1,4 @@
 from tesserax.chart import LinearScale, BandScale, Chart
-from tesserax import Point
 
 
 def test_linear_scale():

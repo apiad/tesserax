@@ -2,12 +2,12 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 import math
 from typing import Any, Literal, Self, Sequence, cast, TYPE_CHECKING
-from .core import Component, StatefulComponent, Shape, Point
+from .core import StatefulComponent, Shape, Point
 from .base import Group, Rect, Circle, Visual, Line, Text
 from .color import Color, Colors
 
 if TYPE_CHECKING:
-    from .animation import Animation, Parallel
+    from .animation import Animation
 
 
 class Scale:
@@ -472,17 +472,15 @@ class _AxisComponent(StatefulComponent):
     def transition(
         self, new_scale: Scale
     ) -> tuple[list[Animation], list[Animation], list[Animation]]:
-        from .animation import Styled
-
         old_scale = self.scale
 
         # Ticks from new scale
         new_tick_list = (
-            new_scale.ticks(self.config.tick_count or 5)
+            new_scale.ticks(count=self.config.tick_count or 5)
             if isinstance(new_scale, LinearScale)
             else new_scale.ticks()
         )
-        new_values = {v for v, l in new_tick_list}
+        new_values = {v for v, label in new_tick_list}
         old_values = set(self._tick_marks.keys())
 
         enter_vals = new_values - old_values

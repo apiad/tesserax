@@ -193,9 +193,7 @@ class Canvas(Group):
                             dpi=dpi,
                         )
                 except ImportError:
-                    raise ImportError(
-                        f"Exporting to {extension} requires 'cairosvg'."
-                    )
+                    raise ImportError(f"Exporting to {extension} requires 'cairosvg'.")
             case _:
                 raise ValueError(f"Unsupported export format: {extension}")
 

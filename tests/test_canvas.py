@@ -1,6 +1,5 @@
 import pytest
-from tesserax import Canvas, Rect, Camera, Point, Bounds, Colors
-import os
+from tesserax import Canvas, Rect, Camera, Bounds, Colors
 
 
 def test_canvas_init():

@@ -1,7 +1,5 @@
-import pytest
-import math
-from tesserax import Chart, Point, Colors, Group
-from tesserax.chart import LinearScale, BandScale, X, Y, Axis, BarMark, PointMark
+from tesserax import Chart, Colors, Group
+from tesserax.chart import LinearScale, BandScale, X, Axis, BarMark, PointMark
 
 
 def test_linear_scale_ticks():
@@ -32,7 +30,7 @@ def test_chart_axis_config():
     chart.axis("x", title="X Title", grid=True)
     assert "x" in chart._axes
     assert chart._axes["x"].title == "X Title"
-    assert chart._axes["x"].grid == True
+    assert chart._axes["x"].grid
 
 
 def test_chart_structured_encoding():
@@ -117,7 +115,7 @@ def test_chart_animate_enter_logic():
     chart._shape
 
     # This should not crash and should add shape to plot_group
-    anim = chart.animate.data(data2)
+    chart.animate.data(data2)
     assert "A" in chart._marks
     assert chart._marks["A"] in chart._plot_group.shapes
 
@@ -136,7 +134,7 @@ def test_animation_then_callback():
 
     anim.then(callback)
     anim.finish()
-    assert finished == True
+    assert finished
 
 
 def test_chart_axis_transitions():
@@ -176,12 +174,12 @@ def test_chart_quantitative_detection():
     data = [{"v": 10}, {"v": "A"}]
     chart = Chart(data)
     chart.encode(x="v")
-    assert chart._is_quantitative(chart.data, "x") == True
+    assert chart._is_quantitative(chart.data, "x")
 
     data2 = [{"v": "A"}]
     chart2 = Chart(data2)
     chart2.encode(x="v")
-    assert chart2._is_quantitative(chart2.data, "x") == False
+    assert not chart2._is_quantitative(chart2.data, "x")
 
 
 def test_chart_axis_options():
@@ -253,7 +251,7 @@ def test_chart_animate_no_changes():
     chart._shape
 
     anim = chart.animate.data(data)
-    from tesserax.animation import Wait, Sequence, Parallel
+    from tesserax.animation import Sequence
 
     assert isinstance(anim, Sequence)
     # It returns Sequence(*stages).then(finalize), so it's a Sequence.
@@ -292,7 +290,6 @@ def test_chart_bar_point_aliases():
     chart = Chart(data).bar()
     assert isinstance(chart._mark, BarMark)
     chart.point()
-    from tesserax.chart import PointMark
 
     assert isinstance(chart._mark, PointMark)
     chart.mark_bar()
@@ -304,7 +301,6 @@ def test_chart_bar_point_aliases():
 def test_chart_mark_setter():
     data = [{"x": 1, "y": 2}]
     chart = Chart(data)
-    from tesserax.chart import PointMark
 
     m = PointMark(size=20)
     chart.mark(m)

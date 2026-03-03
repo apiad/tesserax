@@ -1,6 +1,6 @@
 import pytest
 import math
-from tesserax.color import Color, Colors, rgb, hls, hsv, hex, red, green, blue, gray
+from tesserax.color import Color, Colors, rgb, hex, red, green, blue, gray
 
 
 def test_color_init():

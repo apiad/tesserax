@@ -1,5 +1,4 @@
-import pytest
-from tesserax.core import Point, Bounds
+from tesserax.core import Point
 from tesserax.base import Group, Rect
 from tesserax.path import Grid
 

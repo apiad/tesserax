@@ -24,9 +24,9 @@ def create_body(shape_cls, *args, pos=(0, 0), rotation=0, **kwargs):
 def assert_collides(a: Body, b: Body):
     """Asserts that A and B logicially intersect."""
     collision = Collision.solve(a, b)
-    assert (
-        collision is not None
-    ), f"Expected collision between {a} and {b}, but found None."
+    assert collision is not None, (
+        f"Expected collision between {a} and {b}, but found None."
+    )
 
 
 def assert_separate(a: Body, b: Body):

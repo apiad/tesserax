@@ -1,4 +1,3 @@
-import pytest
 from tesserax.color import Colors, Color
 
 

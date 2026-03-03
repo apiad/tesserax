@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 import math
 from typing import Literal, Protocol, Self, TYPE_CHECKING
-from .color import Color, Colors
 
 if TYPE_CHECKING:
     from .base import Group, Path

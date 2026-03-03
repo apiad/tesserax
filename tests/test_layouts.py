@@ -1,6 +1,5 @@
 import math
 import pytest
-from tesserax.core import Point, Bounds
 from tesserax.base import Rect, Circle, Group
 from tesserax.layout import (
     RowLayout,
@@ -131,7 +130,7 @@ def test_group_translation_preserves_relative_layout(sizes_group: Group):
 def test_row_layout():
     r1 = Rect(10, 10)
     r2 = Rect(20, 20)
-    rl = RowLayout(shapes=[r1, r2], gap=10, align="start")
+    RowLayout(shapes=[r1, r2], gap=10, align="start")
 
     # r1 at 0,0 (local centered means bounds.x = -5, bounds.y = -5)
     # distribute horizontal: r1.x = 0 - (-5) = 5. ty = 0 (reset).
@@ -144,7 +143,7 @@ def test_row_layout():
 def test_column_layout():
     r1 = Rect(10, 10)
     r2 = Rect(20, 20)
-    cl = ColumnLayout(shapes=[r1, r2], gap=10, align="start")
+    ColumnLayout(shapes=[r1, r2], gap=10, align="start")
 
     # r1 at 0,0. r2 starts at r1.bottom + gap
     assert math.isclose(r2.bounds().y, 20.0, abs_tol=1e-5)
@@ -153,7 +152,7 @@ def test_column_layout():
 
 def test_grid_layout():
     shapes = [Rect(10, 10) for _ in range(4)]
-    gl = GridLayout(shapes=shapes, cols=2, gap=10)
+    GridLayout(shapes=shapes, cols=2, gap=10)
 
     # Row 0: S0, S1. Row 1: S2, S3
     assert math.isclose(shapes[1].bounds().x, 20.0, abs_tol=1e-5)

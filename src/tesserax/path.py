@@ -1,7 +1,7 @@
 import math
 import heapq
 from typing import Iterator
-from tesserax.core import Point, Bounds, Shape
+from tesserax.core import Point
 from tesserax.base import Group
 
 

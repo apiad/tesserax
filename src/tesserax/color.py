@@ -72,8 +72,8 @@ class Color:
         return hls(h, lightness, s, alpha=self.a)
 
     def shifted(self, hue: float) -> Color:
-        _, l, s = hls(self)
-        return hls(hue, l, s, alpha=self.a)
+        _, lightness, s = hls(self)
+        return hls(hue, lightness, s, alpha=self.a)
 
     def transparent(self, alpha: float) -> Color:
         return Color(self.r, self.g, self.b, alpha)
@@ -91,13 +91,13 @@ class Color:
         return self.lerp(self.saturated(0.0), alpha, space="hsv")
 
     def redshift(self, percent: float) -> Color:
-        _, l, s = hls(self)
-        target = hls(0, l, s)
+        _, lightness, s = hls(self)
+        target = hls(0, lightness, s)
         return self.lerp(target, percent, space="rgb")
 
     def blueshift(self, percent: float) -> Color:
-        _, l, s = hls(self)
-        target = hls(2 / 3, l, s)
+        _, lightness, s = hls(self)
+        target = hls(2 / 3, lightness, s)
         return self.lerp(target, percent, space="rgb")
 
     def lerp(self, other: Color, percent: float, *, space="hls") -> Color:
@@ -212,8 +212,8 @@ def hls(*args, **kwargs):
         color = args[0]
         return colorsys.rgb_to_hls(*rgb(color))
     else:
-        h, l, s = args
-        r, g, b = colorsys.hls_to_rgb(h, l, s)
+        h, lightness, s = args
+        r, g, b = colorsys.hls_to_rgb(h, lightness, s)
         alpha = kwargs.pop("alpha", 1.0)
 
         return rgb(r, g, b, alpha=alpha)
@@ -716,7 +716,7 @@ class Colors:
     def palette(cls, palette: str) -> Generator[Color, Any, Any]:
         try:
             return getattr(cls, f"{palette}_palette")()
-        except:
+        except AttributeError:
             raise ValueError(f"Palette {palette} doesn't exist.")
 
     @staticmethod

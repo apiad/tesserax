@@ -1,6 +1,6 @@
 from __future__ import annotations
 import math
-from typing import Callable, Literal, Protocol, Self, TYPE_CHECKING, cast
+from typing import Callable, Literal, Self, TYPE_CHECKING, cast
 
 from tesserax.color import Color, Colors
 from .core import Anchor, IShape, Point, Shape, Bounds, Component
@@ -102,7 +102,7 @@ class Rect(Visual):
     def _render(self) -> str:
         # Render centered at 0,0
         # x and y are top-left coordinates relative to the origin
-        return f'<rect x="{-self.w/2}" y="{-self.h/2}" width="{self.w}" height="{self.h}" stroke="{self.stroke}" fill="{self.fill}" />'
+        return f'<rect x="{-self.w / 2}" y="{-self.h / 2}" width="{self.w}" height="{self.h}" stroke="{self.stroke}" fill="{self.fill}" />'
 
 
 class Square(Visual):
@@ -139,7 +139,7 @@ class Square(Visual):
     def _render(self) -> str:
         # Render centered at 0,0
         # x and y are top-left coordinates relative to the origin
-        return f'<rect x="{-self.size/2}" y="{-self.size/2}" width="{self.size}" height="{self.size}" stroke="{self.stroke}" fill="{self.fill}" />'
+        return f'<rect x="{-self.size / 2}" y="{-self.size / 2}" width="{self.size}" height="{self.size}" stroke="{self.stroke}" fill="{self.fill}" />'
 
 
 class Circle(Visual):

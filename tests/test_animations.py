@@ -260,7 +260,7 @@ def test_scene_rendering(tmp_path):
 
 
 def test_wait_animation():
-    from tesserax.animation import Wait, Sequence
+    from tesserax.animation import Wait
 
     w = Wait(weight=5.0)
     assert w._weight == 5.0
@@ -329,14 +329,12 @@ def test_animation_operators_extra():
     assert rep.relative_weight == 1.0  # Wrapped child weight
 
     # Sequential merge
-    from tesserax.animation import Sequence
 
     seq1 = MockAnimation() | MockAnimation()
     seq2 = seq1 | MockAnimation()
     assert len(seq2.children) == 3
 
     # Parallel merge
-    from tesserax.animation import Parallel
 
     par1 = MockAnimation() + MockAnimation()
     par2 = par1 + MockAnimation()
@@ -425,7 +423,6 @@ def test_animation_operators():
     assert len(par.children) == 2
 
     rep = a1 * 3.0  # Repeating
-    from tesserax.animation import Wrapped
 
     assert isinstance(rep, Wrapped)
 

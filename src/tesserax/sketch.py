@@ -1,8 +1,6 @@
 from __future__ import annotations
 import random
-import math
-from typing import Literal
-from .core import Shape, Bounds, Point
+from .core import Shape, Point
 from .base import Group, Path
 
 
@@ -136,7 +134,7 @@ class Sketch(Group):
         # but has control points shifted perpendicular to the line
 
         # Midpoint
-        mid = (p1 + p2) / 2
+        (p1 + p2) / 2
 
         # Perpendicular vector
         perp = Point(-(p2.y - p1.y), p2.x - p1.x).normalize()

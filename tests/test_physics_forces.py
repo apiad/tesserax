@@ -1,4 +1,3 @@
-import pytest
 from tesserax import Circle, Point
 from tesserax.physics.core import Body
 from tesserax.physics.forces import InverseDistanceField, Drag

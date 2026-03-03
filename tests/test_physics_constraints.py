@@ -1,4 +1,3 @@
-import pytest
 import math
 from tesserax import Circle, Point
 from tesserax.physics.core import Body

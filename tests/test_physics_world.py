@@ -1,4 +1,3 @@
-import pytest
 from tesserax import Rect, Circle, Point
 from tesserax.physics.world import World
 from tesserax.physics.forces import Gravity
@@ -13,7 +12,7 @@ def test_world_init():
 def test_world_add_body():
     w = World()
     r = Rect(10, 10)
-    body = w.add(r, mass=5.0)
+    w.add(r, mass=5.0)
     assert len(w.bodies) == 1
     assert w.bodies[0].mass == 5.0
     assert w.bodies[0].shape == r

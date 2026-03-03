@@ -1,6 +1,6 @@
 import math
 import pytest
-from tesserax.core import Point, Bounds
+from tesserax.core import Point
 from tesserax.base import (
     Rect,
     Square,
@@ -17,7 +17,6 @@ from tesserax.base import (
     Ghost,
     Spring,
 )
-from tesserax.color import Colors
 
 # --- Fixtures ---
 
@@ -172,8 +171,8 @@ class TestPrimitives:
 
     def test_line_and_arrow(self):
         p1, p2 = Point(0, 0), Point(100, 100)
-        l = Line(p1, p2)
-        assert "<path" in l.render()
+        line = Line(p1, p2)
+        assert "<path" in line.render()
 
         # Curved line
         l2 = Line(p1, p2, curvature=0.5)
@@ -274,11 +273,11 @@ class TestPrimitives:
         assert r.parent == g
 
         r.hide()
-        assert r.hidden == True
+        assert r.hidden
         assert r.render() == ""
 
         r.show()
-        assert r.hidden == False
+        assert not r.hidden
         assert r.render() != ""
 
     def test_fluent_transform_methods(self):

@@ -2,7 +2,7 @@ from abc import abstractmethod
 from collections import defaultdict
 import math
 from typing import Literal, Self
-from .core import Anchor, Shape, Bounds
+from .core import Anchor, Shape
 from .base import Group
 
 
@@ -344,14 +344,13 @@ class HierarchicalLayout(Layout):
                 # In horizontal, 'breadth' is the height of the nodes
                 breadths = [s.local().height for s in layer]
                 # 'depth' is the width of the nodes (rank thickness)
-                depths = [s.local().width for s in layer]
+                [s.local().width for s in layer]
             else:
-                # In vertical, 'breadth' is the width of the nodes
+                # 'breadth' is the width of the nodes (cross-axis)
                 breadths = [s.local().width for s in layer]
-                # 'depth' is the height of the nodes (rank thickness)
-                depths = [s.local().height for s in layer]
 
-            # Center the layer along the cross-axis
+                # Center the layer along the cross-axis
+
             total_breadth = sum(breadths) + self.node_sep * (len(layer) - 1)
             current_cross = -total_breadth / 2
 

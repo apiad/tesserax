@@ -5,6 +5,7 @@ Hook to run 'make' validation before critical agent actions.
 This hook is triggered 'AfterAgent' and ensures that the codebase passes
 all linting and testing checks defined in the makefile.
 """
+
 import sys
 import os
 import subprocess
@@ -13,19 +14,17 @@ import subprocess
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import utils
 
+
 def main():
     """
     Main entry point for the make validation hook.
-    
+
     Executes 'uv run make' and returns a 'deny' decision if the process fails.
     """
     try:
         # Run make command using uv run to ensure dependencies are available
         result = subprocess.run(
-            ["uv", "run", "make"],
-            capture_output=True,
-            text=True,
-            check=False
+            ["uv", "run", "make"], capture_output=True, text=True, check=False
         )
 
         if result.returncode != 0:
@@ -46,6 +45,7 @@ def main():
     except Exception:
         # Failsafe: always allow if the hook itself fails
         utils.send_hook_decision("allow")
+
 
 if __name__ == "__main__":
     main()

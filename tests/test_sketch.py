@@ -1,5 +1,4 @@
-import pytest
-from tesserax import Rect, Circle, Group, Canvas, Point
+from tesserax import Rect, Circle, Group, Point
 from tesserax.sketch import Sketch
 
 
