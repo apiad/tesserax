@@ -18,4 +18,4 @@ from .color import Color as Color, Colors as Colors
 
 from . import physics as physics
 
-__version__ = "0.10.1"
+__version__ = "0.11.0"
