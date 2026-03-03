@@ -1,0 +1,234 @@
+---
+title: "Declarative Charting in Pure Python with Tesserax"
+format: html
+---
+
+Have you ever felt caught in the no-man's-land of Python visualization? On one side, you have powerful, full-featured libraries like Matplotlib or Seaborn. They are the heavyweights, capable of producing nearly any plot imaginable, but often at the cost of wrestling with verbose APIs and complex object models. On the other side, you have low-level graphics engines where you must manually draw every circle, line, and label. You get ultimate control, but the work to create a simple bar chart from scratch is immense.
+
+This is the gap I've been living in. It's the reason I originally created [Tesserax](https://blog.apiad.net/p/drawing-not-so-beautiful-diagrams), my zero-dependency, pure Python library for programmatic SVG graphics. I wanted a tool that provided low-level, geometric primitives but also included high-level components for common tasks.
+
+Today, I'm excited to introduce the next step in that vision: a brand-new, declarative charting module for Tesserax. My thesis is that we can have the best of both worlds. We can have a simple, expressive API for statistical graphics that is also fully integrated into a flexible, composable graphics engine.
+
+The philosophy behind this new module is the **Grammar of Graphics**, the same elegant concept that powers libraries like R's `ggplot2` and Python's `Altair`. Instead of telling the computer *how* to draw a chart, you simply declare *how your data maps to visual properties*. You say, "the 'sales' column maps to the y-axis, and the 'city' column maps to the x-axis," and the library handles the rest.
+
+The result? You can create beautiful, animated, and highly customizable charts with shockingly little code.
+
+Take a look at the animation we're going to build throughout this post. It visualizes a changing dataset, smoothly handling bars that grow, new bars that enter, and old bars that exit the scene.
+
+```{python}
+#| echo: false
+
+from tesserax import Canvas
+from tesserax.animation import Scene
+from tesserax.chart import Chart
+
+# --- Data for the animation ---
+data_v1 = [
+    {"city": "New York", "sales": 40, "region": "East"},
+    {"city": "Chicago", "sales": 60, "region": "Central"},
+    {"city": "Los Angeles", "sales": 50, "region": "West"},
+]
+data_v2 = [
+    {"city": "Chicago", "sales": 90, "region": "Central"},
+    {"city": "Los Angeles", "sales": 50, "region": "West"},
+    {"city": "Houston", "sales": 75, "region": "South"},
+]
+
+# --- Chart Definition & Animation ---
+with Canvas() as canvas:
+    # 1. Define the chart. It automatically gets added to the active canvas.
+    chart = Chart(data_v1, width=400, height=220) \
+        .bar(padding=0.2) \
+        .encode(x="city", y="sales", color="region") \
+        .axis("x", title="City") \
+        .axis("y", title="Sales (in thousands)", grid=True)
+
+# 2. Create a scene linked to the canvas.
+#    The canvas is fit to its contents before starting.
+scene = Scene(canvas.fit(20))
+
+# 3. Define the animation logic.
+animation = chart.animate.data(data_v2).pad(0.5, 0.5)  # Optional padding for smoother transitions
+
+# 4. Play the animation, which captures frames into the scene.
+scene.play(animation, duration=2)
+
+# 5. Save the captured frames as a GIF.
+scene.display()
+```
+
+## Building a Visualization, Layer by Layer
+
+The term "Grammar of Graphics" sounds more intimidating than it is. At its heart, it's a simple but profound idea: a chart is a sentence, and your data provides the words. Instead of thinking imperatively ("draw a rectangle here with this height..."), we think declaratively ("let the `value` field of my data determine the height of the bars").
+
+This declarative approach is built on three pillars:
+
+1.  **Data**: The raw material. In Python, this is typically a list of dictionaries.
+2.  **Mark**: The geometric shape that represents a single data record. Think of this as the *noun* of your visual sentence (e.g., a point, a line, a bar).
+3.  **Encoding**: This is the magic, the *verb* of the sentence. An encoding connects a data field to a visual property of the mark, like `x` position, `y` position, `color`, or `size`.
+
+Let's build up a chart layer by layer to see this in practice. We'll start with a simple dataset.
+
+```{python}
+# A richer dataset with a third dimension
+sales_data = [
+    {"category": "A", "sales": 45, "region": "North"},
+    {"category": "B", "sales": 90, "region": "South"},
+    {"category": "C", "sales": 65, "region": "North"},
+    {"category": "D", "sales": 25, "region": "West"},
+]
+```
+
+Our first chart was a bare-bones bar chart. It's a good start, but real-world data is often multidimensional. What if we want to visualize the `region` as well? We can simply map it to the `color` channel.
+
+And while we're at it, a chart without axes is just abstract art. Let's add them by chaining `.axis()` calls.
+
+```{python}
+from tesserax import Canvas, Chart
+
+# ... sales_data from above ...
+
+with Canvas(width=400, height=250) as canvas:
+    Chart(sales_data) \
+        .bar() \
+        .encode(
+            x="category",
+            y="sales",
+            color="region"  # Map the 'region' field to color
+        ) \
+        .axis("x", title="Product Category") \
+        .axis("y", title="Sales Volume", grid=True)
+
+canvas.fit(20).display()
+```
+
+Just by adding `color="region"` to our encoding, Tesserax automatically assigns a distinct color from its palette to each unique value in the `region` field and handles the underlying scales. The `.axis()` calls give our visualization context, adding titles and a faint gridline on the y-axis.
+
+Now for the real magic of this grammatical approach. What if we decide a bar chart isn't the right visualization? Do we have to start over?
+
+No. We just change the "noun" of our sentence. Let's swap `.bar()` for `.point()`.
+
+```{python}
+from tesserax import Canvas, Chart
+
+# ... sales_data from above ...
+
+with Canvas(width=400, height=250) as canvas:
+    Chart(sales_data) \
+        .point(size=10) \
+        .encode(
+            x="category",
+            y="sales",
+            color="region"
+        ) \
+        .axis("x", title="Product Category") \
+        .axis("y", title="Sales Volume", grid=True)
+
+canvas.fit(20).display()
+```
+
+And just like that, we have a dot plot. All our other declarative mappings—x-position, y-position, color, and axes—are automatically reapplied to the new mark type. This is the flexibility I was striving for: the ability to rapidly iterate on the *design* of a visualization by simply swapping out its fundamental components.
+
+
+## How It Works
+
+Now that we've seen *what* the charting module can do, let's pull back the curtain and talk about *how* it does it. When I designed this system, my primary goal wasn't just to create a nice API, but to build an engine that was as modular and extensible as the charts it produces. The entire system is a collaboration between a few specialist components, and understanding them is the key to unlocking the library's full potential.
+
+At the center of it all is the **`Chart` component**. Think of it as the project manager or the conductor of an orchestra. It doesn't actually draw anything itself. Its job is to look at the data you provided, examine the encodings you declared, and delegate the hard work to two key groups of specialists: **Scales** and **Marks**.
+
+### Scales
+
+A scale's job is to translate from the "data world" to the "pixel world." It answers questions like, "If my sales can range from 0 to 100, and my chart is 300 pixels tall, where exactly should a value of 45 be located?"
+
+Tesserax uses a few types of scales, each for a different kind of data:
+
+*   **`LinearScale`**: This is your standard ruler. It maps a continuous numerical domain (e.g., values from 0 to 1000) onto a continuous pixel range (e.g., 0px to 500px).
+*   **`BandScale`**: This is for categorical data. It takes a domain like `['A', 'B', 'C']` and divides the available space into evenly spaced "bands," calculating the correct position and width for each one, including padding.
+*   **`ColorScale`**: This scale maps a data domain (e.g., `['North', 'South', 'West']`) to a palette of distinct, visually pleasing colors.
+
+The beauty of this design is its extensibility. The `Chart` component only interacts with a generic `Scale` base class. This means we can easily introduce new kinds of scales. Imagine creating a `LogScale` for data that spans several orders of magnitude. As long as it conforms to the basic scale "protocol" (implementing a `map()` method), the `Chart` component can use it to build a logarithmic plot without any other changes to the system.
+
+### Marks
+
+If scales are the translators, **marks** are the artists. A mark's job is to take the pixel coordinates provided by the scales for a single row of data and produce a concrete geometric `Shape`.
+
+*   The `BarMark` looks at the `x` and `y` values from the scales and draws a `Rect`.
+*   The `PointMark` does the same but draws a `Circle`.
+
+This is another area designed for extension. Do you want to create a line chart? You could create a `LineMark`. This new mark would receive the coordinates for *all* the data points at once and produce a single `Polyline` shape. Once that `LineMark` is defined, a user could simply call `.line()` on their chart, and all the existing machinery for scales, axes, and encodings would work instantly. You could imagine creating `AreaMark` for area charts, or even a custom `CandlestickMark` for financial data.
+
+### Channels
+
+Finally, the `X`, `Y`, and `Color` objects you've seen are simple **channels**. They are simple data structures that bundle a data field with its configuration (like axis or legend information). This provides a clean way to pass structured information from the user's `.encode()` call down to the `Chart` orchestrator. This, too, is extensible. One could design a `Size` channel that maps a data field to the size of the marks, and the `PointMark` could be taught to use it.
+
+This modular, protocol-oriented design is the engine's secret weapon. By ensuring each component has a single, well-defined responsibility, we create a system that is not only powerful out of the box, but one that can be easily and cleanly extended in any direction.
+
+## The Killer Feature
+
+Static charts are good, but animated charts are storytellers. They can reveal trends, highlight changes, and provide a much deeper intuition for how a system evolves. The problem is that creating these transitions manually is often a nightmare of state management and tedious interpolation.
+
+This is where the declarative nature of the charting module truly shines. To animate a chart, you don't manually calculate new positions or sizes. You just give it the new dataset, and Tesserax handles the rest.
+
+This is all built on a classic data visualization pattern called **Enter-Update-Exit**:
+
+*   **Enter**: When a new item appears in your data (like "Houston" in our example), the framework creates a new shape for it and animates it *into* the scene (e.g., fading in and growing from the baseline).
+*   **Update**: For data items that exist in both the old and new datasets (like "Chicago"), the framework smoothly animates their corresponding shapes from their old properties to their new ones.
+*   **Exit**: When a data item is removed from the data (like "New York"), its corresponding shape is gracefully animated *out* of the scene before being removed.
+
+To make this work, Tesserax needs to know which shape corresponds to which piece of data. It determines this "data identity" by checking, in order: 1) for a special `id` or `_id` field in the data row, 2) the value of the field mapped to the `x` channel, or 3) the row's index in the list.
+
+Here is the code that generated the animation you saw at the beginning of this post. Notice that we simply define the chart with the first dataset, and then tell the animation `Scene` to play the transition to the second dataset.
+
+```{python}
+from tesserax import Canvas
+from tesserax.animation import Scene
+from tesserax.chart import Chart
+
+# The initial state of our data
+data_v1 = [
+    {"city": "New York", "sales": 40, "region": "East"},
+    {"city": "Chicago", "sales": 60, "region": "Central"},
+    {"city": "Los Angeles", "sales": 50, "region": "West"},
+]
+
+# The state after the data has changed
+data_v2 = [
+    {"city": "Chicago", "sales": 90, "region": "Central"}, # Update
+    {"city": "Los Angeles", "sales": 50, "region": "West"}, # Unchanged
+    {"city": "Houston", "sales": 75, "region": "South"},     # Enter
+    # New York was removed (Exit)
+]
+
+with Canvas() as canvas:
+    chart = Chart(data_v1, width=400, height=220) \
+        .bar(padding=0.2) \
+        .encode(x="city", y="sales", color="region") \
+        .axis("x", title="City") \
+        .axis("y", title="Sales (in thousands)", grid=True)
+
+scene = Scene(canvas.fit(20))
+
+# This is the key! Generate the animation by providing the new data.
+animation = chart.animate.data(data_v2).pad(0.5, 0.5)
+
+scene.play(animation, duration=2)
+scene.display()
+```
+
+The most important part of this is that `chart.animate.data(data_v2)` does not introduce a new, separate animation system. It's a factory that generates a standard Tesserax `Animation` object. Under the hood, it's just a `Sequence` of `Parallel` animations---the same building blocks used for all other animations in the library.
+
+This means a chart animation is a first-class citizen in the Tesserax ecosystem. You can loop it, reverse it, combine it with other animations, or apply custom easing functions. For example, you could have the chart animate while the title scrambles into view, and run the whole sequence in a loop, because it's all built on the same composable animation primitives. This is the architectural payoff: building high-level features on a solid, low-level foundation.
+
+## Closing the Loop
+
+Perhaps the most powerful, if subtle, feature of this entire system is that a `Chart` is not a special, siloed object. It's just another Tesserax component, like a `Rect`, a `Circle`, or a `Group`. This means you can rotate it, scale it, or arrange it in complex layouts right alongside any other graphical element. This composability was the final piece of the puzzle I set out to solve.
+
+With a core graphics engine, a physics and animation system, and now a declarative charting module, the Tesserax library finally feels feature-complete. While I may add a new `Mark` or `Scale` here and there as needs arise, the major architectural work is done. The library has reached a stable point, closing the gap I identified at the start.
+
+My goal was never to build a library for its own sake, but to create a tool for a purpose: to write better computer science explainers with beautiful, clear, and often animated illustrations. Now, I can finally get back to that.
+
+I encourage you to take Tesserax for a spin. The library is fully open-source and [available on PyPI](https://pypi.org/project/tesserax).
+
+Try out the charting module, build something cool, and let me know what you think by opening an issue or discussion on the [GitHub repository](https://github.com/apiad/tesserax), or leave me a comment right here.
+
+I can't wait to see what you create.
