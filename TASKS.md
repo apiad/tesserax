@@ -9,11 +9,20 @@ Legend:
 ---
 
 ## Active Tasks
-- [x] Initialize the project goals.
-- [x] Overhaul animation rendering for high-fidelity SVG (See plan: plans/animation-rendering-overhaul.md) (@apiad)
+- [ ] Implement data-driven chart components.
+- [ ] Expand physics engine with more colliders.
+- [ ] Implement a `CLI` tool for quick SVG generation.
 
 ---
 
 ## Roadmap
-- [ ] Implement data-driven chart components.
-- [ ] Expand physics engine with more colliders.
+- [ ] Support for 3D projections in 2D canvas.
+- [ ] Interactive UI elements for Quarto/Jupyter widgets.
+
+---
+
+## Archive
+- [x] Initialize the project goals.
+- [x] Overhaul animation rendering for high-fidelity SVG (v0.11.0).
+- [x] Integrate Gemini CLI framework and project standards.
+- [x] Fix critical linting and architectural debt.
