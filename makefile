@@ -12,4 +12,4 @@ format:
 	uv run ruff format .
 
 docs:
-	quarto publish gh-pages docs/
+	uv run quarto publish gh-pages docs/
