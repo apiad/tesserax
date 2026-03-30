@@ -8,7 +8,6 @@ import string
 import io
 import base64
 from pathlib import Path
-import imageio
 
 
 from .base import IVisual, Text, Polyline
@@ -822,6 +821,7 @@ class Scene:
         if not self._frames:
             return
 
+        import imageio
         from PIL import Image
 
         # Convert PNG bytes to Pillow images for ImageIO
