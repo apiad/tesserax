@@ -1,5 +1,6 @@
 from __future__ import annotations
 import math
+from xml.sax.saxutils import escape as _xml_escape, quoteattr as _xml_quoteattr
 from typing import Callable, Literal, Self, TYPE_CHECKING, cast
 
 from tesserax.color import Color, Colors
@@ -415,11 +416,13 @@ class Text(Visual):
         return Bounds(0, 0, width, height)
 
     def _render(self) -> str:
-        # Note: 'dominant-baseline="middle"' centers text vertically around y=0
+        # XML-escape caller-controlled strings so labels containing <, >, &
+        # (e.g. "p<0.05", "AT&T") produce well-formed SVG, and quoted
+        # attributes can't be escaped by crafted font names.
         return (
-            f'<text x="0" y="0" font-family="{self.font}" font-size="{self.size}" '
+            f'<text x="0" y="0" font-family={_xml_quoteattr(self.font)} font-size="{self.size}" '
             f'fill="{self.fill}" text-anchor="{self._anchor}" dominant-baseline="{self._baseline}">'
-            f"{self.content}</text>"
+            f"{_xml_escape(self.content)}</text>"
         )
 
 

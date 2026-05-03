@@ -409,3 +409,57 @@ class TestPolyline:
         """Invariant: Closed polyline has 'Z' command."""
         p = Polyline([Point(0, 0), Point(1, 1)], closed=True)
         assert "Z" in p._render()
+
+
+class TestTextXMLEscaping:
+    """Text rendering must produce well-formed XML for arbitrary string inputs."""
+
+    @pytest.mark.parametrize(
+        "label",
+        [
+            "p < 0.05",
+            "Force & Motion",
+            "x > 0 && y < 1",
+            "<state>",
+            "AT&T",
+            "5 < n",
+        ],
+    )
+    def test_content_with_reserved_xml_chars_parses(self, label):
+        """Content containing <, >, & must yield well-formed XML."""
+        import xml.etree.ElementTree as ET
+
+        svg = Text(label)._render()
+        # Must round-trip through an XML parser without error.
+        root = ET.fromstring(svg)
+        # And the displayed text must be exactly the original label.
+        assert root.text == label
+
+    def test_font_with_quote_does_not_inject_attributes(self):
+        """A crafted font string must not escape the attribute quoting."""
+        import xml.etree.ElementTree as ET
+
+        malicious = 'sans" stroke="red'
+        svg = Text("hello", font=malicious)._render()
+        root = ET.fromstring(svg)
+        # font-family attribute must hold the literal string verbatim,
+        # and no spurious 'stroke' attribute may appear.
+        assert root.attrib.get("font-family") == malicious
+        assert "stroke" not in root.attrib
+
+    def test_ampersand_is_preserved_visibly(self):
+        """Escaping must be transparent: the rendered text equals the input."""
+        import xml.etree.ElementTree as ET
+
+        label = "R&D"
+        svg = Text(label)._render()
+        root = ET.fromstring(svg)
+        assert root.text == label
+
+    def test_plain_content_unchanged(self):
+        """Non-reserved content must round-trip unchanged."""
+        import xml.etree.ElementTree as ET
+
+        svg = Text("Hello World")._render()
+        root = ET.fromstring(svg)
+        assert root.text == "Hello World"
