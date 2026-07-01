@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import math
 from typing import Any, Literal, Self, Sequence, cast, TYPE_CHECKING
 from .core import StatefulComponent, Shape, Point
-from .base import Group, Rect, Circle, Visual, Line, Text
+from .base import Group, Rect, Circle, Visual, Line, Text, Polyline, Path
 from .color import Color, Colors
 
 if TYPE_CHECKING:
@@ -203,7 +203,7 @@ class BarMark(Mark):
         bx = x_scale.map(xv)
         by = 0
 
-        color = Colors.SteelBlue
+        color = self.params.get("color", Colors.SteelBlue)
         if color_field and color_scale:
             color = color_scale.map(row[color_field])
 
@@ -296,7 +296,7 @@ class PointMark(Mark):
         py = y_scale.map(yv)
         size = self.params.get("size", 5.0)
 
-        color = Colors.SteelBlue
+        color = self.params.get("color", Colors.SteelBlue)
         if color_field and color_scale:
             color = color_scale.map(row[color_field])
 
@@ -339,6 +339,130 @@ class PointMark(Mark):
                 dot.parent.remove(dot)
 
         return (dot.animate.r(0.01) + dot.animate.opacity(0.0)).then(detach_dot)
+
+
+class LineMark(Mark):
+    """Represents each color group as a single connected line spanning all its
+    rows. Static-render only (used via ``build_all``); the per-shape animation
+    hooks are not implemented."""
+
+    def _resolve(self, encoding: dict[str, str | Channel], key: str) -> str | None:
+        val = encoding.get(key)
+        return val.field if isinstance(val, Channel) else val
+
+    def build_all(
+        self,
+        data: list[dict[str, Any]],
+        encoding: dict[str, str | Channel],
+        scales: dict[str, Scale | ColorScale],
+        chart_height: float,
+    ) -> list[Shape]:
+        x_field = self._resolve(encoding, "x")
+        y_field = self._resolve(encoding, "y")
+        color_field = self._resolve(encoding, "color")
+        x_scale = scales.get("x")
+        y_scale = scales.get("y")
+        color_scale = scales.get("color")
+        if not x_field or not y_field or x_scale is None or y_scale is None:
+            return []
+
+        # Group rows by the color field (preserving first-seen order), or a
+        # single group when no color channel is encoded.
+        groups: dict[Any, list[dict[str, Any]]] = {}
+        for row in data:
+            key = row.get(color_field) if color_field else None
+            groups.setdefault(key, []).append(row)
+
+        width = self.params.get("width", 2.0)
+        lines: list[Shape] = []
+        for key, rows in groups.items():
+            pts = []
+            for row in rows:
+                xv = row[x_field]
+                px = x_scale.center(xv) if isinstance(x_scale, BandScale) else x_scale.map(xv)
+                py = chart_height - y_scale.map(row[y_field])
+                pts.append(Point(px, py))
+            if color_field and color_scale is not None:
+                color = color_scale.map(key)
+            else:
+                color = self.params.get("color", Colors.SteelBlue)
+            lines.append(
+                Polyline(pts, fill=Colors.Transparent, stroke=color, width=width)
+            )
+        return lines
+
+    def build(self, row, encoding, scales, chart_height) -> Shape:
+        # Never used on the static path (build_all overrides), but Mark requires it.
+        return Group()
+
+    def enter(self, row, encoding, scales, chart_height):
+        raise NotImplementedError("LineMark supports static render only")
+
+    def update(self, shape, row, encoding, scales, chart_height):
+        raise NotImplementedError("LineMark supports static render only")
+
+    def exit(self, shape):
+        raise NotImplementedError("LineMark supports static render only")
+
+
+class Pie(StatefulComponent):
+    """A pie/donut chart. Angular, so it is standalone rather than a Cartesian
+    ``Chart`` mark. ``.encode(value=…, label=…)`` maps data fields; ``donut`` in
+    (0, 1) cuts an inner radius as a fraction of ``radius``."""
+
+    def __init__(
+        self, data: list[dict[str, Any]], radius: float = 100.0, donut: float = 0.0
+    ) -> None:
+        super().__init__()
+        self._data = data
+        self.radius = radius
+        self.donut = donut
+        self._encoding: dict[str, str] = {}
+
+    def encode(self, **channels: str) -> Self:
+        self._encoding.update(channels)
+        self.invalidate()
+        return self
+
+    def _build(self) -> Shape:
+        group = Group()
+        value_field = self._encoding.get("value")
+        label_field = self._encoding.get("label")
+        if not value_field:
+            return group
+
+        values = [float(row[value_field]) for row in self._data]
+        total = sum(values)
+        if total <= 0:
+            return group
+
+        labels = [row.get(label_field) for row in self._data] if label_field else list(range(len(self._data)))
+        color_scale = ColorScale(list(dict.fromkeys(labels)))
+        r = self.radius
+        ri = r * self.donut
+        angle = -math.pi / 2  # start at 12 o'clock
+        for value, label in zip(values, labels):
+            sweep = (value / total) * 2 * math.pi
+            a0, a1 = angle, angle + sweep
+            angle = a1
+            large = 1 if sweep > math.pi else 0
+            x0, y0 = r * math.cos(a0), r * math.sin(a0)
+            x1, y1 = r * math.cos(a1), r * math.sin(a1)
+            path = Path(fill=color_scale.map(label), stroke=Colors.White, width=1.0)
+            if ri > 0:
+                xi0, yi0 = ri * math.cos(a0), ri * math.sin(a0)
+                xi1, yi1 = ri * math.cos(a1), ri * math.sin(a1)
+                (
+                    path.jump_to(x0, y0)
+                    .arc(r, r, 0, large, 1, x1, y1)
+                    .line_to(xi1, yi1)
+                    .arc(ri, ri, 0, large, 0, xi0, yi0)
+                    .close()
+                )
+            else:
+                path.jump_to(0, 0).line_to(x0, y0).arc(r, r, 0, large, 1, x1, y1).close()
+            group.add(path)
+        return group
 
 
 class Axis:
@@ -637,6 +761,14 @@ class Chart(StatefulComponent):
     def mark_bar(self, padding: float = 0.1, **kwargs) -> Self:
         """Alias for .bar()"""
         return self.bar(padding=padding, **kwargs)
+
+    def line(self, **kwargs) -> Self:
+        self.invalidate()
+        return self.mark(LineMark(**kwargs))
+
+    def mark_line(self, **kwargs) -> Self:
+        """Alias for .line()"""
+        return self.line(**kwargs)
 
     def point(self, size: float = 5.0, **kwargs) -> Self:
         self.invalidate()

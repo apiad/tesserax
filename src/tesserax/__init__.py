@@ -13,9 +13,9 @@ from .base import (
     Text as Text,
     Container as Container,
 )
-from .chart import Chart as Chart
+from .chart import Chart as Chart, LineMark as LineMark, Pie as Pie
 from .color import Color as Color, Colors as Colors
 
 from . import physics as physics
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.12.0] - 2026-07-01
+### Added
+- `LineMark` + `Chart.line()`/`mark_line()` — connected line charts, one polyline per color group (via the new whole-series `Mark.build_all` hook).
+- `Pie` component — standalone pie/donut chart (angular, not a Cartesian mark) with `.encode(value=…, label=…)` and a `donut` inner-radius fraction.
+- Marks honor an explicit `color=<Color>` param, used as fill/stroke when no `color` channel is encoded.
+
 ## [0.11.0] - 2026-03-03
 ### Added
 - Integrated the Gemini CLI framework for advanced AI-driven repository management.
