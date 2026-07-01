@@ -131,6 +131,17 @@ class Mark(ABC):
         """Produces a Shape for a single data row."""
         pass
 
+    def build_all(
+        self,
+        data: list[dict[str, Any]],
+        encoding: dict[str, str | Channel],
+        scales: dict[str, Scale | ColorScale],
+        chart_height: float,
+    ) -> list[Shape]:
+        """Produce one Shape per data row. Whole-series marks (e.g. a line
+        that spans all rows) override this to emit fewer shapes than rows."""
+        return [self.build(row, encoding, scales, chart_height) for row in data]
+
     @abstractmethod
     def enter(
         self,
@@ -744,11 +755,16 @@ class Chart(StatefulComponent):
         main_group = Group()
 
         new_marks = {}
-        for i, row in enumerate(self._data):
-            row_id = self._get_id(row, i)
-            shape = self._mark.build(row, self._encoding, scales, plot_h)
-            self._plot_group.add(shape)
-            new_marks[row_id] = shape
+        shapes = self._mark.build_all(self._data, self._encoding, scales, plot_h)
+        if len(shapes) == len(self._data):
+            for i, (row, shape) in enumerate(zip(self._data, shapes)):
+                self._plot_group.add(shape)
+                new_marks[self._get_id(row, i)] = shape
+        else:
+            # Whole-series mark: fewer shapes than rows, no per-row identity.
+            for j, shape in enumerate(shapes):
+                self._plot_group.add(shape)
+                new_marks[f"__series_{j}"] = shape
 
         # Update persistent state
         self._marks = new_marks
