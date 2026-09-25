@@ -35,11 +35,11 @@ print(f'<figure id="fig-caja">{canvas}<figcaption>A box.</figcaption></figure>')
   into a `<pre>` and prints the SVG source as literal text on the page. That is the
   symptom people report first.
 - **`echo=false`** hides the drawing code, which is rarely what the reader wants.
-- Wrapping in `<figure>` + `<figcaption>` lets CSS counters number the figures and
-  resolve `@fig-` cross-references. No scriptorium theme numbers figures: `base`
-  styles `figure` and `figcaption`, and `book`'s `a.ref-fig` renders the caption
-  text plus a page number rather than a figure number. The counter rules to copy
-  are in `repos/algos/know-how/ilustrando-una-conferencia.md`.
+- Wrapping in `<figure id="fig-…">` is what gets the figure numbered. Since
+  scriptorium `adb91d1`, `base` numbers any figure carrying that id — the same id
+  `@fig-…` points at — and fills the cross-reference in both directions. Declare
+  `figure-label` (and `figure-ref-label` where a mid-sentence form differs, as in
+  Spanish) in the document's `vars:`. A `<figure>` without the id is left alone.
 
 ## Jupyter and Quarto
 
