@@ -79,6 +79,32 @@ lado = nuevo_lado          # `celda` now uses the new value, no redefinition nee
 This is usually what you want when a figure tracks a changing scale, and it is a bug
 when you expected the old one. Redefining `celda` after every change is redundant.
 
+## `Text(anchor=…)` does not align anything
+
+`Text(..., anchor="end")` emits `text-anchor="end"`, and tesserax compensates the
+group's `translate` for it, so the text's **bounds are identical** whatever the
+anchor — measured: `end`, `start` and `middle` all give `x: 58.00 .. 142.00` for the
+same string. `move_to(point)` then centres that box on the point. The net effect is
+that `Text`'s own anchor is a no-op for positioning: every label is centred.
+
+With a short label (`10⁰`, `×5`) the error is a few pixels and nobody notices. With a
+long one it is half the string's width, and the label lands on top of the thing it
+names.
+
+The anchor that *does* align is `move_to`'s, which is a box anchor:
+
+```python
+_ANCHOR = {"middle": "center", "start": "left", "end": "right"}
+
+def label(text, xy, anchor="middle", **kw):
+    return Text(text, anchor="middle", **kw).move_to(xy, anchor=_ANCHOR[anchor])
+```
+
+With that, `end` ends the text at the point, `start` begins it there. Found by
+conferencia-primos on 2026-09-25 after a legend sat on its own bar; the same bug was
+live in two of the DAA figures and had been papered over by nudging coordinates,
+which is what a miscentred label looks like from the outside.
+
 ## Labels collide, and only the render shows it
 
 There is no collision detection. Two `Text` at nearby anchors overlap silently, and a
