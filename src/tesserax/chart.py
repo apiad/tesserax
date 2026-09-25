@@ -379,7 +379,11 @@ class LineMark(Mark):
             pts = []
             for row in rows:
                 xv = row[x_field]
-                px = x_scale.center(xv) if isinstance(x_scale, BandScale) else x_scale.map(xv)
+                px = (
+                    x_scale.center(xv)
+                    if isinstance(x_scale, BandScale)
+                    else x_scale.map(xv)
+                )
                 py = chart_height - y_scale.map(row[y_field])
                 pts.append(Point(px, py))
             if color_field and color_scale is not None:
@@ -436,7 +440,11 @@ class Pie(StatefulComponent):
         if total <= 0:
             return group
 
-        labels = [row.get(label_field) for row in self._data] if label_field else list(range(len(self._data)))
+        labels = (
+            [row.get(label_field) for row in self._data]
+            if label_field
+            else list(range(len(self._data)))
+        )
         color_scale = ColorScale(list(dict.fromkeys(labels)))
         r = self.radius
         ri = r * self.donut
@@ -460,7 +468,9 @@ class Pie(StatefulComponent):
                     .close()
                 )
             else:
-                path.jump_to(0, 0).line_to(x0, y0).arc(r, r, 0, large, 1, x1, y1).close()
+                path.jump_to(0, 0).line_to(x0, y0).arc(
+                    r, r, 0, large, 1, x1, y1
+                ).close()
             group.add(path)
         return group
 
