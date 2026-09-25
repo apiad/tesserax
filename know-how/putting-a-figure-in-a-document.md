@@ -36,9 +36,10 @@ print(f'<figure id="fig-caja">{canvas}<figcaption>A box.</figcaption></figure>')
   symptom people report first.
 - **`echo=false`** hides the drawing code, which is rarely what the reader wants.
 - Wrapping in `<figure>` + `<figcaption>` lets CSS counters number the figures and
-  resolve `@fig-` cross-references. scriptorium's `note` theme does not ship that
-  CSS; the `book` theme does. The rules to copy are in
-  `repos/algos/know-how/ilustrando-una-conferencia.md`.
+  resolve `@fig-` cross-references. No scriptorium theme numbers figures: `base`
+  styles `figure` and `figcaption`, and `book`'s `a.ref-fig` renders the caption
+  text plus a page number rather than a figure number. The counter rules to copy
+  are in `repos/algos/know-how/ilustrando-una-conferencia.md`.
 
 ## Jupyter and Quarto
 
