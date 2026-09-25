@@ -1,0 +1,41 @@
+# Mechanical checks on the agent docs. Each rule exists so a doc rule does not have
+# to: a doc rule costs context in every session and goes stale silently, a lint rule
+# costs nothing until it fails, and then it fails with a file and a line.
+rules:
+  # A renamed or deleted file leaves a doc pointing at nothing, and the reader finds
+  # out by running the path.
+  - name: "every file path named in the agent docs exists"
+    severity: warning
+    extract:
+      file: ["AGENTS.md", "know-how/*.md"]
+      regex: '`((?!repos/|vault/|bin/|https?:)[A-Za-z0-9_-]+/[A-Za-z0-9_./-]+\.(?:md|ya?ml|py|toml|json|sh))`'
+    require:
+      exists: true
+
+  # The know-how menu is a grep over this line. A doc without it is invisible.
+  - name: "every know-how doc carries a single-line when: in its frontmatter"
+    severity: warning
+    contain:
+      in: "know-how/*.md"
+      zone: { before: '^# ' }
+      matches: '\A---\n(?:.*\n)*?when: \S.*\n(?:.*\n)*?---\n'
+
+  # forbid masks inline code, so a backticked filename is invisible to it; extracting
+  # from the raw file and requiring a file that never exists reports every name.
+  - name: "AGENTS.md names no individual know-how doc"
+    severity: warning
+    extract:
+      file: "AGENTS.md"
+      regex: '(know-how/[A-Za-z0-9_-]+\.md)'
+    require:
+      in: "this-file-never-exists.md"
+
+  # A status line is false one commit later. It belongs in git log or the CHANGELOG.
+  - name: "AGENTS.md carries no status log"
+    severity: warning
+    extract:
+      list: ['Task \d+ done', '\d+ tests\b', 'shipped \(20\d\d-', 'as of 20\d\d-', 'current status']
+    forbid:
+      in: "AGENTS.md"
+      as: regex
+      case_insensitive: true

@@ -7,6 +7,7 @@ test:
 
 lint:
 	uv run ruff check .
+	@command -v rift >/dev/null 2>&1 && rift check || echo "rift not installed — skipping the agent-docs checks"
 
 format:
 	uv run ruff format .
